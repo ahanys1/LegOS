@@ -91,6 +91,12 @@ module TSOS {
                 " - There's a fire in Lego City!");
             this.commandList[this.commandList.length] = sc;
 
+            //status <string>
+            sc = new ShellCommand(this.shellStatus,
+                "status",
+                "<string> - sets the system status message.")
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -316,6 +322,10 @@ module TSOS {
             _StdOut.putText("   | | |");
             _StdOut.advanceLine();
             _StdOut.putText("  [=|=]");
+        }
+
+        public shellStatus(args:string[]){
+            document.getElementById("status").innerHTML = "status | " + args;
         }
 
         //end my commands

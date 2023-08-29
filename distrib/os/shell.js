@@ -54,6 +54,9 @@ var TSOS;
             //legohey
             sc = new TSOS.ShellCommand(this.shellLegoHey, "legohey", " - There's a fire in Lego City!");
             this.commandList[this.commandList.length] = sc;
+            //status <string>
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - sets the system status message.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -263,6 +266,9 @@ var TSOS;
             _StdOut.putText("   | | |");
             _StdOut.advanceLine();
             _StdOut.putText("  [=|=]");
+        }
+        shellStatus(args) {
+            document.getElementById("status").innerHTML = "status | " + args;
         }
         //end my commands
         shellTrace(args) {
