@@ -12,7 +12,7 @@
 module TSOS {
     export class Shell {
         // Properties
-        public promptStr = ">";
+        public promptStr = "=C ";
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]";
@@ -34,7 +34,7 @@ module TSOS {
             // help
             sc = new ShellCommand(this.shellHelp,
                                   "help",
-                                  "- This is the help command. Seek help.");
+                                  "- This is the help command. Seek help if you don't know how you just used this.");
             this.commandList[this.commandList.length] = sc;
 
             // shutdown
@@ -71,6 +71,24 @@ module TSOS {
             sc = new ShellCommand(this.shellPrompt,
                                   "prompt",
                                   "<string> - Sets the prompt.");
+            this.commandList[this.commandList.length] = sc;
+
+            // date
+            sc = new ShellCommand(this.shellDate,
+                                    "date",
+                                    " - Displays current Date and Time.");
+            this.commandList[this.commandList.length] = sc;
+
+            // whereami
+            sc = new ShellCommand(this.shellWhereAmI,
+                "whereami",
+                " - Displays current location.");
+            this.commandList[this.commandList.length] = sc;
+
+            //legohey
+            sc = new ShellCommand(this.shellLegoHey,
+                "legohey",
+                " - There's a fire in Lego City!");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -231,9 +249,40 @@ module TSOS {
             if (args.length > 0) {
                 var topic = args[0];
                 switch (topic) {
-                    case "help":
-                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
+                    case "ver":
+                        _StdOut.putText("'ver' displays the current running version.");
                         break;
+                    case "help":
+                        _StdOut.putText("'Help' displays a list of (hopefully) valid commands.");
+                        break;
+                    case "shutdown":
+                        _StdOut.putText("'shutdown' turns off the operating system, however it leaves the hardware running.");
+                        break;
+                    case "cls":
+                        _StdOut.putText("'cls' clears the terminal, and resets the cursor position to the top of the display.");
+                        break;
+                    case "man":
+                        _StdOut.putText("'man' does this.");
+                        break;
+                    case "trace": 
+                        _StdOut.putText("'trace' allows for toggling of the system trace, AKA the host log. input 'on' or 'off' to toggle.");
+                        break;
+                    case "rot13":
+                        _StdOut.putText("'rot13' shifts the input string by 13 characters.");
+                        break;
+                    case "prompt":
+                        _StdOut.putText("'prompt' changes the prompt symbol. By default, this is set to '=C' (a Lego hand).");
+                        break;
+                    case "date":
+                        _StdOut.putText("'date' displays the current date and time in your local time zone.");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("'whereami' displays the VM's current location.");
+                        break;
+                    case "legohey":
+                        _StdOut.putText("'legohey' displays a little easter egg!");
+                        break;
+
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -242,6 +291,34 @@ module TSOS {
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
             }
         }
+
+        //
+        //My Commands are here
+        //
+        public shellDate(args: string[]){
+            const date = new Date();
+            _StdOut.putText(date.toLocaleString());
+        }
+
+        public shellWhereAmI(args: string[]){
+            _StdOut.putText("Lego City, Denmark");
+        }
+
+        public shellLegoHey(args:string[]){
+            _StdOut.putText("    _ ");
+            _StdOut.advanceLine();
+            _StdOut.putText("   [_] ");
+            _StdOut.advanceLine();
+            _StdOut.putText(" /;   :\\");
+            _StdOut.advanceLine();
+            _StdOut.putText("() '___'()");
+            _StdOut.advanceLine();
+            _StdOut.putText("   | | |");
+            _StdOut.advanceLine();
+            _StdOut.putText("  [=|=]");
+        }
+
+        //end my commands
 
         public shellTrace(args: string[]) {
             if (args.length > 0) {
