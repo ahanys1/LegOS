@@ -18,6 +18,7 @@ var TSOS;
             this.currentXPosition = currentXPosition;
             this.currentYPosition = currentYPosition;
             this.buffer = buffer;
+            console.log(currentFontSize);
         }
         init() {
             this.clearScreen();
@@ -25,6 +26,7 @@ var TSOS;
         }
         clearScreen() {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+            console.log("screen Cleared");
         }
         resetXY() {
             this.currentXPosition = 0;
@@ -79,6 +81,16 @@ var TSOS;
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
             // TODO: Handle scrolling. (iProject 1)
+            if (this.currentYPosition >= _Canvas.height) {
+                //ok first grab a copy of the canvas. Then Clear the canvas. Then clear and paste the old canvas on a few lines up. 
+                //shifts up by the amount over the canvas
+                let shiftAmount = this.currentYPosition - _Canvas.height;
+                //next, convert the current canvas into an image.
+                let canvasData = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+                this.clearScreen(); //clear canvas
+                _DrawingContext.putImageData(canvasData, 0, 0 - (_DefaultFontSize * 1.5)); //now draw the context
+                this.currentYPosition = _Canvas.height - _DefaultFontSize; //put the current position at the bottom of the canvas
+            }
         }
     }
     TSOS.Console = Console;
