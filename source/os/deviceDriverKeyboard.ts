@@ -79,7 +79,7 @@ module TSOS {
                 } else{
                     chr = String.fromCharCode(keyCode);
                 } 
-            } else if((keyCode == 32) || (keyCode == 13)) {//space || enter
+            } else if((keyCode == 32) || (keyCode == 13) || (keyCode == 8)) {//space || enter || backspace
                 chr = String.fromCharCode(keyCode);
                                                                    //next up:  -  =  [   ]   ;  '  ,  .  / \
             } else if(keyCode == 173){ // - _                       //Shifts:  _  +  {   }   :  "  <  >  ? |

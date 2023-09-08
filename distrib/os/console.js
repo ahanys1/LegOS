@@ -33,6 +33,7 @@ var TSOS;
             this.currentYPosition = this.currentFontSize;
         }
         handleInput() {
+            let prevChr;
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
@@ -43,6 +44,16 @@ var TSOS;
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
+                }
+                else if (chr === String.fromCharCode(8)) { // Backspace
+                    //needs to paint over last char, move cursor back by char width, remove char from buffer
+                    let prevChar = this.buffer.charAt(this.buffer.length - 1); //gets the character to delete
+                    let prevCharWidth = _DrawingContext.measureText(this.currentFont, this.currentFontSize, prevChar); //gets width of previos character
+                    let prevCharHeight = this.currentFontSize * 1.5; //should be char height? same math I've used before
+                    _DrawingContext.clearRect(this.currentXPosition - prevCharWidth - 1, this.currentYPosition - prevCharHeight, prevCharWidth + 1, prevCharHeight + 10); //should paint over character
+                    //next remove from buffer
+                    this.buffer = this.buffer.slice(0, this.buffer.length - 1); //slices buffer to axe end
+                    this.currentXPosition -= prevCharWidth; //moves cursor back
                 }
                 else {
                     // This is a "normal" character, so ...
