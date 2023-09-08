@@ -57,6 +57,8 @@ var TSOS;
             //status <string>
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - sets the system status message.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", " - loads the program from the program input.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -235,6 +237,12 @@ var TSOS;
                     case "legohey":
                         _StdOut.putText("'legohey' displays a little easter egg!");
                         break;
+                    case "status":
+                        _StdOut.putText("'status' allows you to alter the host system's status.");
+                        break;
+                    case "load":
+                        _StdOut.putText("'load' allows you to load the inputted program, and verifies that it is a valid program.");
+                        break;
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -269,6 +277,24 @@ var TSOS;
         }
         shellStatus(args) {
             document.getElementById("status").innerHTML = "status | " + args;
+        }
+        shellLoad(args) {
+            let inputBox = document.getElementById("taProgramInput");
+            let program = inputBox.value; //I couldn't tell ya why ts says this is wrong but it works when it compiles to javascript so you know what, sure
+            const validSymbols = "1234567890ABCDEFabcdef ";
+            let isValid = true;
+            //loop through to confirm values are good
+            for (const char of program) {
+                if (!validSymbols.includes(char)) {
+                    isValid = false;
+                }
+            }
+            if (isValid) {
+                _StdOut.putText("Program is Valid.");
+            }
+            else {
+                _StdOut.putText("Program contains invalid symbols.");
+            }
         }
         //end my commands
         shellTrace(args) {
