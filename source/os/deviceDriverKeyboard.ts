@@ -34,6 +34,7 @@ module TSOS {
             _Kernel.krnTrace("Key code:" + keyCode + " shifted:" + isShifted);
             var chr = "";
             // Check to see if we even want to deal with the key that was pressed.
+            console.log(keyCode);
             if ((keyCode >= 65) && (keyCode <= 90)) { // letter
                 if (isShifted === true) { 
                     chr = String.fromCharCode(keyCode); // Uppercase A-Z
@@ -80,8 +81,75 @@ module TSOS {
                 } 
             } else if((keyCode == 32) || (keyCode == 13)) {//space || enter
                 chr = String.fromCharCode(keyCode);
+                                                                   //next up:  -  =  [   ]   ;  '  ,  .  / \
+            } else if(keyCode == 173){ // - _                       //Shifts:  _  +  {   }   :  "  <  >  ? |
+                if (isShifted){                               //ascii normal: 45 61 91  93  59 39 44 46 47 92
+                    chr = String.fromCharCode(95);             //ascii shift: 95 43 123 125 58 34 60 62 63 124
+                } else{
+                    chr = String.fromCharCode(45);
+                }                                             
+                                                               
+                
+            } else if(keyCode == 61){ // = +
+                if (isShifted){
+                    chr = String.fromCharCode(43);
+                } else{
+                    chr = String.fromCharCode(keyCode);
+                }
+
+            } else if(keyCode == 219){ // [ {
+                if (isShifted){
+                    chr = String.fromCharCode(123);
+                } else{
+                    chr = String.fromCharCode(91);
+                }
+            } else if(keyCode == 221){ // ] }
+                if (isShifted){
+                    chr = String.fromCharCode(125);
+                } else{
+                    chr = String.fromCharCode(93);
+                }
+            } else if(keyCode == 59){ // ; :
+                if (isShifted){
+                    chr = String.fromCharCode(58);
+                } else{
+                    chr = String.fromCharCode(keyCode);
+                }
+            } else if(keyCode == 222){ // ' "
+                if (isShifted){
+                    chr = String.fromCharCode(34);
+                } else{
+                    chr = String.fromCharCode(39);
+                }
+            } else if(keyCode == 188){ // , <
+                if (isShifted){
+                    chr = String.fromCharCode(60);
+                } else{
+                    chr = String.fromCharCode(44);
+                }
+            } else if(keyCode == 190){ // . >
+                if (isShifted){
+                    chr = String.fromCharCode(62);
+                } else{
+                    chr = String.fromCharCode(46);
+                }
+            } else if(keyCode == 191){ // / ?
+                if (isShifted){
+                    chr = String.fromCharCode(63);
+                } else{
+                    chr = String.fromCharCode(47);
+                }
+            } else if(keyCode == 220){ // \ |
+                if (isShifted){
+                    chr = String.fromCharCode(124);
+                } else{
+                    chr = String.fromCharCode(92);
+                }
             }
-            _KernelInputQueue.enqueue(chr);
+                                                  
+                                                                           
+                                                                      
+            _KernelInputQueue.enqueue(chr);                                 
         }
     }
 }
