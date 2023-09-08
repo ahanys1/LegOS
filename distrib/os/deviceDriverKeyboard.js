@@ -77,7 +77,7 @@ var TSOS;
                     chr = String.fromCharCode(keyCode);
                 }
             }
-            else if ((keyCode == 32) || (keyCode == 13) || (keyCode == 8) || (keyCode == 38) || (keyCode == 40)) { //space || enter || backspace || up || down
+            else if ((keyCode == 32) || (keyCode == 13) || (keyCode == 8) || (keyCode == 38) || (keyCode == 40) || (keyCode == 9)) { //space || enter || backspace || up || down || tab
                 chr = String.fromCharCode(keyCode);
                 //next up:  -  =  [   ]   ;  '  ,  .  / \
             }

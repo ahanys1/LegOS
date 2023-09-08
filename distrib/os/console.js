@@ -90,6 +90,22 @@ var TSOS;
                         //lastly, move the index
                     }
                 }
+                else if (chr === String.fromCharCode(9)) { //tab
+                    //Implemented something similar at USAA using filter
+                    let commands = _OsShell.commandList.map(cmd => cmd.command); //gets the commands
+                    commands = commands.filter(cmd => cmd.startsWith(this.buffer)); //filters the list down to commands that start with the buffer
+                    //now I have the valid command, but I need to find the best match. reorder array based on length, causing best match to be first
+                    commands = commands.sort((a, b) => a.length - b.length); //sorts by length, placing shortest first. Used ChatGPT to learn that you can put an argument in the sort function! did not know that lol
+                    console.log(commands);
+                    //good, now the best match is at index 0. I can overwrite the buffer and reset the screen.
+                    // same code from using the up and down arrows:
+                    let bufferWidth = _DrawingContext.measureText(this.currentFont, this.currentFontSize, this.buffer);
+                    let bufferHeight = this.currentFontSize * 1.5;
+                    _DrawingContext.clearRect(this.currentXPosition - bufferWidth - 1, this.currentYPosition - bufferHeight, bufferWidth + 1, bufferHeight + 10);
+                    this.currentXPosition -= bufferWidth;
+                    this.buffer = commands[0];
+                    this.putText(this.buffer);
+                }
                 else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
