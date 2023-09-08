@@ -41,13 +41,47 @@ module TSOS {
                     chr = String.fromCharCode(keyCode + 32); // Lowercase a-z
                 }
                 // TODO: Check for caps-lock and handle as shifted if so.
-                _KernelInputQueue.enqueue(chr);
-            } else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
-                        (keyCode == 32)                     ||   // space
-                        (keyCode == 13)) {                       // enter
+                
+            } else if ((keyCode >= 48) && (keyCode <= 57)){// digits
+                if (isShifted){
+                    //check each bc no pattern with ascii yaaay
+                    if(keyCode == 48){ //0
+                        chr = String.fromCharCode(41);
+                    }
+                    if(keyCode == 49){ //1
+                        chr = String.fromCharCode(33);
+                    }
+                    if(keyCode == 50){ //2
+                        chr = String.fromCharCode(64);
+                    }
+                    if(keyCode == 51){ //3
+                        chr = String.fromCharCode(35);
+                    }
+                    if(keyCode == 52){ //4
+                        chr = String.fromCharCode(36);
+                    }
+                    if(keyCode == 53){ //5
+                        chr = String.fromCharCode(37);
+                    }
+                    if(keyCode == 54){ //6
+                        chr = String.fromCharCode(94);
+                    }
+                    if(keyCode == 55){ //7
+                        chr = String.fromCharCode(38);
+                    }
+                    if(keyCode == 56){ //8
+                        chr = String.fromCharCode(42);
+                    }
+                    if(keyCode == 57){ //9
+                        chr = String.fromCharCode(40);
+                    }
+                } else{
+                    chr = String.fromCharCode(keyCode);
+                } 
+            } else if((keyCode == 32) || (keyCode == 13)) {//space || enter
                 chr = String.fromCharCode(keyCode);
-                _KernelInputQueue.enqueue(chr);
             }
+            _KernelInputQueue.enqueue(chr);
         }
     }
 }

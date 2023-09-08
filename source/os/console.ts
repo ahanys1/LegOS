@@ -82,15 +82,10 @@ module TSOS {
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
 
-            // TODO: Handle scrolling. (iProject 1)
+            // TODO: Handle scrolling. (iProject 1) - DONE
             if (this.currentYPosition >= _Canvas.height){
-                //ok first grab a copy of the canvas. Then Clear the canvas. Then clear and paste the old canvas on a few lines up. 
-
-                //shifts up by the amount over the canvas
-                let shiftAmount: number = this.currentYPosition - _Canvas.height;
-                //next, convert the current canvas into an image.
+                //convert the current canvas into an image.
                 let canvasData = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
-
                 this.clearScreen(); //clear canvas
                 _DrawingContext.putImageData(canvasData, 0, 0 - (_DefaultFontSize * 1.5)); //now draw the context shifted up by the font size, and an aditional half for spacing
                 this.currentYPosition = _Canvas.height - _DefaultFontSize; //put the current position at the bottom of the canvas
