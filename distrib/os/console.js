@@ -6,6 +6,8 @@
      ------------ */
 var TSOS;
 (function (TSOS) {
+    let history = [];
+    let histIndex = 0;
     class Console {
         currentFont;
         currentFontSize;
@@ -33,13 +35,14 @@ var TSOS;
             this.currentYPosition = this.currentFontSize;
         }
         handleInput() {
-            let prevChr;
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) { // the Enter key
                     // The enter key marks the end of a console command, so ...
+                    history.push(this.buffer); //push buffer to history
+                    histIndex = history.length; //set the hist index to the end of the array
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
@@ -54,6 +57,38 @@ var TSOS;
                     //next remove from buffer
                     this.buffer = this.buffer.slice(0, this.buffer.length - 1); //slices buffer to axe end
                     this.currentXPosition -= prevCharWidth; //moves cursor back
+                }
+                else if (chr === String.fromCharCode(38)) { //up arrow
+                    console.log(history);
+                    console.log(histIndex);
+                    if (history[histIndex - 1] != undefined) { //make sure the previous item exists
+                        //first, will need to clear current buffer, will do similar to backspace
+                        histIndex--;
+                        let bufferWidth = _DrawingContext.measureText(this.currentFont, this.currentFontSize, this.buffer);
+                        let bufferHeight = this.currentFontSize * 1.5;
+                        _DrawingContext.clearRect(this.currentXPosition - bufferWidth - 1, this.currentYPosition - bufferHeight, bufferWidth + 1, bufferHeight + 10);
+                        this.currentXPosition -= bufferWidth;
+                        //next, we need to set the buffer to this item
+                        this.buffer = history[histIndex];
+                        this.putText(this.buffer);
+                        //lastly, move the prev index
+                    }
+                }
+                else if (chr === String.fromCharCode(40)) { //down arrow
+                    console.log(history);
+                    console.log(histIndex);
+                    if (history[histIndex + 1] != undefined) { //make sure the next item exists
+                        //first, will need to clear current buffer, will do similar to backspace and up arrow.
+                        histIndex++;
+                        let bufferWidth = _DrawingContext.measureText(this.currentFont, this.currentFontSize, this.buffer);
+                        let bufferHeight = this.currentFontSize * 1.5;
+                        _DrawingContext.clearRect(this.currentXPosition - bufferWidth - 1, this.currentYPosition - bufferHeight, bufferWidth + 1, bufferHeight + 10);
+                        this.currentXPosition -= bufferWidth;
+                        //next, set buffer to the new item
+                        this.buffer = history[histIndex];
+                        this.putText(this.buffer);
+                        //lastly, move the index
+                    }
                 }
                 else {
                     // This is a "normal" character, so ...
