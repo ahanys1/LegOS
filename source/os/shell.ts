@@ -100,7 +100,12 @@ module TSOS {
             sc = new ShellCommand(this.shellLoad,
                 "load",
                 " - loads the program from the program input.");
-                this.commandList[this.commandList.length] = sc;    
+            this.commandList[this.commandList.length] = sc;    
+
+            sc = new ShellCommand(this.shellBSOD,
+                "bsod",
+                " - executes a Blue Screen of Death error.");
+            this.commandList[this.commandList.length] = sc; 
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -299,7 +304,9 @@ module TSOS {
                     case "load":
                         _StdOut.putText("'load' allows you to load the inputted program, and verifies that it is a valid program.");
                         break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "bsod":
+                        _StdOut.putText("'bsod' initiates the process for handling a fatal system error. Requires a full reset.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -308,9 +315,6 @@ module TSOS {
             }
         }
 
-        //
-        //My Commands are here
-        //
         public shellDate(args: string[]){
             const date = new Date();
             _StdOut.putText(date.toLocaleString());
@@ -355,7 +359,6 @@ module TSOS {
                 _StdOut.putText("Program contains invalid symbols.");
             }
         }
-        //end my commands
 
         public shellTrace(args: string[]) {
             if (args.length > 0) {
@@ -396,6 +399,11 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
+        }
+
+        public shellBSOD(args: string[]){
+            _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
+            console.log("got to shell");
         }
 
     }

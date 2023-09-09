@@ -59,6 +59,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellLoad, "load", " - loads the program from the program input.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - executes a Blue Screen of Death error.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -243,7 +245,9 @@ var TSOS;
                     case "load":
                         _StdOut.putText("'load' allows you to load the inputted program, and verifies that it is a valid program.");
                         break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "bsod":
+                        _StdOut.putText("'bsod' initiates the process for handling a fatal system error. Requires a full reset.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -252,9 +256,6 @@ var TSOS;
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
             }
         }
-        //
-        //My Commands are here
-        //
         shellDate(args) {
             const date = new Date();
             _StdOut.putText(date.toLocaleString());
@@ -296,7 +297,6 @@ var TSOS;
                 _StdOut.putText("Program contains invalid symbols.");
             }
         }
-        //end my commands
         shellTrace(args) {
             if (args.length > 0) {
                 var setting = args[0];
@@ -338,6 +338,10 @@ var TSOS;
             else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
+        }
+        shellBSOD(args) {
+            _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
+            console.log("got to shell");
         }
     }
     TSOS.Shell = Shell;

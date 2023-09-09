@@ -34,6 +34,12 @@ h3 {
   background-color:#DFDBC3;
   border: 2px solid red;
   cursor: default;
+  position: absolute;
+  top: 38px;
+  left: 12px;
+  width: 800px;
+  height: 500px;
+  z-index: 0;
 }
 
 .normal_button {
@@ -54,4 +60,15 @@ h3 {
   font-size: 30pt;
   margin-top: 10px;
   padding-top: 15px;
+}
+
+.bsod{
+  position: absolute;
+  top: 38px;
+  left: 12px;
+  width: 800px;
+  height: 500px;
+  z-index: 1;
+  background-image: url(distrib/images/bluescreen.jpg);
+  visibility: hidden;
 }
