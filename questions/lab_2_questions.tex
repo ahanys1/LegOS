@@ -1,0 +1,27 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Lab 2 Questions}
+\author{Alexander Hanys}
+
+\begin{document}
+\maketitle
+
+
+\section{How is your console like the ancient TTY subsystem in Unix as described in
+\href{https://www.linusakesson.net/programming/tty/}{https://www.linusakesson.net/programming/tty/}?}
+
+LegOS and TTY similarly use ASCII numbers to identify what keys on the keyboard are pressed in order to interpret them. Additionally, Both LegOS and TTY natively support the ability to backspace. Both systems also implement an input buffer to ensure that all inputs are received and executed correctly.
+\end{document}
