@@ -277,7 +277,7 @@ var TSOS;
             _StdOut.putText("  [=|=]");
         }
         shellStatus(args) {
-            document.getElementById("status").innerHTML = "status | " + args;
+            document.getElementById("status").innerHTML = "status | " + args.join(" ");
         }
         shellLoad(args) {
             let inputBox = document.getElementById("taProgramInput");
@@ -341,7 +341,7 @@ var TSOS;
         }
         shellBSOD(args) {
             _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
-            console.log("got to shell");
+            console.log("got to here");
         }
     }
     TSOS.Shell = Shell;

@@ -339,7 +339,7 @@ module TSOS {
         }
 
         public shellStatus(args:string[]){
-            document.getElementById("status").innerHTML = "status | " + args;
+            document.getElementById("status").innerHTML = "status | " + args.join(" ");
         }
 
         public shellLoad(args:string[]){
@@ -403,7 +403,7 @@ module TSOS {
 
         public shellBSOD(args: string[]){
             _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
-            console.log("got to shell");
+            console.log("got to here");
         }
 
     }
