@@ -294,7 +294,7 @@ var TSOS;
                 _StdOut.putText("Program is Valid.");
             }
             else {
-                _StdOut.putText("Program contains invalid symbols.");
+                _StdOut.putText("ERR: Program contains invalid symbols.");
             }
         }
         shellTrace(args) {

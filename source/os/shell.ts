@@ -343,8 +343,8 @@ module TSOS {
         }
 
         public shellLoad(args:string[]){
-            let inputBox = document.getElementById("taProgramInput");
-            let program: string = inputBox.value; //I couldn't tell ya why ts says this is wrong but it works when it compiles to javascript so you know what, sure
+            let inputBox = document.getElementById("taProgramInput") as HTMLTextAreaElement;//thanks Austin
+            let program: string = inputBox.value; 
             const validSymbols: string = "1234567890ABCDEFabcdef ";
             let isValid: boolean = true;
             //loop through to confirm values are good
@@ -356,7 +356,7 @@ module TSOS {
             if(isValid){
                 _StdOut.putText("Program is Valid.");
             }else{
-                _StdOut.putText("Program contains invalid symbols.");
+                _StdOut.putText("ERR: Program contains invalid symbols.");
             }
         }
 
