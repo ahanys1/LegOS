@@ -149,7 +149,10 @@ var TSOS;
         }
         krnTrapError(msg) {
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
+            console.log("got to kernel");
             // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
+            let bsod = document.getElementById("bsod");
+            bsod.style.visibility = "visible";
             this.krnShutdown();
         }
     }

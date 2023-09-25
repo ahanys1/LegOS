@@ -15,6 +15,8 @@
    <script type="text/javascript" src="distrib/host/control.js"></script>
    <script type="text/javascript" src="distrib/host/devices.js"></script>
    <script type="text/javascript" src="distrib/host/cpu.js"></script>
+   <script type="text/javascript" src="distrib/host/Memory.js"></script>
+   <script type="text/javascript" src="distrib/host/MMU.js"></script>
 
    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
@@ -67,16 +69,19 @@
              onclick="TSOS.Control.hostBtnReset_click(this);">
    </div>
 
-   <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
+   <div id="divConsole" style="margin:4px; width:800px; height:500px; float:left;">
       <canvas id="display"
-              width="500px"
+              width="800px"
               height="500px"
               tabindex="3">
       </canvas>
    </div>
 
-   <div id="divLog" style="margin-left:520px;">
-      <label>
+   <div id="bsod" class="bsod"></div>
+   
+
+   <div id="divLog" style="margin-left:820px;">
+      <label style="background-color: yellowgreen;">
          Host Log
          <br>
          <textarea name="taHostLog"
@@ -87,8 +92,8 @@
       </label>
    </div>
 
-   <div id="divUserProgramInput" style="margin-left:520px;">
-      <label>
+   <div id="divUserProgramInput" style="margin-left:820px;">
+      <label style="background-color: yellowgreen;">
          User Program Input
          <br>
          <textarea name="taProgramInput"
@@ -98,6 +103,11 @@
          ></textarea>
       </label>
    </div>
+</div>
+
+<div class="taskBar">
+   <label id="date-time" style="margin-right: 383px;"></label>
+   <label id="status">status | Welcome to LegoLand</label>
 </div>
 
 <p class="footerText" style="clear:both;">
@@ -110,3 +120,12 @@
 
 </body>
 </html>
+
+<script>
+   function getDateTime(){
+      const date = new Date;
+      const formattedString = date.toLocaleString();
+      document.getElementById("date-time").innerHTML = formattedString;
+   }
+   setInterval(getDateTime, 1000);
+</script>

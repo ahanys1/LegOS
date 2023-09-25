@@ -12,7 +12,7 @@
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
 //
 const APP_NAME: string    = "LegOS";   // 'cause Bob and I were at a loss for a better name.
-const APP_VERSION: string = "0.4.4";   // What did you expect?
+const APP_VERSION: string = "0.4.8";   // What did you expect?
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
@@ -26,6 +26,8 @@ const KEYBOARD_IRQ: number = 1;
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
+var _Memory: TSOS.Memory;
+var _MMU: TSOS.MMU;
 
 var _OSclock: number = 0;  // Page 23.
 

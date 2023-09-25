@@ -1,0 +1,31 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Lab 1 Questions}
+\author{Alexander Hanys}
+
+\begin{document}
+\maketitle
+
+
+\section{What are the advantages and disadvantages of using the same system call interface for manipulating both files and devices?}
+
+By using the same system call interface, there is more opportunity for code re-usability between different processes. This allows the same program to access data on both devices, and within files, instead of having to split the program into multiple programs.
+
+\section{Would it be possible for the user to develop a new command interpreter using the system call interface provide by the operating system? How?}
+
+yes, it could be possible to develop a new command interpreter. In order to do this, the interpreter must register functions that implement the I/O operations of the device or driver, ensuring compatability. 
+
+\end{document}

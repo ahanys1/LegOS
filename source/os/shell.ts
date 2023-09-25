@@ -12,7 +12,7 @@
 module TSOS {
     export class Shell {
         // Properties
-        public promptStr = ">";
+        public promptStr = "=C ";
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]";
@@ -34,7 +34,7 @@ module TSOS {
             // help
             sc = new ShellCommand(this.shellHelp,
                                   "help",
-                                  "- This is the help command. Seek help.");
+                                  "- This is the help command. Seek help if you don't know how you just used this.");
             this.commandList[this.commandList.length] = sc;
 
             // shutdown
@@ -72,6 +72,40 @@ module TSOS {
                                   "prompt",
                                   "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
+
+            // date
+            sc = new ShellCommand(this.shellDate,
+                                    "date",
+                                    " - Displays current Date and Time.");
+            this.commandList[this.commandList.length] = sc;
+
+            // whereami
+            sc = new ShellCommand(this.shellWhereAmI,
+                "whereami",
+                " - Displays current location.");
+            this.commandList[this.commandList.length] = sc;
+
+            //legohey
+            sc = new ShellCommand(this.shellLegoHey,
+                "legohey",
+                " - There's a fire in Lego City!");
+            this.commandList[this.commandList.length] = sc;
+
+            //status <string>
+            sc = new ShellCommand(this.shellStatus,
+                "status",
+                "<string> - sets the system status message.")
+            this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellLoad,
+                "load",
+                " - loads the program from the program input.");
+            this.commandList[this.commandList.length] = sc;    
+
+            sc = new ShellCommand(this.shellBSOD,
+                "bsod",
+                " - executes a Blue Screen of Death error.");
+            this.commandList[this.commandList.length] = sc; 
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -231,15 +265,98 @@ module TSOS {
             if (args.length > 0) {
                 var topic = args[0];
                 switch (topic) {
-                    case "help":
-                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
+                    case "ver":
+                        _StdOut.putText("'ver' displays the current running version.");
                         break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "help":
+                        _StdOut.putText("'Help' displays a list of (hopefully) valid commands.");
+                        break;
+                    case "shutdown":
+                        _StdOut.putText("'shutdown' turns off the operating system, however it leaves the hardware running.");
+                        break;
+                    case "cls":
+                        _StdOut.putText("'cls' clears the terminal, and resets the cursor position to the top of the display.");
+                        break;
+                    case "man":
+                        _StdOut.putText("'man' does this.");
+                        break;
+                    case "trace": 
+                        _StdOut.putText("'trace' allows for toggling of the system trace, AKA the host log. input 'on' or 'off' to toggle.");
+                        break;
+                    case "rot13":
+                        _StdOut.putText("'rot13' shifts the input string by 13 characters.");
+                        break;
+                    case "prompt":
+                        _StdOut.putText("'prompt' changes the prompt symbol. By default, this is set to '=C' (a Lego hand).");
+                        break;
+                    case "date":
+                        _StdOut.putText("'date' displays the current date and time in your local time zone.");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("'whereami' displays the VM's current location.");
+                        break;
+                    case "legohey":
+                        _StdOut.putText("'legohey' displays a little easter egg!");
+                        break;
+                    case "status":
+                        _StdOut.putText("'status' allows you to alter the host system's status.");
+                        break;
+                    case "load":
+                        _StdOut.putText("'load' allows you to load the inputted program, and verifies that it is a valid program.");
+                        break;
+                    case "bsod":
+                        _StdOut.putText("'bsod' initiates the process for handling a fatal system error. Requires a full reset.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
             } else {
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
+            }
+        }
+
+        public shellDate(args: string[]){
+            const date = new Date();
+            _StdOut.putText(date.toLocaleString());
+        }
+
+        public shellWhereAmI(args: string[]){
+            _StdOut.putText("Lego City, Denmark");
+        }
+
+        public shellLegoHey(args:string[]){
+            _StdOut.putText("    _ ");
+            _StdOut.advanceLine();
+            _StdOut.putText("   [_] ");
+            _StdOut.advanceLine();
+            _StdOut.putText(" /;   :\\");
+            _StdOut.advanceLine();
+            _StdOut.putText("() '___'()");
+            _StdOut.advanceLine();
+            _StdOut.putText("   | | |");
+            _StdOut.advanceLine();
+            _StdOut.putText("  [=|=]");
+        }
+
+        public shellStatus(args:string[]){
+            document.getElementById("status").innerHTML = "status | " + args.join(" ");
+        }
+
+        public shellLoad(args:string[]){
+            let inputBox = document.getElementById("taProgramInput") as HTMLTextAreaElement;//thanks Austin
+            let program: string = inputBox.value; 
+            const validSymbols: string = "1234567890ABCDEFabcdef ";
+            let isValid: boolean = true;
+            //loop through to confirm values are good
+            for (const char of program){
+                if (!validSymbols.includes(char)){
+                    isValid=false;
+                }
+            }
+            if(isValid){
+                _StdOut.putText("Program is Valid.");
+            }else{
+                _StdOut.putText("ERR: Program contains invalid symbols.");
             }
         }
 
@@ -282,6 +399,11 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
+        }
+
+        public shellBSOD(args: string[]){
+            _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
+            console.log("got to here");
         }
 
     }
