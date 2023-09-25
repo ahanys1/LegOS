@@ -348,6 +348,10 @@ module TSOS {
             const validSymbols: string = "1234567890ABCDEFabcdef ";
             let isValid: boolean = true;
             let invalidChars:string[] = [];
+            //make sure program is not empty
+            if (program == ""){
+                isValid = false;
+            }
             //loop through to confirm values are good
             for (const char of program){
                 if (!validSymbols.includes(char)){
@@ -365,7 +369,7 @@ module TSOS {
                 });
                 _StdOut.putText(" Program Loaded.");
             }else{
-                _StdOut.putText("ERR: Program contains invalid symbols.");
+                _StdOut.putText("ERR: Program could not be loaded.");
                 console.log(invalidChars);
             }
         }

@@ -285,6 +285,10 @@ var TSOS;
             const validSymbols = "1234567890ABCDEFabcdef ";
             let isValid = true;
             let invalidChars = [];
+            //make sure program is not empty
+            if (program == "") {
+                isValid = false;
+            }
             //loop through to confirm values are good
             for (const char of program) {
                 if (!validSymbols.includes(char)) {
@@ -302,7 +306,7 @@ var TSOS;
                 _StdOut.putText(" Program Loaded.");
             }
             else {
-                _StdOut.putText("ERR: Program contains invalid symbols.");
+                _StdOut.putText("ERR: Program could not be loaded.");
                 console.log(invalidChars);
             }
         }
