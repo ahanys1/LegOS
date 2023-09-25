@@ -347,16 +347,26 @@ module TSOS {
             let program: string = inputBox.value; 
             const validSymbols: string = "1234567890ABCDEFabcdef ";
             let isValid: boolean = true;
+            let invalidChars:string[] = [];
             //loop through to confirm values are good
             for (const char of program){
                 if (!validSymbols.includes(char)){
                     isValid=false;
+                    invalidChars.push(char);
+
                 }
             }
             if(isValid){
-                _StdOut.putText("Program is Valid.");
+                _StdOut.putText("Program is Valid. Loading into Memory...");
+                let programArray = program.split(" ");
+                programArray.forEach((code,index) => {
+                    _MMU.writeImm(index, parseInt(code,16));
+                    index++;
+                });
+                _StdOut.putText(" Program Loaded.");
             }else{
                 _StdOut.putText("ERR: Program contains invalid symbols.");
+                console.log(invalidChars);
             }
         }
 
