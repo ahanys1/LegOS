@@ -58,7 +58,7 @@ module TSOS {
                     this.buffer = this.buffer.slice(0,this.buffer.length -1); //slices buffer to axe end
                     this.currentXPosition -= prevCharWidth; //moves cursor back
 
-                } else if(chr === String.fromCharCode(38)){ //up arrow
+                } else if(chr === "UP"){ //up arrow
                     console.log(history);
                     console.log(histIndex);
                     if(history[histIndex -1] != undefined){ //make sure the previous item exists
@@ -73,7 +73,7 @@ module TSOS {
                         this.putText(this.buffer);
                         //lastly, move the prev index
                     }    
-                } else if(chr === String.fromCharCode(40)){ //down arrow
+                } else if(chr === "DOWN"){ //down arrow
                     console.log(history);
                     console.log(histIndex);
                     if(history[histIndex + 1] != undefined){//make sure the next item exists

@@ -77,7 +77,7 @@ var TSOS;
                     chr = String.fromCharCode(keyCode);
                 }
             }
-            else if ((keyCode == 32) || (keyCode == 13) || (keyCode == 8) || (keyCode == 38) || (keyCode == 40) || (keyCode == 9)) { //space || enter || backspace || up || down || tab
+            else if ((keyCode == 32) || (keyCode == 13) || (keyCode == 8) || (keyCode == 9)) { //space || enter || backspace || up || down || tab
                 chr = String.fromCharCode(keyCode);
                 //next up:  -  =  [   ]   ;  '  ,  .  / \
             }
@@ -160,6 +160,12 @@ var TSOS;
                 else {
                     chr = String.fromCharCode(92);
                 }
+            }
+            else if (keyCode == 38) { //up and down arrow bug fix
+                chr = "UP";
+            }
+            else if (keyCode == 40) {
+                chr = "DOWN";
             }
             _KernelInputQueue.enqueue(chr);
         }

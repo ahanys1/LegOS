@@ -280,8 +280,8 @@ var TSOS;
             document.getElementById("status").innerHTML = "status | " + args.join(" ");
         }
         shellLoad(args) {
-            let inputBox = document.getElementById("taProgramInput");
-            let program = inputBox.value; //I couldn't tell ya why ts says this is wrong but it works when it compiles to javascript so you know what, sure
+            let inputBox = document.getElementById("taProgramInput"); //thanks Austin
+            let program = inputBox.value;
             const validSymbols = "1234567890ABCDEFabcdef ";
             let isValid = true;
             //loop through to confirm values are good
