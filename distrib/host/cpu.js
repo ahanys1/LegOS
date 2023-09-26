@@ -58,6 +58,7 @@ var TSOS;
                     _MMU.writeImm(_MMU.littleEndianAddress, this.Acc); //writes to the address the contents in the Acc
             }
             this.PC++; //increment to the next opcode
+            console.log(this.Acc);
         }
     }
     TSOS.Cpu = Cpu;

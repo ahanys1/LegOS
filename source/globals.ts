@@ -20,7 +20,11 @@ const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (inte
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
 
-
+enum partition { //these are to be used in tandem with the pid to determine what instructions to run
+   zero = 0,
+   one = 256,
+   two = 512
+}
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.

@@ -5,12 +5,14 @@ module TSOS {
         constructor(
             public lob: number = 0x00,
             public hob: number = 0x0000,
-            public littleEndianAddress: number = 0x0000
+            public littleEndianAddress: number = 0x0000,
+            public PIDs: number[] = [42069] //bandaid fix
         ){ }
         public init(): void{
             this.lob = 0x00;
             this.hob = 0x0000;
             this.littleEndianAddress = 0x0000;
+            this.PIDs = [42069];
         }
         writeMem(){
             //to be honest, might not even need this

@@ -5,15 +5,19 @@ var TSOS;
         lob;
         hob;
         littleEndianAddress;
-        constructor(lob = 0x00, hob = 0x0000, littleEndianAddress = 0x0000) {
+        PIDs;
+        constructor(lob = 0x00, hob = 0x0000, littleEndianAddress = 0x0000, PIDs = [42069] //bandaid fix
+        ) {
             this.lob = lob;
             this.hob = hob;
             this.littleEndianAddress = littleEndianAddress;
+            this.PIDs = PIDs;
         }
         init() {
             this.lob = 0x00;
             this.hob = 0x0000;
             this.littleEndianAddress = 0x0000;
+            this.PIDs = [42069];
         }
         writeMem() {
             //to be honest, might not even need this

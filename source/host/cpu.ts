@@ -60,6 +60,7 @@ module TSOS {
 
 
             this.PC++; //increment to the next opcode
+            console.log(this.Acc);
         }
     }
 }
