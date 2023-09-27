@@ -10,7 +10,7 @@ module TSOS {
         }
         public init(): void{
             this.size = 0xFFFF;
-            this.initializeMemory();
+            this.reset();
         }
 
 
