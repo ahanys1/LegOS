@@ -18,6 +18,7 @@
    <script type="text/javascript" src="distrib/host/Memory.js"></script>
    <script type="text/javascript" src="distrib/host/MMU.js"></script>
    <script type="text/javascript" src="distrib/host/MA.js"></script>
+   
 
    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
@@ -30,11 +31,12 @@
    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
    <script type="text/javascript" src="distrib/os/userCommand.js"></script>
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
+   <script type="text/javascript" src="distrib/os/pcb.js"></script>
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <!--<script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip1.js"></script>-->
+   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip2.js"></script>
    
 </head>
 
@@ -103,6 +105,28 @@
                    cols="48"
          ></textarea>
       </label>
+   </div>
+
+   <div id = "PCBContaioner">
+      <table id = "PCB" border="4">
+         <tr>
+            <th>PC</th>
+            <th>Acc</th>
+            <th>IR</th>
+            <th>Xreg</th>
+            <th>Yreg</th>
+            <th>Zflag</th>
+         </tr>
+            <td id="PC">0</td>
+            <td id="Acc">0x00</td>
+            <td id="IR">0x00</td>
+            <td id="Xreg">0x00</td>
+            <td id="Yreg">0x00</td>
+            <td id="Zflag">0x00</td>
+         <tr>
+
+         </tr>
+      </table>
    </div>
 </div>
 

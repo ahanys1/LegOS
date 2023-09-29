@@ -12,7 +12,7 @@
 //
 const APP_NAME = "LegOS"; // 'cause Bob and I were at a loss for a better name.
 const APP_VERSION = "0.4.8"; // What did you expect?
-const CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 second.
+const CPU_CLOCK_INTERVAL = 500; // This is in ms (milliseconds) so 1000 = 1 second.
 const TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ = 1;
@@ -49,6 +49,7 @@ var _StdOut = null;
 // UI
 var _Console;
 var _OsShell;
+var _PCB;
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode = false;
 // Global Device Driver Objects - page 12

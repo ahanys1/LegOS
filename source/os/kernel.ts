@@ -48,6 +48,10 @@ module TSOS {
             _OsShell = new Shell();
             _OsShell.init();
 
+            //Start PCB
+            _PCB = new pcb();
+            _PCB.init();
+
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();

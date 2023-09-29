@@ -10,8 +10,8 @@ var TSOS;
             this.initializeMemory();
         }
         init() {
-            this.size = 0xFFFF;
-            this.initializeMemory();
+            this.size = 768;
+            this.reset();
         }
         initializeMemory() {
             for (let i = 0x00; i <= this.size; i++) {

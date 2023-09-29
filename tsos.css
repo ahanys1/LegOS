@@ -72,3 +72,9 @@ h3 {
   background-image: url(distrib/images/bluescreen.jpg);
   visibility: hidden;
 }
+
+table{
+  background-color: white;
+  padding: 4px;
+  
+}

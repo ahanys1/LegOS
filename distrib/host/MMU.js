@@ -4,22 +4,22 @@ var TSOS;
     class MMU {
         lob;
         hob;
-        littleEndianAddress;
         PIDs;
-        constructor(lob = 0x00, hob = 0x0000, littleEndianAddress = 0x0000, PIDs = [42069] //bandaid fix
-        ) {
+        hot;
+        constructor(lob = 0x00, hob = 0x0000, PIDs = [42069], //bandaid fix
+        hot = 0x0000) {
             this.lob = lob;
             this.hob = hob;
-            this.littleEndianAddress = littleEndianAddress;
             this.PIDs = PIDs;
+            this.hot = hot;
         }
         init() {
             this.lob = 0x00;
             this.hob = 0x0000;
-            this.littleEndianAddress = 0x0000;
             this.PIDs = [42069];
+            this.hot = 0x0000;
         }
-        writeMem() {
+        write() {
             //to be honest, might not even need this
             _MA.write();
         }
@@ -28,18 +28,32 @@ var TSOS;
             _MA.setMDR(value);
             _MA.write();
         }
-        readMem() {
-            _MA.setMAR(this.littleEndianAddress);
+        setLowOrder(LOB) {
+            this.lob = LOB;
+        }
+        setHighOrder(HOB) {
+            this.hob = HOB;
+            this.hot = this.hob * 256; //this bitshifts so they can be added together
+        }
+        read() {
+            _MA.setMAR(this.hot + this.lob);
             return _MA.read();
         }
         readImm(address) {
             _MA.setMAR(address);
             return _MA.read();
         }
-        littleEndian(LOB, HOB) {
-            this.lob = LOB;
-            this.hob = HOB;
-            this.littleEndianAddress = (this.hob * 256) + this.lob; //the * 256 bitshifts the memory address, putting it in the correct order
+        setMDR(num) {
+            _MA.setMDR(num);
+        }
+        setMAR(num) {
+            _MA.setMAR(num);
+        }
+        getMDR() {
+            return _MA.getMDR();
+        }
+        getMAR() {
+            return _MA.getMAR();
         }
     }
     TSOS.MMU = MMU;

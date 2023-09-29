@@ -324,6 +324,7 @@ var TSOS;
         shellRun(args) {
             if (_MMU.PIDs.includes(parseInt(args[0]))) { //make sure it's a valid op code
                 if (args[0] == "0") {
+                    _CPU.init();
                     _CPU.PC = partition.zero;
                 } //TODO: allow for multiple programs. for now, just do 1.
                 _CPU.isExecuting = true;

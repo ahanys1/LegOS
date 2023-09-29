@@ -50,7 +50,10 @@ module TSOS {
             //make sure that every cycle a command executes, rather than 1 step of the pipeline per cycle.
             
             //well, only way to start executing is to start executing. lets gooooooo
-            this.fetch();
+            if(this.isExecuting){
+                this.fetch();
+            }
+            
 
         }
 
@@ -61,6 +64,7 @@ module TSOS {
         fetch(){
             this.IR = _MMU.readImm(this.PC);
             this.PC++;
+            _PCB.updateTable();
             this.decode1();
         }
 
@@ -72,6 +76,7 @@ module TSOS {
                 case 0xD0: //Branch n bytes if Z flag = 0
                     this.tempA = _MMU.readImm(this.PC);
                     this.PC++;
+                    _PCB.updateTable();
                     this.execute1();
                     break;
 
@@ -81,8 +86,10 @@ module TSOS {
                 case 0xAE: //Load the X register from memory
                 case 0xAC: //Load the Y register from memory
                 case 0xEC: //Compare a byte in memory to the X reg
+                case 0xEE: //Increment the value of a byte
                     _MMU.setLowOrder(_MMU.readImm(this.PC));
                     this.PC++;
+                    _PCB.updateTable();
                     this.decode2();
                     break;
                 
@@ -94,13 +101,11 @@ module TSOS {
                     this.isExecuting = false;
                     break;
                 
-                case 0xEE: //Increment the value of a byte
-                    this.Acc = _MMU.read();
-                    this.decode2();
-                    break;
+
                 case 0xFF: //System Call
                     if((this.Xreg == 0x01) || (this.Xreg == 0x02)){
                         this.tempA = this.Yreg;
+                        _PCB.updateTable();
                         this.execute1();
                     }
                     break;
@@ -119,6 +124,7 @@ module TSOS {
                 case 0xEE:
                     _MMU.setHighOrder(_MMU.readImm(this.PC));
                     this.PC++;
+                    _PCB.updateTable();
                     this.execute1();
                     break;
             }
@@ -128,16 +134,19 @@ module TSOS {
             switch(this.IR){
                 case 0xA9:
                     this.Acc = this.tempA;
+                    _PCB.updateTable();
                     break;
 
                 case 0xAD:
                     this.Acc = _MMU.read();
+                    _PCB.updateTable();
                     break;
 
                 case 0x8D:
                     _MMU.read();
                     this.tempMAR = _MMU.getMAR();
                     this.tempMDR = this.Acc;
+                    _PCB.updateTable();
                     this.writeBack(this.tempMAR, this.tempMDR);
                     break;
 
@@ -149,48 +158,57 @@ module TSOS {
                         a = a.slice(1, a.length);
                         this.Acc = parseInt(a, 16);
                     }
+                    _PCB.updateTable();
                     break;
 
                 case 0xA2:
                     this.Xreg = this.tempA;
+                    _PCB.updateTable();
                     break;
 
                 case 0xAE:
                     this.Xreg = _MMU.read();
+                    _PCB.updateTable();
                     break;
 
                 case 0xA0:
                     this.Yreg = this.tempA;
+                    _PCB.updateTable();
                     break;
 
                 case 0xAC:
                     this.Yreg = _MMU.read();
+                    _PCB.updateTable();
                     break;
 
                 case 0xEC:
                     this.tempA = _MMU.read();
+                    _PCB.updateTable();
                     this.execute2();
                     break;
                 
                 case 0xD0:
                     let loc: string = (this.PC.toString(16));
                     if(this.Zflag == 0x00){
-                        this.PC += (this.tempA + 0xFF00);
-                        loc = this.PC.toString(16);
-                        if(loc.length == 0x05){
-                            loc = loc.slice(1,loc.length);
+                        this.PC += (this.tempA);
+                        //loc = this.PC.toString(16); 
+                        if(this.PC > 0xFF){ //Borrowed this from KeedOS. I had a similar implementation utilizing strings, but for some reason that broke between Org and Arch and here.
+                            this.PC -= 0x100;
                         }
                         this.PC = parseInt(loc,16);
                     }
+                    _PCB.updateTable();
                     break;
                 
                 case 0xEE: //Increment
                     this.inc = _MMU.read();
                     this.execute2();
+                    _PCB.updateTable();
                     break;
 
                 case 0xFF:
                     if (this.Xreg == 0x01){ //#$01 in X reg = print the integer stored in the Y register.
+                        console.log(this.tempA);
                         _StdOut.putText(this.tempA);
                     } else if (this.Xreg == 0x02){ //#$02 in X reg = print the 00-terminated string stored at the address in the Y register.
                         let temp: string = "";
@@ -198,7 +216,9 @@ module TSOS {
                             temp += String.fromCharCode(_MMU.readImm(this.tempA));
                             this.tempA++;
                         }
+                        console.log(temp);
                         _StdOut.putText(temp);
+                        _PCB.updateTable();
                     }
                     break;
 
@@ -212,13 +232,16 @@ module TSOS {
                     if(this.Xreg == this.tempA){ //Sets the Z (zero) flag if equal
                         this.Zflag = 0x00;
                     }
+                    _PCB.updateTable();
                     break;
 
                 case 0xEE:
                     this.inc++;
                     this.tempMAR = _MMU.getMAR();
                     this.tempMDR = this.inc;
+                    _PCB.updateTable();
                     this.writeBack(this.tempMAR,this.tempMDR);
+                    break;
             }
         }
 
