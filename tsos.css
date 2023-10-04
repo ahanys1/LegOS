@@ -78,3 +78,7 @@ table{
   padding: 4px;
   
 }
+
+#btnStepToggle{
+  color: red;
+}

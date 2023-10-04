@@ -25,6 +25,8 @@ enum partition { //these are to be used in tandem with the pid to determine what
    one = 256,
    two = 512
 }
+var _stepModeEnabled = false; //step mode
+
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.

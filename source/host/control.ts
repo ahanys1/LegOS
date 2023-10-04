@@ -118,5 +118,21 @@ module TSOS {
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
+
+        public static hostBtnToggleStep_click(btn: HTMLButtonElement): void {
+            const stepButton: HTMLButtonElement = document.getElementById("btnStep") as HTMLButtonElement;
+            _stepModeEnabled = !_stepModeEnabled;
+            if(_stepModeEnabled){
+                btn.style.color = "green";
+                stepButton.disabled = false;
+            } else{
+                btn.style.color = "red";
+                stepButton.disabled = true;
+            }
+        }
+
+        public static hostBtnStep_click(btn: HTMLButtonElement): void {
+            _CPU.cycle();
+        }
     }
 }

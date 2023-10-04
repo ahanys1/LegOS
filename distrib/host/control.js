@@ -97,6 +97,21 @@ var TSOS;
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
+        static hostBtnToggleStep_click(btn) {
+            const stepButton = document.getElementById("btnStep");
+            _stepModeEnabled = !_stepModeEnabled;
+            if (_stepModeEnabled) {
+                btn.style.color = "green";
+                stepButton.disabled = false;
+            }
+            else {
+                btn.style.color = "red";
+                stepButton.disabled = true;
+            }
+        }
+        static hostBtnStep_click(btn) {
+            _CPU.cycle();
+        }
     }
     TSOS.Control = Control;
 })(TSOS || (TSOS = {}));
