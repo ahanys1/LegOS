@@ -39,9 +39,9 @@ var TSOS;
             this.krnTrace("Creating and Launching the shell.");
             _OsShell = new TSOS.Shell();
             _OsShell.init();
-            //Start PCB
-            _PCB = new TSOS.pcb();
-            _PCB.init();
+            //Start CPU Display
+            _CPUdisplay = new TSOS.CPUdisplay();
+            _CPUdisplay.init();
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();

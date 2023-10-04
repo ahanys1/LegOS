@@ -63,8 +63,9 @@ module TSOS {
 
         fetch(){
             this.IR = _MMU.readImm(this.PC);
+            _CPUdisplay.updateIR();
             this.PC++;
-            _PCB.updateTable();
+            _CPUdisplay.updatePC();
             this.decode1();
         }
 
@@ -76,7 +77,7 @@ module TSOS {
                 case 0xD0: //Branch n bytes if Z flag = 0
                     this.tempA = _MMU.readImm(this.PC);
                     this.PC++;
-                    _PCB.updateTable();
+                    _CPUdisplay.updatePC();
                     this.execute1();
                     break;
 
@@ -89,7 +90,7 @@ module TSOS {
                 case 0xEE: //Increment the value of a byte
                     _MMU.setLowOrder(_MMU.readImm(this.PC));
                     this.PC++;
-                    _PCB.updateTable();
+                    _CPUdisplay.updatePC();
                     this.decode2();
                     break;
                 
@@ -105,7 +106,6 @@ module TSOS {
                 case 0xFF: //System Call
                     if((this.Xreg == 0x01) || (this.Xreg == 0x02)){
                         this.tempA = this.Yreg;
-                        _PCB.updateTable();
                         this.execute1();
                     }
                     break;
@@ -124,7 +124,7 @@ module TSOS {
                 case 0xEE:
                     _MMU.setHighOrder(_MMU.readImm(this.PC));
                     this.PC++;
-                    _PCB.updateTable();
+                    _CPUdisplay.updatePC();
                     this.execute1();
                     break;
             }
@@ -134,19 +134,18 @@ module TSOS {
             switch(this.IR){
                 case 0xA9:
                     this.Acc = this.tempA;
-                    _PCB.updateTable();
+                    _CPUdisplay.updateAcc();
                     break;
 
                 case 0xAD:
                     this.Acc = _MMU.read();
-                    _PCB.updateTable();
+                    _CPUdisplay.updateAcc();
                     break;
 
                 case 0x8D:
                     _MMU.read();
                     this.tempMAR = _MMU.getMAR();
                     this.tempMDR = this.Acc;
-                    _PCB.updateTable();
                     this.writeBack(this.tempMAR, this.tempMDR);
                     break;
 
@@ -158,58 +157,54 @@ module TSOS {
                         a = a.slice(1, a.length);
                         this.Acc = parseInt(a, 16);
                     }
-                    _PCB.updateTable();
+                    _CPUdisplay.updateAcc();
                     break;
 
                 case 0xA2:
                     this.Xreg = this.tempA;
-                    _PCB.updateTable();
+                    _CPUdisplay.updateXreg();
                     break;
 
                 case 0xAE:
                     this.Xreg = _MMU.read();
-                    _PCB.updateTable();
+                    _CPUdisplay.updateXreg();
                     break;
 
                 case 0xA0:
                     this.Yreg = this.tempA;
-                    _PCB.updateTable();
+                    _CPUdisplay.updateYreg();
                     break;
 
                 case 0xAC:
                     this.Yreg = _MMU.read();
-                    _PCB.updateTable();
+                    _CPUdisplay.updateYreg();
                     break;
 
                 case 0xEC:
                     this.tempA = _MMU.read();
-                    _PCB.updateTable();
                     this.execute2();
                     break;
                 
                 case 0xD0:
-                    let loc: string = (this.PC.toString(16));
                     if(this.Zflag == 0x00){
                         this.PC += (this.tempA);
                         //loc = this.PC.toString(16); 
                         if(this.PC > 0xFF){ //Borrowed this from KeedOS. I had a similar implementation utilizing strings, but for some reason that broke between Org and Arch and here.
                             this.PC -= 0x100;
                         }
-                        this.PC = parseInt(loc,16);
                     }
-                    _PCB.updateTable();
+                    _CPUdisplay.updatePC();
                     break;
                 
                 case 0xEE: //Increment
                     this.inc = _MMU.read();
                     this.execute2();
-                    _PCB.updateTable();
                     break;
 
                 case 0xFF:
                     if (this.Xreg == 0x01){ //#$01 in X reg = print the integer stored in the Y register.
                         console.log(this.tempA);
-                        _StdOut.putText(this.tempA);
+                        _StdOut.putText(this.tempA.toString());
                     } else if (this.Xreg == 0x02){ //#$02 in X reg = print the 00-terminated string stored at the address in the Y register.
                         let temp: string = "";
                         while(_MMU.readImm(this.tempA) != 0x00){
@@ -218,7 +213,6 @@ module TSOS {
                         }
                         console.log(temp);
                         _StdOut.putText(temp);
-                        _PCB.updateTable();
                     }
                     break;
 
@@ -232,14 +226,13 @@ module TSOS {
                     if(this.Xreg == this.tempA){ //Sets the Z (zero) flag if equal
                         this.Zflag = 0x00;
                     }
-                    _PCB.updateTable();
+                    _CPUdisplay.updateZflag();
                     break;
 
                 case 0xEE:
                     this.inc++;
                     this.tempMAR = _MMU.getMAR();
                     this.tempMDR = this.inc;
-                    _PCB.updateTable();
                     this.writeBack(this.tempMAR,this.tempMDR);
                     break;
             }

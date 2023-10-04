@@ -31,12 +31,12 @@
    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
    <script type="text/javascript" src="distrib/os/userCommand.js"></script>
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
-   <script type="text/javascript" src="distrib/os/pcb.js"></script>
+   <script type="text/javascript" src="distrib/os/CPUdisplay.js"></script>
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip2.js"></script>
+   <!--<script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip2.js"></script>-->
    
 </head>
 
@@ -107,8 +107,8 @@
       </label>
    </div>
 
-   <div id = "PCBContaioner">
-      <table id = "PCB" border="4">
+   <div id = "DisplaysContainer">
+      <table id = "CPU" border="4">
          <tr>
             <th>PC</th>
             <th>Acc</th>
@@ -118,11 +118,11 @@
             <th>Zflag</th>
          </tr>
             <td id="PC">0</td>
-            <td id="Acc">0x00</td>
-            <td id="IR">0x00</td>
-            <td id="Xreg">0x00</td>
-            <td id="Yreg">0x00</td>
-            <td id="Zflag">0x00</td>
+            <td id="Acc">0</td>
+            <td id="IR">0</td>
+            <td id="Xreg">0</td>
+            <td id="Yreg">0</td>
+            <td id="Zflag">0</td>
          <tr>
 
          </tr>
