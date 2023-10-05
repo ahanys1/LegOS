@@ -42,6 +42,9 @@ var TSOS;
             //Start CPU Display
             _CPUdisplay = new TSOS.CPUdisplay();
             _CPUdisplay.init();
+            //start mem display
+            _RAMdisplay = new TSOS.RAMdisplay();
+            _RAMdisplay.init();
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();

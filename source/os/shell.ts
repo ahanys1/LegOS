@@ -379,6 +379,7 @@ module TSOS {
                     _MMU.PIDs.push(_MMU.PIDs[_MMU.PIDs.length - 1] + 1); //pushes next PID to array
                 }
                 _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
+                _RAMdisplay.updateDisplay();
                 console.log(_MMU.PIDs);
             }else{
                 _StdOut.putText("ERR: Program could not be loaded.");

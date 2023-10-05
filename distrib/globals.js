@@ -51,6 +51,7 @@ var _StdOut = null;
 var _Console;
 var _OsShell;
 var _CPUdisplay;
+var _RAMdisplay;
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode = false;
 // Global Device Driver Objects - page 12

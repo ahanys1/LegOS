@@ -32,6 +32,7 @@
    <script type="text/javascript" src="distrib/os/userCommand.js"></script>
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
    <script type="text/javascript" src="distrib/os/CPUdisplay.js"></script>
+   <script type="text/javascript" src="distrib/os/RAMdisplay.js"></script>
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
@@ -96,6 +97,31 @@
               height="500px"
               tabindex="3">
       </canvas>
+      <div id = "DisplaysContainer" style="margin-top: 515px;">
+         <table id = "CPU" border="4" style = "float: left;">
+            <tr>
+               <th>PC</th>
+               <th>Acc</th>
+               <th>IR</th>
+               <th>Xreg</th>
+               <th>Yreg</th>
+               <th>Zflag</th>
+            </tr>
+               <td id="PC">0</td>
+               <td id="Acc">0</td>
+               <td id="IR">0</td>
+               <td id="Xreg">0</td>
+               <td id="Yreg">0</td>
+               <td id="Zflag">0</td>
+            <tr>
+            </tr>
+         </table>
+         <div style="height: 150px; overflow: scroll; float: right;">
+            <table id = "Mem" border="4" style = "float: right; margin-left: 10px;">
+            
+            </table>
+         </div>
+      </div>
    </div>
 
    <div id="bsod" class="bsod"></div>
@@ -111,6 +137,7 @@
                    cols="48"
          ></textarea>
       </label>
+      
    </div>
 
    <div id="divUserProgramInput" style="margin-left:820px;">
@@ -123,29 +150,9 @@
                    cols="48"
          ></textarea>
       </label>
+      
    </div>
 
-   <div id = "DisplaysContainer">
-      <table id = "CPU" border="4">
-         <tr>
-            <th>PC</th>
-            <th>Acc</th>
-            <th>IR</th>
-            <th>Xreg</th>
-            <th>Yreg</th>
-            <th>Zflag</th>
-         </tr>
-            <td id="PC">0</td>
-            <td id="Acc">0</td>
-            <td id="IR">0</td>
-            <td id="Xreg">0</td>
-            <td id="Yreg">0</td>
-            <td id="Zflag">0</td>
-         <tr>
-
-         </tr>
-      </table>
-   </div>
 </div>
 
 <div class="taskBar">

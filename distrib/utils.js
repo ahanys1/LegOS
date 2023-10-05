@@ -42,6 +42,24 @@ var TSOS;
             }
             return retVal;
         }
+        static hexLog(num, isAddress) {
+            let hexString = num.toString(16).toUpperCase();
+            if (isAddress) {
+                //if is address, should have 4 val places
+                while (hexString.length < 4) {
+                    hexString = "0" + hexString;
+                }
+                hexString = "0x" + hexString;
+                return hexString;
+            }
+            else {
+                while (hexString.length < 2) {
+                    hexString = "0" + hexString;
+                }
+                hexString = "0x" + hexString;
+                return hexString;
+            }
+        }
     }
     TSOS.Utils = Utils;
 })(TSOS || (TSOS = {}));

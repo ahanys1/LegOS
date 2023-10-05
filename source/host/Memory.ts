@@ -4,7 +4,7 @@ module TSOS {
     export class Memory {
         constructor(
             public ram: number[] = [],
-            private size: number = 0xFFFF) 
+            public size: number = 768) 
             {
             this.initializeMemory();         
         }

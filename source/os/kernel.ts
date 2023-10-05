@@ -52,6 +52,10 @@ module TSOS {
              _CPUdisplay = new CPUdisplay();
              _CPUdisplay.init();
 
+             //start mem display
+             _RAMdisplay = new RAMdisplay();
+             _RAMdisplay.init();
+
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();

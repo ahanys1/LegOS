@@ -4,7 +4,7 @@ var TSOS;
     class Memory {
         ram;
         size;
-        constructor(ram = [], size = 0xFFFF) {
+        constructor(ram = [], size = 768) {
             this.ram = ram;
             this.size = size;
             this.initializeMemory();
