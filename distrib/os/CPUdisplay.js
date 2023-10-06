@@ -1,6 +1,6 @@
 var TSOS;
 (function (TSOS) {
-    //pcb class for handling the PCB display updates
+    //ment for handling updates to the cpu display
     class CPUdisplay {
         CPUTable;
         PC;
@@ -29,29 +29,29 @@ var TSOS;
         }
         updateAll() {
             this.PC.innerHTML = _CPU.PC.toString();
-            this.Acc.innerHTML = _CPU.Acc.toString(16);
-            this.IR.innerHTML = _CPU.IR.toString(16);
-            this.Xreg.innerHTML = _CPU.Xreg.toString(16);
-            this.Yreg.innerHTML = _CPU.Yreg.toString(16);
-            this.Zflag.innerHTML = _CPU.Zflag.toString(16);
+            this.Acc.innerHTML = TSOS.Utils.hexLog(_CPU.Acc, false);
+            this.IR.innerHTML = TSOS.Utils.hexLog(_CPU.IR, false);
+            this.Xreg.innerHTML = TSOS.Utils.hexLog(_CPU.Xreg, false);
+            this.Yreg.innerHTML = TSOS.Utils.hexLog(_CPU.Yreg, false);
+            this.Zflag.innerHTML = TSOS.Utils.hexLog(_CPU.Zflag, false);
         }
         updatePC() {
             this.PC.innerHTML = _CPU.PC.toString();
         }
         updateAcc() {
-            this.Acc.innerHTML = _CPU.Acc.toString(16);
+            this.Acc.innerHTML = TSOS.Utils.hexLog(_CPU.Acc, false);
         }
         updateIR() {
-            this.IR.innerHTML = _CPU.IR.toString(16);
+            this.IR.innerHTML = TSOS.Utils.hexLog(_CPU.IR, false);
         }
         updateXreg() {
-            this.Xreg.innerHTML = _CPU.Xreg.toString(16);
+            this.Xreg.innerHTML = TSOS.Utils.hexLog(_CPU.Xreg, false);
         }
         updateYreg() {
-            this.Yreg.innerHTML = _CPU.Yreg.toString(16);
+            this.Yreg.innerHTML = TSOS.Utils.hexLog(_CPU.Yreg, false);
         }
         updateZflag() {
-            this.Zflag.innerHTML = _CPU.Zflag.toString(16);
+            this.Zflag.innerHTML = TSOS.Utils.hexLog(_CPU.Zflag, false);
         }
     }
     TSOS.CPUdisplay = CPUdisplay;

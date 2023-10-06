@@ -98,8 +98,11 @@ var TSOS;
                 case 0xEA: //No Operation
                     break;
                 case 0x00: //Break
-                    this.PC = 0xFFFFF; //max out program counter
                     this.isExecuting = false;
+                    _Memory.ram = _SavedState;
+                    this.init();
+                    _CPUdisplay.updateAll();
+                    _RAMdisplay.updateDisplay();
                     break;
                 case 0xFF: //System Call
                     if ((this.Xreg == 0x01) || (this.Xreg == 0x02)) {
@@ -206,6 +209,9 @@ var TSOS;
             switch (this.IR) {
                 case 0xEC:
                     if (this.Xreg == this.tempA) { //Sets the Z (zero) flag if equal
+                        this.Zflag = 0x01;
+                    }
+                    else {
                         this.Zflag = 0x00;
                     }
                     _CPUdisplay.updateZflag();
@@ -220,6 +226,7 @@ var TSOS;
         }
         writeBack(address, data) {
             _MMU.writeImm(address, data);
+            _RAMdisplay.updateDisplay();
         }
     }
     TSOS.Cpu = Cpu;

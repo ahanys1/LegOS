@@ -33,11 +33,12 @@
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
    <script type="text/javascript" src="distrib/os/CPUdisplay.js"></script>
    <script type="text/javascript" src="distrib/os/RAMdisplay.js"></script>
+   <script type="text/javascript" src="distrib/os/pcb.js"></script>
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <!--<script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip2.js"></script>-->
+   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip2.js"></script>
    
 </head>
 
@@ -108,14 +109,15 @@
                <th>Zflag</th>
             </tr>
                <td id="PC">0</td>
-               <td id="Acc">0</td>
-               <td id="IR">0</td>
-               <td id="Xreg">0</td>
-               <td id="Yreg">0</td>
-               <td id="Zflag">0</td>
+               <td id="Acc">0x00</td>
+               <td id="IR">0x00</td>
+               <td id="Xreg">0x00</td>
+               <td id="Yreg">0x00</td>
+               <td id="Zflag">0x00</td>
             <tr>
             </tr>
          </table>
+         
          <div style="height: 150px; overflow: scroll; float: right;">
             <table id = "Mem" border="4" style = "float: right; margin-left: 10px;">
             
@@ -152,6 +154,27 @@
       </label>
       
    </div>
+   <table id = "PCB" border="4" style = "float: left;">
+      <tr>
+         <th>PID</th>
+         <th>PC</th>
+         <th>Acc</th>
+         <th>IR</th>
+         <th>Xreg</th>
+         <th>Yreg</th>
+         <th>Zflag</th>
+         <th>Status</th>
+      </tr>
+      <tr id ="pZero">
+         <th>0</th>
+      </tr>
+      <tr id ="pOne">
+         <th>1</th>
+      </tr>
+      <tr id ="p2">
+         <th>2</th>
+      </tr>
+   </table>
 
 </div>
 

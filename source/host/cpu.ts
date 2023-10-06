@@ -98,8 +98,11 @@ module TSOS {
                     break;
                 
                 case 0x00: //Break
-                    this.PC = 0xFFFFF; //max out program counter
                     this.isExecuting = false;
+                    _Memory.ram = _SavedState;
+                    this.init();
+                    _CPUdisplay.updateAll();
+                    _RAMdisplay.updateDisplay();
                     break;
                 
 
@@ -224,6 +227,9 @@ module TSOS {
             switch(this.IR){
                 case 0xEC:
                     if(this.Xreg == this.tempA){ //Sets the Z (zero) flag if equal
+                        this.Zflag = 0x01;
+                    }
+                    else{
                         this.Zflag = 0x00;
                     }
                     _CPUdisplay.updateZflag();
@@ -240,6 +246,8 @@ module TSOS {
 
         writeBack(address: number, data: number){
             _MMU.writeImm(address,data);
+            _RAMdisplay.updateDisplay();
         }
+
     }
 }

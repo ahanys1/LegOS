@@ -314,6 +314,7 @@ var TSOS;
                     _MMU.PIDs.push(_MMU.PIDs[_MMU.PIDs.length - 1] + 1); //pushes next PID to array
                 }
                 _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
+                _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length - 1]);
                 _RAMdisplay.updateDisplay();
                 console.log(_MMU.PIDs);
             }
@@ -326,6 +327,7 @@ var TSOS;
             if (_MMU.PIDs.includes(parseInt(args[0]))) { //make sure it's a valid op code
                 if (args[0] == "0") {
                     _CPU.init();
+                    _SavedState = _Memory.ram;
                     _CPU.PC = partition.zero;
                 } //TODO: allow for multiple programs. for now, just do 1.
                 _CPU.isExecuting = true;

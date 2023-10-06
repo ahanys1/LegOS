@@ -27,6 +27,8 @@ enum partition { //these are to be used in tandem with the pid to determine what
 }
 var _stepModeEnabled = false; //step mode
 
+let _SavedState: number[] = [];
+
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -63,6 +65,7 @@ var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
 var _CPUdisplay: TSOS.CPUdisplay;
 var _RAMdisplay: TSOS.RAMdisplay;
+var _PCB: TSOS.PCB;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;

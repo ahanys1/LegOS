@@ -56,6 +56,10 @@ module TSOS {
              _RAMdisplay = new RAMdisplay();
              _RAMdisplay.init();
 
+             //start pcb
+             _PCB = new PCB();
+             _PCB.init();
+
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();

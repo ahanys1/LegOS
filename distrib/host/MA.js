@@ -32,6 +32,9 @@ var TSOS;
         }
         //write to the memory module
         write() {
+            if (this.mdr > 0xFF) {
+                this.mdr = this.mdr - 0xFF; //handles overflow by looping around
+            }
             _Memory.ram[this.mar] = this.mdr;
         }
     }
