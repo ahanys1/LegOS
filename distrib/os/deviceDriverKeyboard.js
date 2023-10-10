@@ -171,6 +171,25 @@ var TSOS;
             }
             else if (keyCode == 40) {
                 chr = "DOWN";
+                //I feel like having some fun and doing the number pad since I have a full size keyboard
+            }
+            else if ((keyCode >= 96) && (keyCode <= 105)) {
+                chr = String.fromCharCode(keyCode - 48);
+            }
+            else if (keyCode == 111) { // /
+                chr = String.fromCharCode(47);
+            }
+            else if (keyCode == 106) { // *
+                chr = String.fromCharCode(42);
+            }
+            else if (keyCode == 109) { // -
+                chr = String.fromCharCode(45);
+            }
+            else if (keyCode == 107) { // +
+                chr = String.fromCharCode(43);
+            }
+            else if (keyCode == 110) { // .
+                chr = String.fromCharCode(46);
             }
             _KernelInputQueue.enqueue(chr);
         }
