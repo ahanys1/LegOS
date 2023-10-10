@@ -26,11 +26,15 @@ var TSOS;
             // Parse the params.  TODO: Check that the params are valid and osTrapError if not.
             var keyCode = params[0];
             var isShifted = params[1];
-            _Kernel.krnTrace("Key code:" + keyCode + " shifted:" + isShifted);
+            let isCtrl = params[2];
+            _Kernel.krnTrace("Key code:" + keyCode + " shifted:" + isShifted + " ctrl:" + isCtrl);
             var chr = "";
             // Check to see if we even want to deal with the key that was pressed.
             console.log(keyCode);
-            if ((keyCode >= 65) && (keyCode <= 90)) { // letter
+            if (keyCode == 67 && isCtrl) { //control - C
+                chr = "^C";
+            }
+            else if ((keyCode >= 65) && (keyCode <= 90)) { // letter
                 if (isShifted === true) {
                     chr = String.fromCharCode(keyCode); // Uppercase A-Z
                 }

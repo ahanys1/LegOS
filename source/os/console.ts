@@ -103,7 +103,14 @@ module TSOS {
                     this.currentXPosition -= bufferWidth;
                     this.buffer = commands[0];
                     this.putText(this.buffer);
-                } else {
+                } else if(chr === "^C"){
+                    _CPU.isExecuting = false;
+                    this.advanceLine();
+                    this.putText("^C");
+                    this.advanceLine();
+                    this.putText("=C ");
+                
+                }else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
                     this.putText(chr);
