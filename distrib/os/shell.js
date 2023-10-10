@@ -330,7 +330,7 @@ var TSOS;
                     _SavedState = _Memory.ram;
                     _CPU.PC = partition.zero;
                 } //TODO: allow for multiple programs. for now, just do 1.
-                _CPU.isExecuting = true;
+                _PCB.kickStart(0);
             }
             else {
                 _StdOut.putText("ERR: Invalid Program ID.");

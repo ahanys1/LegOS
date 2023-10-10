@@ -66,6 +66,7 @@ module TSOS {
             _CPUdisplay.updateIR();
             this.PC++;
             _CPUdisplay.updatePC();
+            _PCB.updateAll(_PCB.runningPID);
             this.decode1();
         }
 
@@ -103,6 +104,9 @@ module TSOS {
                     this.init();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
+                    _PCB.updateAll(_PCB.runningPID);
+                    _Console.advanceLine();
+                    _Console.putText("=C ");
                     break;
                 
 
@@ -248,6 +252,8 @@ module TSOS {
             _MMU.writeImm(address,data);
             _RAMdisplay.updateDisplay();
         }
+
+
 
     }
 }
