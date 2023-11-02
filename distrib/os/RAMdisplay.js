@@ -12,6 +12,9 @@ var TSOS;
                 let row = document.createElement("tr");
                 let address = document.createElement("th");
                 address.innerText = TSOS.Utils.hexLog(i, true);
+                if (i == 0x0000 || i == 0x100 || i == 0x200) { //green starts of each partition
+                    address.style.backgroundColor = "#92ba85";
+                }
                 row.appendChild(address);
                 for (let j = 0; j < 8; j++) {
                     let cell = document.createElement("td");

@@ -38,7 +38,7 @@ var TSOS;
                             cell.innerText = "0x00";
                             break;
                         case 6:
-                            cell.innerText = "Ready";
+                            cell.innerText = "Resident";
                             break;
                     }
                 }
@@ -58,7 +58,7 @@ var TSOS;
                             cell.innerText = "0x00";
                             break;
                         case 6:
-                            cell.innerText = "Ready";
+                            cell.innerText = "Resident";
                             break;
                     }
                 }
@@ -78,7 +78,7 @@ var TSOS;
                             cell.innerText = "0x00";
                             break;
                         case 6:
-                            cell.innerText = "Ready";
+                            cell.innerText = "Resident";
                             break;
                     }
                 }

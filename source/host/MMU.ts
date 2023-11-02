@@ -6,23 +6,25 @@ module TSOS {
             public lob: number = 0x00,
             public hob: number = 0x0000,
             public PIDs: number[] = [42069], //bandaid fix
-            public hot: number = 0x0000
+            public hot: number = 0x0000,
+            public activePID: number = 0
         ){ }
         public init(): void{
             this.lob = 0x00;
             this.hob = 0x0000;
             this.PIDs = [42069];
             this.hot = 0x0000;
+            this.activePID = 0;
         }
         write(){
             //to be honest, might not even need this
-            _MA.write();
+            _MA.write(this.activePID);
         }
 
         writeImm(address: number, value: number){
             _MA.setMAR(address);
             _MA.setMDR(value);
-            _MA.write();
+            _MA.write(this.activePID);
         }
 
         setLowOrder(LOB: number){
@@ -36,12 +38,12 @@ module TSOS {
 
         read(){
             _MA.setMAR(this.hot + this.lob);
-            return _MA.read();
+            return _MA.read(this.activePID);
         }
 
         readImm(address: number){
             _MA.setMAR(address);
-            return _MA.read();
+            return _MA.read(this.activePID);
         }
 
         setMDR(num: number){
@@ -55,6 +57,16 @@ module TSOS {
         }
         getMAR(): number{
             return _MA.getMAR();
+        }
+
+        writeInit(programArray: string[]){
+            programArray.forEach((code,index) => {
+                //_MMU.writeImm(index, parseInt(code,16));
+                _MA.setMAR(index);
+                _MA.setMDR(parseInt(code, 16));
+                _MA.write(this.PIDs[this.PIDs.length-1]);
+                index++;
+            });
         }
 
     }

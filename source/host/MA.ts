@@ -26,17 +26,29 @@ module TSOS {
         }
 
         //read from the memory module
-        read(){
-            this.mdr = _Memory.ram[this.mar];
+        read(pid: number){
+            if (pid % 3 == 0){
+                this.mdr = _Memory.ram[this.mar + partition.zero];
+            } else if (pid % 3 == 1){
+                this.mdr = _Memory.ram[this.mar + partition.one];
+            } else if (pid % 3 == 2){
+                this.mdr = _Memory.ram[this.mar + partition.two];
+            }
             return this.mdr;
         }
 
         //write to the memory module
-        write(){
+        write(pid: number){
             if(this.mdr >0xFF){
                 this.mdr = this.mdr - 0xFF; //handles overflow by looping around
             }
-            _Memory.ram[this.mar] = this.mdr;
+            if (pid % 3 == 0){
+                _Memory.ram[this.mar + partition.zero] = this.mdr;
+            } else if (pid % 3 == 1){
+                _Memory.ram[this.mar + partition.one] = this.mdr;
+            } else if (pid % 3 == 2){
+                _Memory.ram[this.mar + partition.two] = this.mdr;
+            }
         }
     }
     

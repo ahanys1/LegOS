@@ -369,15 +369,12 @@ module TSOS {
             if(isValid){
                 _StdOut.putText("Program is Valid. Loading into Memory...");
                 let programArray = program.split(" ");
-                programArray.forEach((code,index) => {
-                    _MMU.writeImm(index, parseInt(code,16));
-                    index++;
-                });
                 if (_MMU.PIDs[0] === 42069){ //initialize PIDs if empty
                     _MMU.PIDs = [0];
                 } else {
                     _MMU.PIDs.push(_MMU.PIDs[_MMU.PIDs.length - 1] + 1); //pushes next PID to array
                 }
+                _MMU.writeInit(programArray);
                 _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
                 _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length -1]);
                 _RAMdisplay.updateDisplay();
