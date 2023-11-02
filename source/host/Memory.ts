@@ -3,42 +3,16 @@
 module TSOS {
     export class Memory {
         constructor(
-            private ram: number[] = [],
-            private mar: number = 0x0000, //memory adress register
-            private mdr: number = 0x00,   //memory data register 
-            private size: number = 0xFFFF) 
+            public ram: number[] = [],
+            public size: number = 768) 
             {
             this.initializeMemory();         
         }
         public init(): void{
-            this.mar = 0x000;
-            this.mdr = 0x00;
-            this.size = 0xFFFF;
-            this.initializeMemory();
+            this.size = 768;
+            this.reset();
         }
 
-        //Getters and setters for MDR and MAR
-        setMDR(num: number){
-            this.mdr = num;
-        }
-        setMAR(num: number){
-            this.mar = num;
-        }
-        getMDR(): number{
-            return this.mdr;
-        }
-        getMAR(): number{
-            return this.mar;
-        }
-
-        //read and write memory
-        read(){
-            this.mdr = this.ram[this.mar];
-            return this.mdr;
-        }
-        write(){
-            this.ram[this.mar] = this.mdr;
-        }
 
         initializeMemory(){
             for (let i = 0x00; i <= this.size; i++) {
@@ -48,8 +22,6 @@ module TSOS {
         }
 
         reset(){//resets memory
-            this.mdr = 0x00;
-            this.mar = 0x0000;
             this.ram = [];
             this.initializeMemory();
         }

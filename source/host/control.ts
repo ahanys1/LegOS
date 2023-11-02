@@ -89,6 +89,10 @@ module TSOS {
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
             _Memory = new Memory();
             _Memory.init();
+            _MMU = new MMU();
+            _MMU.init();
+            _MA = new MA();
+            _MA.init();
 
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
@@ -113,6 +117,22 @@ module TSOS {
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+
+        public static hostBtnToggleStep_click(btn: HTMLButtonElement): void {
+            const stepButton: HTMLButtonElement = document.getElementById("btnStep") as HTMLButtonElement;
+            _stepModeEnabled = !_stepModeEnabled;
+            if(_stepModeEnabled){
+                btn.style.color = "green";
+                stepButton.disabled = false;
+            } else{
+                btn.style.color = "red";
+                stepButton.disabled = true;
+            }
+        }
+
+        public static hostBtnStep_click(btn: HTMLButtonElement): void {
+            _CPU.cycle();
         }
     }
 }

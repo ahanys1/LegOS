@@ -20,6 +20,14 @@ const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (inte
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
 
+enum partition { //these are to be used in tandem with the pid to determine what instructions to run
+   zero = 0,
+   one = 256,
+   two = 512
+}
+var _stepModeEnabled = false; //step mode
+
+let _SavedState: number[] = [];
 
 //
 // Global Variables
@@ -28,6 +36,7 @@ const KEYBOARD_IRQ: number = 1;
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory: TSOS.Memory;
 var _MMU: TSOS.MMU;
+var _MA: TSOS.MA;
 
 var _OSclock: number = 0;  // Page 23.
 
@@ -54,6 +63,9 @@ var _StdOut: TSOS.Console = null;
 // UI
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
+var _CPUdisplay: TSOS.CPUdisplay;
+var _RAMdisplay: TSOS.RAMdisplay;
+var _PCB: TSOS.PCB;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;

@@ -43,5 +43,27 @@ module TSOS {
             }
             return retVal;
         }
+
+        public static hexLog(num: number, isAddress: boolean){ //this is my hex logging function from Org and Arch!
+            let hexString = num.toString(16).toUpperCase();
+    
+            if(isAddress){
+                //if is address, should have 4 val places
+                while(hexString.length < 4){
+                    hexString = "0" + hexString;
+                }
+                hexString = "0x" + hexString;
+                return hexString;
+            }
+            else{
+                while(hexString.length < 2){
+                    hexString = "0" + hexString;
+                }
+                hexString = "0x" + hexString;
+                return hexString;
+            }
+    
+        }
+
     }
 }

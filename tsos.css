@@ -52,14 +52,22 @@ h3 {
   font-size: 8pt;
   text-align: center;
   background-color: red;
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
 
 .taskBar{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-image: url(distrib/images/legoline.png);
   background-size: contain;
   font-size: 30pt;
   margin-top: 10px;
   padding-top: 15px;
+  z-index: 999;
 }
 
 .bsod{
@@ -71,4 +79,14 @@ h3 {
   z-index: 1;
   background-image: url(distrib/images/bluescreen.jpg);
   visibility: hidden;
+}
+
+table{
+  background-color: white;
+  padding: 4px;
+  
+}
+
+#btnStepToggle{
+  color: red;
 }

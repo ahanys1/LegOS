@@ -94,12 +94,17 @@ module TSOS {
             //status <string>
             sc = new ShellCommand(this.shellStatus,
                 "status",
-                "<string> - sets the system status message.")
+                "<string> - sets the system status message.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellLoad,
                 "load",
                 " - loads the program from the program input.");
+            this.commandList[this.commandList.length] = sc;
+            
+            sc = new ShellCommand(this.shellRun,
+                "run",
+                "<pid> - Runs the program loaded at pid");
             this.commandList[this.commandList.length] = sc;    
 
             sc = new ShellCommand(this.shellBSOD,
@@ -304,6 +309,8 @@ module TSOS {
                     case "load":
                         _StdOut.putText("'load' allows you to load the inputted program, and verifies that it is a valid program.");
                         break;
+                    case "run":
+                        _StdOut.putText("'run <pid>' will execute the program loaded at the specefied program ID.");
                     case "bsod":
                         _StdOut.putText("'bsod' initiates the process for handling a fatal system error. Requires a full reset.");
                         break;
@@ -347,16 +354,50 @@ module TSOS {
             let program: string = inputBox.value; 
             const validSymbols: string = "1234567890ABCDEFabcdef ";
             let isValid: boolean = true;
+            let invalidChars:string[] = [];
+            //make sure program is not empty
+            if (program == ""){
+                isValid = false;
+            }
             //loop through to confirm values are good
             for (const char of program){
                 if (!validSymbols.includes(char)){
                     isValid=false;
+                    invalidChars.push(char);
                 }
             }
             if(isValid){
-                _StdOut.putText("Program is Valid.");
+                _StdOut.putText("Program is Valid. Loading into Memory...");
+                let programArray = program.split(" ");
+                programArray.forEach((code,index) => {
+                    _MMU.writeImm(index, parseInt(code,16));
+                    index++;
+                });
+                if (_MMU.PIDs[0] === 42069){ //initialize PIDs if empty
+                    _MMU.PIDs = [0];
+                } else {
+                    _MMU.PIDs.push(_MMU.PIDs[_MMU.PIDs.length - 1] + 1); //pushes next PID to array
+                }
+                _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
+                _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length -1]);
+                _RAMdisplay.updateDisplay();
+                console.log(_MMU.PIDs);
             }else{
-                _StdOut.putText("ERR: Program contains invalid symbols.");
+                _StdOut.putText("ERR: Program could not be loaded.");
+                console.log(invalidChars);
+            }
+        }
+
+        public shellRun(args:string[]){
+            if (_MMU.PIDs.includes(parseInt(args[0]))){ //make sure it's a valid op code
+                if(args[0] == "0"){
+                    _CPU.init();
+                    _SavedState = _Memory.ram;
+                    _CPU.PC = partition.zero;
+                }//TODO: allow for multiple programs. for now, just do 1.
+                _PCB.kickStart(0);
+            } else{
+                _StdOut.putText("ERR: Invalid Program ID.");
             }
         }
 

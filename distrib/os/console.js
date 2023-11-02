@@ -106,6 +106,13 @@ var TSOS;
                     this.buffer = commands[0];
                     this.putText(this.buffer);
                 }
+                else if (chr === "^C") {
+                    _CPU.isExecuting = false;
+                    this.advanceLine();
+                    this.putText("^C");
+                    this.advanceLine();
+                    this.putText("=C ");
+                }
                 else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
@@ -125,6 +132,9 @@ var TSOS;
                 decided to write one function and use the term "text" to connote string or char.
             */
             if (text !== "") {
+                if (this.currentXPosition >= 785) {
+                    this.advanceLine();
+                }
                 // Draw the text at the current X and Y coordinates.
                 _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
                 // Move the current X position.

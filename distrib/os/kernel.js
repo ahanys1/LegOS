@@ -39,6 +39,15 @@ var TSOS;
             this.krnTrace("Creating and Launching the shell.");
             _OsShell = new TSOS.Shell();
             _OsShell.init();
+            //Start CPU Display
+            _CPUdisplay = new TSOS.CPUdisplay();
+            _CPUdisplay.init();
+            //start mem display
+            _RAMdisplay = new TSOS.RAMdisplay();
+            _RAMdisplay.init();
+            //start pcb
+            _PCB = new TSOS.PCB();
+            _PCB.init();
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();
@@ -69,7 +78,7 @@ var TSOS;
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
-            else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed.
+            else if (_CPU.isExecuting && !_stepModeEnabled) { // If there are no interrupts then run one CPU cycle if there is anything being processed. Also checks if there is step modes
                 _CPU.cycle();
             }
             else { // If there are no interrupts and there is nothing being executed then just be idle.

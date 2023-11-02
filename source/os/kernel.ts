@@ -48,6 +48,18 @@ module TSOS {
             _OsShell = new Shell();
             _OsShell.init();
 
+            //Start CPU Display
+             _CPUdisplay = new CPUdisplay();
+             _CPUdisplay.init();
+
+             //start mem display
+             _RAMdisplay = new RAMdisplay();
+             _RAMdisplay.init();
+
+             //start pcb
+             _PCB = new PCB();
+             _PCB.init();
+
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();
@@ -81,7 +93,7 @@ module TSOS {
                 // TODO (maybe): Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
-            } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed.
+            } else if (_CPU.isExecuting && !_stepModeEnabled) { // If there are no interrupts then run one CPU cycle if there is anything being processed. Also checks if there is step modes
                 _CPU.cycle();
             } else {                       // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");

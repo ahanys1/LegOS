@@ -71,6 +71,10 @@ var TSOS;
             _CPU.init(); //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
             _Memory = new TSOS.Memory();
             _Memory.init();
+            _MMU = new TSOS.MMU();
+            _MMU.init();
+            _MA = new TSOS.MA();
+            _MA.init();
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.
@@ -92,6 +96,21 @@ var TSOS;
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+        static hostBtnToggleStep_click(btn) {
+            const stepButton = document.getElementById("btnStep");
+            _stepModeEnabled = !_stepModeEnabled;
+            if (_stepModeEnabled) {
+                btn.style.color = "green";
+                stepButton.disabled = false;
+            }
+            else {
+                btn.style.color = "red";
+                stepButton.disabled = true;
+            }
+        }
+        static hostBtnStep_click(btn) {
+            _CPU.cycle();
         }
     }
     TSOS.Control = Control;
