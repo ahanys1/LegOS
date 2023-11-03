@@ -6,30 +6,27 @@ var TSOS;
         hob;
         PIDs;
         hot;
-        activePID;
         constructor(lob = 0x00, hob = 0x0000, PIDs = [42069], //bandaid fix
-        hot = 0x0000, activePID = 0) {
+        hot = 0x0000) {
             this.lob = lob;
             this.hob = hob;
             this.PIDs = PIDs;
             this.hot = hot;
-            this.activePID = activePID;
         }
         init() {
             this.lob = 0x00;
             this.hob = 0x0000;
             this.PIDs = [42069];
             this.hot = 0x0000;
-            this.activePID = 0;
         }
         write() {
             //to be honest, might not even need this
-            _MA.write(this.activePID);
+            _MA.write(_PCB.runningPID);
         }
         writeImm(address, value) {
             _MA.setMAR(address);
             _MA.setMDR(value);
-            _MA.write(this.activePID);
+            _MA.write(_PCB.runningPID);
         }
         setLowOrder(LOB) {
             this.lob = LOB;
@@ -40,11 +37,11 @@ var TSOS;
         }
         read() {
             _MA.setMAR(this.hot + this.lob);
-            return _MA.read(this.activePID);
+            return _MA.read(_PCB.runningPID);
         }
         readImm(address) {
             _MA.setMAR(address);
-            return _MA.read(this.activePID);
+            return _MA.read(_PCB.runningPID);
         }
         setMDR(num) {
             _MA.setMDR(num);

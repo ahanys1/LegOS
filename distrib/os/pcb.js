@@ -1,114 +1,88 @@
 var TSOS;
 (function (TSOS) {
-    //ment for handling updates to the cpu display
-    //this is very bare bones rn and my goal is to meet the requirements for credit
     class PCB {
         PCBTable;
-        pZero;
-        pOne;
-        pTwo;
         runningPID;
-        constructor(PCBTable = document.getElementById("PCB"), pZero = document.getElementById("pZero"), pOne = document.getElementById("pOne"), pTwo = document.getElementById("pTwo"), runningPID = null) {
+        processes;
+        constructor(PCBTable = document.getElementById("PCB"), runningPID = null, processes = {}) {
             this.PCBTable = PCBTable;
-            this.pZero = pZero;
-            this.pOne = pOne;
-            this.pTwo = pTwo;
             this.runningPID = runningPID;
+            this.processes = processes;
         }
         init() {
             this.PCBTable = document.getElementById("PCB");
-            this.pZero = document.getElementById("pZero");
-            this.pOne = document.getElementById("pOne");
-            this.pTwo = document.getElementById("pTwo");
             this.runningPID = null;
+            this.processes = {};
         }
         addProgram(pid) {
-            if (pid == 0) {
-                for (let i = 0; i < 7; i++) { //fill blank cells
-                    let cell = this.pZero.insertCell();
-                    switch (i) {
-                        case 0:
-                            cell.innerText = "0";
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                            cell.innerText = "0x00";
-                            break;
-                        case 6:
-                            cell.innerText = "Resident";
-                            break;
-                    }
-                }
-            }
-            else if (pid == 1) {
-                for (let i = 0; i < 7; i++) { //fill blank cells
-                    let cell = this.pOne.insertCell();
-                    switch (i) {
-                        case 0:
-                            cell.innerText = "0";
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                            cell.innerText = "0x00";
-                            break;
-                        case 6:
-                            cell.innerText = "Resident";
-                            break;
-                    }
-                }
-            }
-            else if (pid == 2) {
-                for (let i = 0; i < 7; i++) { //fill blank cells
-                    let cell = this.pTwo.insertCell();
-                    switch (i) {
-                        case 0:
-                            cell.innerText = "0";
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                            cell.innerText = "0x00";
-                            break;
-                        case 6:
-                            cell.innerText = "Resident";
-                            break;
-                    }
-                }
-            }
+            this.processes[pid] = {
+                PC: 0,
+                Acc: 0,
+                IR: 0,
+                Xreg: 0,
+                Yreg: 0,
+                Zflag: 0,
+                Status: "Resident"
+            };
+            //handle display quickly
+            //TODO: have table fill from dictionary
+            const tableBody = document.getElementById("pcbBody");
+            const process = this.processes[pid];
+            const row = tableBody.insertRow();
+            const cellPID = row.insertCell(0);
+            const cellPC = row.insertCell(1);
+            const cellAcc = row.insertCell(2);
+            const cellIR = row.insertCell(3);
+            const cellXreg = row.insertCell(4);
+            const cellYreg = row.insertCell(5);
+            const cellZflag = row.insertCell(6);
+            const cellStatus = row.insertCell(7);
+            cellPID.textContent = pid.toString();
+            cellPC.textContent = process.PC.toString();
+            cellAcc.textContent = TSOS.Utils.hexLog(process.Acc, false);
+            cellIR.textContent = TSOS.Utils.hexLog(process.IR, false);
+            cellXreg.textContent = TSOS.Utils.hexLog(process.Xreg, false);
+            cellYreg.textContent = TSOS.Utils.hexLog(process.Yreg, false);
+            cellZflag.textContent = TSOS.Utils.hexLog(process.Zflag, false);
+            cellStatus.textContent = process.Status;
         }
         kickStart(pid) {
-            _CPU.isExecuting = true;
             this.runningPID = pid;
+            _CPU.isExecuting = true;
+            this.processes[pid].Status = "Running";
         }
-        updateAll(pid) {
-            if (pid == 0) {
-                this.pZero.cells.item(1).innerText = _CPU.PC.toString();
-                this.pZero.cells.item(2).innerText = TSOS.Utils.hexLog(_CPU.Acc, false);
-                this.pZero.cells.item(3).innerText = TSOS.Utils.hexLog(_CPU.IR, false);
-                this.pZero.cells.item(4).innerText = TSOS.Utils.hexLog(_CPU.Xreg, false);
-                this.pZero.cells.item(5).innerText = TSOS.Utils.hexLog(_CPU.Yreg, false);
-                this.pZero.cells.item(6).innerText = TSOS.Utils.hexLog(_CPU.Zflag, false);
-                if (_CPU.isExecuting) {
-                    this.pZero.cells.item(7).innerText = "Running";
+        updateRunning() {
+            //update dictinary first
+            this.processes[this.runningPID].PC = _CPU.PC;
+            this.processes[this.runningPID].Acc = _CPU.Acc;
+            this.processes[this.runningPID].IR = _CPU.IR;
+            this.processes[this.runningPID].Xreg = _CPU.Xreg;
+            this.processes[this.runningPID].Yreg = _CPU.Yreg;
+            this.processes[this.runningPID].Zflag = _CPU.Zflag;
+            console.log(this.processes);
+            //now update visuals
+            let row = this.PCBTable.rows[(this.runningPID % 3) + 1];
+            row.cells[1].innerHTML = this.processes[this.runningPID].PC.toString();
+            row.cells[2].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Acc, false);
+            row.cells[3].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].IR, false);
+            row.cells[4].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Xreg, false);
+            row.cells[5].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Yreg, false);
+            row.cells[6].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Zflag, false);
+            row.cells[7].innerHTML = this.processes[this.runningPID].Status;
+            /*if (this.processes.hasOwnProperty(pid)) {
+                const row = this.PCBTable.querySelector(`#pid-${pid}`) as HTMLTableRowElement;
+                if (row) {
+                    row.cells[1].textContent = process.PC.toString();
+                    row.cells[2].textContent = Utils.hexLog(process.Acc, false);
+                    row.cells[3].textContent = Utils.hexLog(process.IR, false);
+                    row.cells[4].textContent = Utils.hexLog(process.Xreg, false);
+                    row.cells[5].textContent = Utils.hexLog(process.Yreg, false);
+                    row.cells[6].textContent = Utils.hexLog(process.Zflag, false);
+                    row.cells[7].textContent = process.Status;
                 }
-                else {
-                    this.pZero.cells.item(7).innerText = "Ready";
-                }
-            }
-            else if (pid == 1) {
-                //pid 1, will implement these later. Just want to get this done ASAP, and they're not required for now.
-            }
-            else if (pid == 2) {
-                //pid 2
-            }
+            }*/
+        }
+        terminate() {
         }
     }
     TSOS.PCB = PCB;

@@ -321,13 +321,13 @@ var TSOS;
             }
         }
         shellRun(args) {
-            if (_MMU.PIDs.includes(parseInt(args[0]))) { //make sure it's a valid op code
-                if (args[0] == "0") {
-                    _CPU.init();
-                    _SavedState = _Memory.ram;
-                    _CPU.PC = partition.zero;
-                } //TODO: allow for multiple programs. for now, just do 1.
-                _PCB.kickStart(0);
+            if (_MMU.PIDs.includes(parseInt(args[0]))) { //make sure it's a valid pid 
+                _CPU.init();
+                _SavedState = _Memory.ram;
+                _PCB.kickStart(parseInt(args[0]));
+                //_CPU.PC = partition.zero;
+                //TODO: allow for multiple programs. for now, just do 1.
+                //_PCB.kickStart();
             }
             else {
                 _StdOut.putText("ERR: Invalid Program ID.");

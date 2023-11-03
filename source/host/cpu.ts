@@ -66,7 +66,7 @@ module TSOS {
             _CPUdisplay.updateIR();
             this.PC++;
             _CPUdisplay.updatePC();
-            _PCB.updateAll(_PCB.runningPID);
+            _PCB.updateRunning();
             this.decode1();
         }
 
@@ -104,7 +104,7 @@ module TSOS {
                     this.init();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
-                    _PCB.updateAll(_PCB.runningPID);
+                    //_PCB.updateRunning();
                     _Console.advanceLine();
                     _Console.putText("=C ");
                     break;
