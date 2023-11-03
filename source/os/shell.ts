@@ -111,6 +111,11 @@ module TSOS {
                 "bsod",
                 " - executes a Blue Screen of Death error.");
             this.commandList[this.commandList.length] = sc; 
+            
+            sc = new ShellCommand(this.shellClearMem,
+                "clearmem",
+                " - clears all memory partitions.");
+            this.commandList[this.commandList.length] = sc; 
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -314,6 +319,8 @@ module TSOS {
                     case "bsod":
                         _StdOut.putText("'bsod' initiates the process for handling a fatal system error. Requires a full reset.");
                         break;
+                    case "clearmem":
+                        _StdOut.putText("'clearmem' clears the memory and terminates all programs.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -446,6 +453,12 @@ module TSOS {
         public shellBSOD(args: string[]){
             _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
             console.log("got to here");
+        }
+
+        public shellClearMem(args: string[]){
+            _Memory.reset();
+            _PCB.terminateAll();
+            _RAMdisplay.updateDisplay();
         }
 
     }

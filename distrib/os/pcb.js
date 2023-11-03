@@ -98,6 +98,13 @@ var TSOS;
             _MA.deleteProgram(this.processes[this.runningPID].Segment);
             this.updateRunning();
         }
+        terminateAll() {
+            for (const pid in this.processes) {
+                this.processes[pid].Status = "Terminated";
+                let row = this.PCBTable.rows[parseInt(pid) + 1];
+                row.cells[12].innerHTML = this.processes[pid].Status;
+            }
+        }
     }
     TSOS.PCB = PCB;
 })(TSOS || (TSOS = {}));
