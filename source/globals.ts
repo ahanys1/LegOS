@@ -27,7 +27,6 @@ enum partition { //these are to be used in tandem with the pid to determine what
 }
 var _stepModeEnabled = false; //step mode
 
-let _SavedState: number[] = [];
 
 //
 // Global Variables

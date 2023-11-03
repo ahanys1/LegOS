@@ -100,11 +100,9 @@ var TSOS;
                     break;
                 case 0x00: //Break
                     this.isExecuting = false;
-                    _Memory.ram = _SavedState;
-                    this.init();
+                    _PCB.terminate();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
-                    //_PCB.updateRunning();
                     _Console.advanceLine();
                     _Console.putText("=C ");
                     break;

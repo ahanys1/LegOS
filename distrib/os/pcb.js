@@ -14,8 +14,23 @@ var TSOS;
             this.runningPID = null;
             this.processes = {};
         }
-        addProgram(pid) {
+        addProgram(pid, segment) {
+            let base;
+            if (segment == 0) {
+                base = 0;
+            }
+            else if (segment == 1) {
+                base = 256;
+            }
+            else if (segment == 2) {
+                base = 512;
+            }
             this.processes[pid] = {
+                Priority: 8,
+                Location: "Memory",
+                Segment: segment,
+                Base: base,
+                Limit: base + 255,
                 PC: 0,
                 Acc: 0,
                 IR: 0,
@@ -24,27 +39,35 @@ var TSOS;
                 Zflag: 0,
                 Status: "Resident"
             };
-            //handle display quickly
-            //TODO: have table fill from dictionary
+            //create a new row in the display
             const tableBody = document.getElementById("pcbBody");
-            const process = this.processes[pid];
             const row = tableBody.insertRow();
             const cellPID = row.insertCell(0);
-            const cellPC = row.insertCell(1);
-            const cellAcc = row.insertCell(2);
-            const cellIR = row.insertCell(3);
-            const cellXreg = row.insertCell(4);
-            const cellYreg = row.insertCell(5);
-            const cellZflag = row.insertCell(6);
-            const cellStatus = row.insertCell(7);
+            const cellPriority = row.insertCell(1);
+            const cellLocation = row.insertCell(2);
+            const cellSegment = row.insertCell(3);
+            const cellBase = row.insertCell(4);
+            const cellLimit = row.insertCell(5);
+            const cellPC = row.insertCell(6);
+            const cellAcc = row.insertCell(7);
+            const cellIR = row.insertCell(8);
+            const cellXreg = row.insertCell(9);
+            const cellYreg = row.insertCell(10);
+            const cellZflag = row.insertCell(11);
+            const cellStatus = row.insertCell(12);
+            cellPriority.textContent = this.processes[pid].Priority.toString();
+            cellLocation.textContent = this.processes[pid].Location;
+            cellSegment.textContent = this.processes[pid].Segment.toString();
+            cellBase.textContent = TSOS.Utils.hexLog(this.processes[pid].Base, true);
+            cellLimit.textContent = TSOS.Utils.hexLog(this.processes[pid].Limit, true);
             cellPID.textContent = pid.toString();
-            cellPC.textContent = process.PC.toString();
-            cellAcc.textContent = TSOS.Utils.hexLog(process.Acc, false);
-            cellIR.textContent = TSOS.Utils.hexLog(process.IR, false);
-            cellXreg.textContent = TSOS.Utils.hexLog(process.Xreg, false);
-            cellYreg.textContent = TSOS.Utils.hexLog(process.Yreg, false);
-            cellZflag.textContent = TSOS.Utils.hexLog(process.Zflag, false);
-            cellStatus.textContent = process.Status;
+            cellPC.textContent = this.processes[pid].PC.toString();
+            cellAcc.textContent = TSOS.Utils.hexLog(this.processes[pid].Acc, false);
+            cellIR.textContent = TSOS.Utils.hexLog(this.processes[pid].IR, false);
+            cellXreg.textContent = TSOS.Utils.hexLog(this.processes[pid].Xreg, false);
+            cellYreg.textContent = TSOS.Utils.hexLog(this.processes[pid].Yreg, false);
+            cellZflag.textContent = TSOS.Utils.hexLog(this.processes[pid].Zflag, false);
+            cellStatus.textContent = this.processes[pid].Status;
         }
         kickStart(pid) {
             this.runningPID = pid;
@@ -61,28 +84,19 @@ var TSOS;
             this.processes[this.runningPID].Zflag = _CPU.Zflag;
             console.log(this.processes);
             //now update visuals
-            let row = this.PCBTable.rows[(this.runningPID % 3) + 1];
-            row.cells[1].innerHTML = this.processes[this.runningPID].PC.toString();
-            row.cells[2].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Acc, false);
-            row.cells[3].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].IR, false);
-            row.cells[4].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Xreg, false);
-            row.cells[5].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Yreg, false);
-            row.cells[6].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Zflag, false);
-            row.cells[7].innerHTML = this.processes[this.runningPID].Status;
-            /*if (this.processes.hasOwnProperty(pid)) {
-                const row = this.PCBTable.querySelector(`#pid-${pid}`) as HTMLTableRowElement;
-                if (row) {
-                    row.cells[1].textContent = process.PC.toString();
-                    row.cells[2].textContent = Utils.hexLog(process.Acc, false);
-                    row.cells[3].textContent = Utils.hexLog(process.IR, false);
-                    row.cells[4].textContent = Utils.hexLog(process.Xreg, false);
-                    row.cells[5].textContent = Utils.hexLog(process.Yreg, false);
-                    row.cells[6].textContent = Utils.hexLog(process.Zflag, false);
-                    row.cells[7].textContent = process.Status;
-                }
-            }*/
+            let row = this.PCBTable.rows[this.runningPID + 1];
+            row.cells[6].innerHTML = this.processes[this.runningPID].PC.toString();
+            row.cells[7].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Acc, false);
+            row.cells[8].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].IR, false);
+            row.cells[9].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Xreg, false);
+            row.cells[10].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Yreg, false);
+            row.cells[11].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Zflag, false);
+            row.cells[12].innerHTML = this.processes[this.runningPID].Status;
         }
         terminate() {
+            this.processes[this.runningPID].Status = "Terminated";
+            _MA.deleteProgram(this.processes[this.runningPID].Segment);
+            this.updateRunning();
         }
     }
     TSOS.PCB = PCB;

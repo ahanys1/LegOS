@@ -26,28 +26,44 @@ module TSOS {
         }
 
         //read from the memory module
-        read(pid: number){
-            if (pid % 3 == 0){
+        read(segment: number){
+            if (segment % 3 == 0){
                 this.mdr = _Memory.ram[this.mar + partition.zero];
-            } else if (pid % 3 == 1){
+            } else if (segment % 3 == 1){
                 this.mdr = _Memory.ram[this.mar + partition.one];
-            } else if (pid % 3 == 2){
+            } else if (segment % 3 == 2){
                 this.mdr = _Memory.ram[this.mar + partition.two];
             }
             return this.mdr;
         }
 
         //write to the memory module
-        write(pid: number){
+        write(segment: number){
             if(this.mdr >0xFF){
                 this.mdr = this.mdr - 0xFF; //handles overflow by looping around
             }
-            if (pid % 3 == 0){
+            if (segment == 0){
                 _Memory.ram[this.mar + partition.zero] = this.mdr;
-            } else if (pid % 3 == 1){
+            } else if (segment == 1){
                 _Memory.ram[this.mar + partition.one] = this.mdr;
-            } else if (pid % 3 == 2){
+            } else if (segment == 2){
                 _Memory.ram[this.mar + partition.two] = this.mdr;
+            }
+        }
+
+        deleteProgram(segment: number){
+            if (segment == 0){
+                for (let i = 0; i <= 255; i++){
+                    _Memory.ram[i] = 0x00;
+                }
+            } else if(segment == 1){
+                for (let i = 256; i <= 511; i++){
+                    _Memory.ram[i] = 0x00;
+                }
+            } else if (segment == 2){
+                for (let i = 512; i <= 768; i++){
+                    _Memory.ram[i] = 0x00;
+                }
             }
         }
     }

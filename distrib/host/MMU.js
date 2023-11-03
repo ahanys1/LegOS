@@ -21,12 +21,12 @@ var TSOS;
         }
         write() {
             //to be honest, might not even need this
-            _MA.write(_PCB.runningPID);
+            _MA.write(_PCB.processes[_PCB.runningPID].Segment);
         }
         writeImm(address, value) {
             _MA.setMAR(address);
             _MA.setMDR(value);
-            _MA.write(_PCB.runningPID);
+            _MA.write(_PCB.processes[_PCB.runningPID].Segment);
         }
         setLowOrder(LOB) {
             this.lob = LOB;
@@ -37,11 +37,11 @@ var TSOS;
         }
         read() {
             _MA.setMAR(this.hot + this.lob);
-            return _MA.read(_PCB.runningPID);
+            return _MA.read(_PCB.processes[_PCB.runningPID].Segment);
         }
         readImm(address) {
             _MA.setMAR(address);
-            return _MA.read(_PCB.runningPID);
+            return _MA.read(_PCB.processes[_PCB.runningPID].Segment);
         }
         setMDR(num) {
             _MA.setMDR(num);
@@ -55,14 +55,34 @@ var TSOS;
         getMAR() {
             return _MA.getMAR();
         }
-        writeInit(programArray) {
-            programArray.forEach((code, index) => {
-                //_MMU.writeImm(index, parseInt(code,16));
-                _MA.setMAR(index);
-                _MA.setMDR(parseInt(code, 16));
-                _MA.write(this.PIDs[this.PIDs.length - 1]);
-                index++;
-            });
+        writeInit(programArray, segment) {
+            if (segment >= 0) {
+                programArray.forEach((code, index) => {
+                    //_MMU.writeImm(index, parseInt(code,16));
+                    _MA.setMAR(index);
+                    _MA.setMDR(parseInt(code, 16));
+                    _MA.write(segment);
+                    index++;
+                });
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        findValidSpace() {
+            if (_Memory.ram[0] == 0x00) {
+                return 0;
+            }
+            else if (_Memory.ram[256] == 0x00) {
+                return 1;
+            }
+            else if (_Memory.ram[512] == 0x00) {
+                return 2;
+            }
+            else {
+                return -1;
+            }
         }
     }
     TSOS.MMU = MMU;

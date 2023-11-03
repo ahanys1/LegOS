@@ -374,11 +374,16 @@ module TSOS {
                 } else {
                     _MMU.PIDs.push(_MMU.PIDs[_MMU.PIDs.length - 1] + 1); //pushes next PID to array
                 }
-                _MMU.writeInit(programArray);
-                _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
-                _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length -1]);
-                _RAMdisplay.updateDisplay();
-                console.log(_MMU.PIDs);
+                let segment: number = _MMU.findValidSpace();
+                if (_MMU.writeInit(programArray, segment)){
+                    _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
+                    _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length -1], segment);
+                    _RAMdisplay.updateDisplay();
+                    console.log(_MMU.PIDs);
+                } else {
+                    _StdOut.putText(" ERR: No Valid Space. Aborting...");
+                    _MMU.PIDs.pop();
+                }
             }else{
                 _StdOut.putText("ERR: Program could not be loaded.");
                 console.log(invalidChars);
@@ -388,7 +393,6 @@ module TSOS {
         public shellRun(args:string[]){
             if (_MMU.PIDs.includes(parseInt(args[0]))){ //make sure it's a valid pid 
                 _CPU.init();
-                _SavedState = _Memory.ram;
                 _PCB.kickStart(parseInt(args[0]))
                     //_CPU.PC = partition.zero;
                 //TODO: allow for multiple programs. for now, just do 1.

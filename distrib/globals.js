@@ -23,7 +23,6 @@ var partition;
     partition[partition["two"] = 512] = "two";
 })(partition || (partition = {}));
 var _stepModeEnabled = false; //step mode
-let _SavedState = [];
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
