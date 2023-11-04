@@ -41,6 +41,7 @@ module TSOS {
 
         readImm(address: number){
             _MA.setMAR(address);
+            console.log(_PCB.runningPID);
             return _MA.read(_PCB.processes[_PCB.runningPID].Segment);
         }
 

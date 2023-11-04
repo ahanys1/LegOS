@@ -33,7 +33,9 @@
    <script type="text/javascript" src="distrib/os/CPUdisplay.js"></script>
    <script type="text/javascript" src="distrib/os/RAMdisplay.js"></script>
    <script type="text/javascript" src="distrib/os/pcb.js"></script>
-   
+   <script type="text/javascript" src="distrib/os/scheduler.js"></script>
+   <script type="text/javascript" src="distrib/os/dispatcher.js"></script>
+
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
@@ -118,11 +120,8 @@
             </tr>
          </table>
          
-         <div style="height: 150px; overflow: scroll; float: right;">
-            <table id = "Mem" border="4" style = "float: right; margin-left: 10px;">
-            
-            </table>
-         </div>
+         <h3 id="Quantum">Quantum: 6</h3>
+         <h3 id="CQ">CQ: </h3>
       </div>
    </div>
 
@@ -141,7 +140,7 @@
       </label>
       
    </div>
-
+   
    <div id="divUserProgramInput" style="margin-left:820px;">
       <label style="background-color: yellowgreen;">
          User Program Input
@@ -150,10 +149,11 @@
                    id  ="taProgramInput"
                    rows="8"
                    cols="48"
-         ></textarea>
+         >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
       </label>
       
    </div>
+   
    <table id = "PCB" border="4" style = "float: left;">
       <thead>
          <tr>
@@ -175,21 +175,17 @@
       <tbody id = "pcbBody">
       </tbody>
    </table>
-
+   <div style="height: 150px; overflow: scroll; float: left;">
+      <table id = "Mem" border="4" style = "float: right; margin-left: 10px;">
+      
+      </table>
+   </div>
 </div>
 
 <div class="taskBar">
    <label id="date-time" style="margin-right: 383px;"></label>
    <label id="status">status | Welcome to LegoLand</label>
 </div>
-
-<p class="footerText" style="clear:both;">
-   <br>
-   Copyright &copy; 2008 - 2112 No Rights Reserved.
-   <br>
-   Reproduction is inhibited without the express written consent of
-   Ted Codd, Stevie Ray Vaughan, Neil Peart, and Ian Fleming.
-</p>
 
 </body>
 </html>

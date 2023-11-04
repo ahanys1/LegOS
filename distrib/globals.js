@@ -16,6 +16,7 @@ const CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 seco
 const TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ = 1;
+const CONTEXT_SWITCH_IRQ = 2;
 var partition;
 (function (partition) {
     partition[partition["zero"] = 0] = "zero";
@@ -53,6 +54,8 @@ var _OsShell;
 var _CPUdisplay;
 var _RAMdisplay;
 var _PCB;
+var _Scheduler;
+var _Dispatcher;
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode = false;
 // Global Device Driver Objects - page 12

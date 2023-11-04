@@ -115,7 +115,7 @@ module TSOS {
             sc = new ShellCommand(this.shellClearMem,
                 "clearmem",
                 " - clears all memory partitions.");
-            this.commandList[this.commandList.length] = sc; 
+            this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -321,6 +321,7 @@ module TSOS {
                         break;
                     case "clearmem":
                         _StdOut.putText("'clearmem' clears the memory and terminates all programs.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -398,14 +399,18 @@ module TSOS {
         }
 
         public shellRun(args:string[]){
-            if (_MMU.PIDs.includes(parseInt(args[0]))){ //make sure it's a valid pid 
-                _CPU.init();
-                _PCB.kickStart(parseInt(args[0]))
-                    //_CPU.PC = partition.zero;
-                //TODO: allow for multiple programs. for now, just do 1.
-                //_PCB.kickStart();
-            } else{
-                _StdOut.putText("ERR: Invalid Program ID.");
+            const pidToRun: number = parseInt(args[0]);
+            if (pidToRun in _PCB.processes) {
+                // Add the program with the specified PID to the ready queue
+                _Scheduler.readyQueue.enqueue(_PCB.processes[pidToRun]);
+                // Start the CPU execution if not executing
+                if (!_CPU.isExecuting) {
+                    _PCB.runningPID = pidToRun;
+                    console.log(_PCB.runningPID);
+                    _Scheduler.schedule();
+                }
+            } else {
+                _StdOut.putText("Program with PID " + pidToRun + " does not exist.");
             }
         }
 

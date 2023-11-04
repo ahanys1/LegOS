@@ -256,6 +256,7 @@ var TSOS;
                         break;
                     case "clearmem":
                         _StdOut.putText("'clearmem' clears the memory and terminates all programs.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -331,15 +332,19 @@ var TSOS;
             }
         }
         shellRun(args) {
-            if (_MMU.PIDs.includes(parseInt(args[0]))) { //make sure it's a valid pid 
-                _CPU.init();
-                _PCB.kickStart(parseInt(args[0]));
-                //_CPU.PC = partition.zero;
-                //TODO: allow for multiple programs. for now, just do 1.
-                //_PCB.kickStart();
+            const pidToRun = parseInt(args[0]);
+            if (pidToRun in _PCB.processes) {
+                // Add the program with the specified PID to the ready queue
+                _Scheduler.readyQueue.enqueue(_PCB.processes[pidToRun]);
+                // Start the CPU execution if not executing
+                if (!_CPU.isExecuting) {
+                    _PCB.runningPID = pidToRun;
+                    console.log(_PCB.runningPID);
+                    _Scheduler.schedule();
+                }
             }
             else {
-                _StdOut.putText("ERR: Invalid Program ID.");
+                _StdOut.putText("Program with PID " + pidToRun + " does not exist.");
             }
         }
         shellTrace(args) {

@@ -26,6 +26,7 @@ var TSOS;
                 base = 512;
             }
             this.processes[pid] = {
+                PID: pid,
                 Priority: 8,
                 Location: "Memory",
                 Segment: segment,

@@ -48,6 +48,11 @@ var TSOS;
             //start pcb
             _PCB = new TSOS.PCB();
             _PCB.init();
+            //start scheduler
+            _Scheduler = new TSOS.Scheduler();
+            _Scheduler.init();
+            //and dispatcher
+            _Dispatcher = new TSOS.Dispatcher();
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();
@@ -113,6 +118,9 @@ var TSOS;
                 case KEYBOARD_IRQ:
                     _krnKeyboardDriver.isr(params); // Kernel mode device driver
                     _StdIn.handleInput();
+                    break;
+                case CONTEXT_SWITCH_IRQ:
+                    _Dispatcher.completeContextSwitch();
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

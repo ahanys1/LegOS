@@ -1,5 +1,6 @@
 module TSOS{
     interface ProcessInfo{
+        PID: number;
         Priority: number;
         Location: string;
         Segment: number;
@@ -37,6 +38,7 @@ module TSOS{
                 base = 512;
             }
             this.processes[pid] = {
+                PID: pid,
                 Priority: 8,
                 Location: "Memory",
                 Segment: segment,

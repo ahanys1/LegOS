@@ -36,7 +36,7 @@ module TSOS {
             _Kernel.krnTrace("Key code:" + keyCode + " shifted:" + isShifted + " ctrl:" + isCtrl + " capsLock: "+isCaps);
             var chr = "";
             // Check to see if we even want to deal with the key that was pressed.
-            console.log(keyCode);
+            //console.log(keyCode);
             if (keyCode == 67 && isCtrl){ //control - C
                 chr = "^C";
             } else if ((keyCode >= 65) && (keyCode <= 90)) { // letter
