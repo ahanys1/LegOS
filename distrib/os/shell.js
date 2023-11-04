@@ -471,7 +471,12 @@ var TSOS;
             }
         }
         shellQuantum(args) {
-            _Scheduler.updateQuantum(parseInt(args[0]));
+            if (parseInt(args[0]) > 0) {
+                _Scheduler.updateQuantum(parseInt(args[0]));
+            }
+            else {
+                _StdOut.putText("ERR: quantum must be greater than 0.");
+            }
         }
     }
     TSOS.Shell = Shell;
