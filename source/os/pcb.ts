@@ -115,6 +115,7 @@ module TSOS{
         public terminate(){
             this.processes[this.runningPID].Status = "Terminated";
             _MA.deleteProgram(this.processes[this.runningPID].Segment);
+            _CPU.init();
             this.updateRunning();
         }
 
