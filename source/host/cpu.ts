@@ -104,6 +104,7 @@ module TSOS {
                     _Scheduler.schedule();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
+                    console.log(_PCB.processes);
                     break;
                 
 

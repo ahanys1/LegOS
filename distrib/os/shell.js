@@ -67,6 +67,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " - clears all memory partitions.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", " - displays the PID and state of all processes.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -262,6 +264,10 @@ var TSOS;
                         break;
                     case "runall":
                         _StdOut.putText("'runall' runs all programs in the resident list.");
+                        break;
+                    case "ps":
+                        _StdOut.putText("'ps' displays the PID and state for all proceses.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -420,6 +426,18 @@ var TSOS;
             _Memory.reset();
             _PCB.terminateAll();
             _RAMdisplay.updateDisplay();
+        }
+        shellPS(args) {
+            if (_PCB.processes[0]) { //if pcb has contents
+                for (const pid in _PCB.processes) {
+                    const processInfo = _PCB.processes[pid];
+                    _StdOut.putText(`PID: ${processInfo.PID} | State: ${processInfo.Status}`);
+                    _StdOut.advanceLine();
+                }
+            }
+            else {
+                _StdOut.putText("There are no processes.");
+            }
         }
     }
     TSOS.Shell = Shell;

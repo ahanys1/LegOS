@@ -41,7 +41,7 @@ var TSOS;
         }
         readImm(address) {
             _MA.setMAR(address);
-            console.log(_PCB.runningPID);
+            // console.log(_PCB.runningPID);
             return _MA.read(_PCB.processes[_PCB.runningPID].Segment);
         }
         setMDR(num) {

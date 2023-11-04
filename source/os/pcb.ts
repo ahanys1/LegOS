@@ -99,7 +99,7 @@ module TSOS{
             this.processes[this.runningPID].Xreg = _CPU.Xreg;
             this.processes[this.runningPID].Yreg = _CPU.Yreg;
             this.processes[this.runningPID].Zflag = _CPU.Zflag;
-            console.log(this.processes);
+            //console.log(this.processes);
             
             //now update visuals
             let row = this.PCBTable.rows[this.runningPID + 1];
@@ -126,6 +126,11 @@ module TSOS{
                 let row = this.PCBTable.rows[parseInt(pid)+1] as HTMLTableRowElement;
                 row.cells[12].innerHTML = this.processes[pid].Status;
             }
+        }
+
+        public updateStatusDisplay(){
+            let row = this.PCBTable.rows[this.runningPID + 1];
+            row.cells[12].innerHTML = this.processes[this.runningPID].Status;
         }
     }
 }

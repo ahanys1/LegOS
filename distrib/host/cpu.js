@@ -105,6 +105,7 @@ var TSOS;
                     _Scheduler.schedule();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
+                    console.log(_PCB.processes);
                     break;
                 case 0xFF: //System Call
                     if ((this.Xreg == 0x01) || (this.Xreg == 0x02)) {

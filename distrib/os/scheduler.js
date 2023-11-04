@@ -18,7 +18,10 @@ var TSOS;
         schedule() {
             if (this.readyQueue.getSize() > 0) {
                 const currentProcess = _PCB.processes[_PCB.runningPID];
-                currentProcess.Status = "Ready";
+                if (currentProcess.Status != "Terminated") {
+                    currentProcess.Status = "Ready";
+                    _PCB.updateStatusDisplay();
+                }
                 // Rotate the queue (move the current process to the back)
                 this.readyQueue.enqueue(this.readyQueue.dequeue());
                 // Get the next process to run
@@ -29,17 +32,13 @@ var TSOS;
             }
             else {
                 _CPU.isExecuting = false;
+                _Console.advanceLine();
+                _Console.putText("=C ");
             }
         }
         handleCPUBurst() {
             if (_PCB.runningPID !== null) {
-                const currentProcess = _PCB.processes[_PCB.runningPID];
-                _PCB.processes[_PCB.runningPID].PC = _CPU.PC;
-                _PCB.processes[_PCB.runningPID].Acc = _CPU.Acc;
-                _PCB.processes[_PCB.runningPID].IR = _CPU.IR;
-                _PCB.processes[_PCB.runningPID].Xreg = _CPU.Xreg;
-                _PCB.processes[_PCB.runningPID].Yreg = _CPU.Yreg;
-                _PCB.processes[_PCB.runningPID].Zflag = _CPU.Zflag;
+                _PCB.updateRunning();
             }
             this.CQ++;
             let dispCQ = document.getElementById("CQ");
@@ -56,6 +55,11 @@ var TSOS;
                 _KernelInterruptQueue.enqueue(interrupt);
                 _Dispatcher.contextSwitching = true;
             }
+        }
+        updateQuantum(q) {
+            this.quantum = q;
+            let dispQ = document.getElementById("Quantum");
+            dispQ.innerHTML = this.quantum.toString();
         }
     }
     TSOS.Scheduler = Scheduler;
