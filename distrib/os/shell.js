@@ -69,6 +69,10 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellPS, "ps", " - displays the PID and state of all processes.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "<pid> - kills the specified prodess.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - Kills all running processes.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -268,6 +272,12 @@ var TSOS;
                     case "ps":
                         _StdOut.putText("'ps' displays the PID and state for all proceses.");
                         break;
+                    case "kill":
+                        _StdOut.putText("'kill <pid>' kills the specified program.");
+                        break;
+                    case "killall":
+                        _StdOut.putText("'killall' kills all running processes");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -436,7 +446,24 @@ var TSOS;
                 }
             }
             else {
-                _StdOut.putText("There are no processes.");
+                _StdOut.putText("ERR: There are no processes.");
+            }
+        }
+        shellKill(args) {
+            if ((_PCB.processes[parseInt(args[0])].Status != "Resident" && _PCB.processes[parseInt(args[0])].Status != "Terminated") && _PCB.processes[_PCB.runningPID] !== undefined) {
+                _PCB.terminate(parseInt(args[0]));
+            }
+            else {
+                _StdOut.putText("ERR: a program must be running for it to be killed.");
+            }
+        }
+        shellKillAll(args) {
+            if (_PCB.processes[0]) {
+                for (const pid in _PCB.processes) {
+                    if ((_PCB.processes[pid].Status != "Resident" && _PCB.processes[pid].Status != "Resident") && _PCB.processes[pid] !== undefined) {
+                        _PCB.terminate(_PCB.processes[pid].PID);
+                    }
+                }
             }
         }
     }

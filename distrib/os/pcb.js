@@ -94,11 +94,12 @@ var TSOS;
             row.cells[11].innerHTML = TSOS.Utils.hexLog(this.processes[this.runningPID].Zflag, false);
             row.cells[12].innerHTML = this.processes[this.runningPID].Status;
         }
-        terminate() {
-            this.processes[this.runningPID].Status = "Terminated";
-            _MA.deleteProgram(this.processes[this.runningPID].Segment);
+        terminate(pid) {
+            this.processes[pid].Status = "Terminated";
+            let row = this.PCBTable.rows[pid + 1];
+            row.cells[12].innerHTML = this.processes[pid].Status;
+            _MA.deleteProgram(this.processes[pid].Segment);
             _Scheduler.readyQueue.dequeue();
-            _CPU.init();
             this.updateRunning();
         }
         terminateAll() {

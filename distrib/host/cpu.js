@@ -101,7 +101,8 @@ var TSOS;
                     break;
                 case 0x00: //Break
                     this.isExecuting = false;
-                    _PCB.terminate();
+                    _PCB.terminate(_PCB.runningPID);
+                    this.init();
                     _Scheduler.schedule();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
