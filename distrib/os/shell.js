@@ -73,6 +73,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - Kills all running processes.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<pid> - updates the quantum to the set PID");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -278,6 +280,8 @@ var TSOS;
                     case "killall":
                         _StdOut.putText("'killall' kills all running processes");
                         break;
+                    case "quantum":
+                        _StdOut.putText("'quantum <pid>' updates the quantum for the Round Robin CPU scheduling.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -465,6 +469,9 @@ var TSOS;
                     }
                 }
             }
+        }
+        shellQuantum(args) {
+            _Scheduler.updateQuantum(parseInt(args[0]));
         }
     }
     TSOS.Shell = Shell;

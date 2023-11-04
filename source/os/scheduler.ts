@@ -63,7 +63,7 @@ module TSOS {
         public updateQuantum(q: number){
             this.quantum = q;
             let dispQ = document.getElementById("Quantum");
-            dispQ.innerHTML = this.quantum.toString();
+            dispQ.innerHTML = "Quantum: " + this.quantum.toString();
         }
     }
     

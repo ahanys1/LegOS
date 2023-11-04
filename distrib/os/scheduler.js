@@ -59,7 +59,7 @@ var TSOS;
         updateQuantum(q) {
             this.quantum = q;
             let dispQ = document.getElementById("Quantum");
-            dispQ.innerHTML = this.quantum.toString();
+            dispQ.innerHTML = "Quantum: " + this.quantum.toString();
         }
     }
     TSOS.Scheduler = Scheduler;

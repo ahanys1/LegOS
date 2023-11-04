@@ -137,13 +137,18 @@ module TSOS {
                 " - Kills all running processes.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellQuantum,
+                "quantum",
+                "<pid> - updates the quantum to the set PID");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
             // Display the initial prompt.
             this.putPrompt();
         }
-        
+
         public putPrompt() {
             _StdOut.putText(this.promptStr);
         }
@@ -355,6 +360,8 @@ module TSOS {
                     case "killall":
                         _StdOut.putText("'killall' kills all running processes");
                         break;
+                    case "quantum":
+                        _StdOut.putText("'quantum <pid>' updates the quantum for the Round Robin CPU scheduling.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -545,6 +552,14 @@ module TSOS {
                         _PCB.terminate(_PCB.processes[pid].PID);
                     }
                 }
+            }
+        }
+
+        public shellQuantum(args: string[]){
+            if (parseInt(args[0]) > 0){
+                _Scheduler.updateQuantum(parseInt(args[0]));
+            } else {
+                _StdOut.putText("ERR: quantum must be greater than 0.");
             }
         }
 
