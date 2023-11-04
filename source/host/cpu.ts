@@ -53,7 +53,7 @@ module TSOS {
             if(this.isExecuting){
                 this.fetch();
             }
-            
+            _Scheduler.handleCPUBurst();
 
         }
 
@@ -101,10 +101,9 @@ module TSOS {
                 case 0x00: //Break
                     this.isExecuting = false;
                     _PCB.terminate();
+                    _Scheduler.schedule();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
-                    _Console.advanceLine();
-                    _Console.putText("=C ");
                     break;
                 
 

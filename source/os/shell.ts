@@ -105,7 +105,12 @@ module TSOS {
             sc = new ShellCommand(this.shellRun,
                 "run",
                 "<pid> - Runs the program loaded at pid");
-            this.commandList[this.commandList.length] = sc;    
+            this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellRunAll,
+                "runall",
+                " - Runs all programs in the Resident List");
+            this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellBSOD,
                 "bsod",
@@ -316,12 +321,15 @@ module TSOS {
                         break;
                     case "run":
                         _StdOut.putText("'run <pid>' will execute the program loaded at the specefied program ID.");
+                        break;
                     case "bsod":
                         _StdOut.putText("'bsod' initiates the process for handling a fatal system error. Requires a full reset.");
                         break;
                     case "clearmem":
                         _StdOut.putText("'clearmem' clears the memory and terminates all programs.");
                         break;
+                    case "runall":
+                        _StdOut.putText("'runall' runs all programs in the resident list.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -400,17 +408,36 @@ module TSOS {
 
         public shellRun(args:string[]){
             const pidToRun: number = parseInt(args[0]);
-            if (pidToRun in _PCB.processes) {
+            if (pidToRun in _PCB.processes && _PCB.processes[pidToRun].Status == "Resident") {
                 // Add the program with the specified PID to the ready queue
                 _Scheduler.readyQueue.enqueue(_PCB.processes[pidToRun]);
                 // Start the CPU execution if not executing
                 if (!_CPU.isExecuting) {
+                    _Scheduler.CQ = 1;
                     _PCB.runningPID = pidToRun;
                     console.log(_PCB.runningPID);
                     _Scheduler.schedule();
                 }
             } else {
-                _StdOut.putText("Program with PID " + pidToRun + " does not exist.");
+                _StdOut.putText("ERR: Program with PID " + pidToRun + " can not be run.");
+            }
+        }
+
+        public shellRunAll(args:string[]){
+            for (const pid in _PCB.processes){
+                if (_PCB.processes[pid].Status === "Resident") {
+                    _Scheduler.readyQueue.enqueue(_PCB.processes[pid]);
+                    _PCB.processes[pid].Status = "Ready"; // Update the status to "Ready"
+                }
+                // Start the CPU execution if not already executing
+                if (!_CPU.isExecuting) {
+                    _Scheduler.CQ = 1;
+                    const nextProcess = _Scheduler.readyQueue.peek();
+                    if (nextProcess) {
+                        _PCB.runningPID = nextProcess.PID;
+                        _Scheduler.schedule();
+                    }
+                }
             }
         }
 

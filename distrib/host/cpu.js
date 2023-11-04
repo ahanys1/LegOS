@@ -61,6 +61,7 @@ var TSOS;
             if (this.isExecuting) {
                 this.fetch();
             }
+            _Scheduler.handleCPUBurst();
         }
         //
         //PIPELINE - This is where the things do stuff. I'm porting this almost directly from Org and arch because I'm too lazy to refactor it more than I already have to.
@@ -101,10 +102,9 @@ var TSOS;
                 case 0x00: //Break
                     this.isExecuting = false;
                     _PCB.terminate();
+                    _Scheduler.schedule();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
-                    _Console.advanceLine();
-                    _Console.putText("=C ");
                     break;
                 case 0xFF: //System Call
                     if ((this.Xreg == 0x01) || (this.Xreg == 0x02)) {

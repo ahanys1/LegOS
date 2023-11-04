@@ -3,14 +3,17 @@ var TSOS;
     class Scheduler {
         readyQueue;
         quantum;
-        constructor(readyQueue = new TSOS.Queue, quantum = 6 // Set the default quantum
-        ) {
+        CQ;
+        constructor(readyQueue = new TSOS.Queue, quantum = 6, // Set the default quantum
+        CQ = 1) {
             this.readyQueue = readyQueue;
             this.quantum = quantum;
+            this.CQ = CQ;
         }
         init() {
             this.readyQueue = new TSOS.Queue();
             this.quantum = 6;
+            this.CQ = 1;
         }
         schedule() {
             if (this.readyQueue.getSize() > 0) {
@@ -31,21 +34,22 @@ var TSOS;
         handleCPUBurst() {
             if (_PCB.runningPID !== null) {
                 const currentProcess = _PCB.processes[_PCB.runningPID];
-                currentProcess.PC = _CPU.PC;
-                currentProcess.Acc = _CPU.Acc;
-                currentProcess.IR = _CPU.IR;
-                currentProcess.Xreg = _CPU.Xreg;
-                currentProcess.Yreg = _CPU.Yreg;
-                currentProcess.Zflag = _CPU.Zflag;
+                _PCB.processes[_PCB.runningPID].PC = _CPU.PC;
+                _PCB.processes[_PCB.runningPID].Acc = _CPU.Acc;
+                _PCB.processes[_PCB.runningPID].IR = _CPU.IR;
+                _PCB.processes[_PCB.runningPID].Xreg = _CPU.Xreg;
+                _PCB.processes[_PCB.runningPID].Yreg = _CPU.Yreg;
+                _PCB.processes[_PCB.runningPID].Zflag = _CPU.Zflag;
             }
-            if (_PCB.runningPID === null || _CPU.PC === 0) {
-                this.schedule();
+            this.CQ++;
+            let dispCQ = document.getElementById("CQ");
+            if (_PCB.runningPID === null || this.CQ > this.quantum) {
+                this.CQ = 1;
+                this.contextSwitch();
             }
-            else if (_CPU.PC % this.quantum === 0) {
-                this.schedule();
-            }
+            dispCQ.innerHTML = "CQ: " + this.CQ.toString();
         }
-        static contextSwitch() {
+        contextSwitch() {
             // Trigger a context switch by generating a context switch interrupt
             if (!_Dispatcher.contextSwitching) {
                 const interrupt = new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, null);
