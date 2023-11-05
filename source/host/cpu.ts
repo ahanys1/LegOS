@@ -54,6 +54,7 @@ module TSOS {
                 this.fetch();
             }
             _Scheduler.handleCPUBurst();
+            _Scheduler.TurnaroundTime++;
 
         }
 
@@ -99,13 +100,17 @@ module TSOS {
                     break;
                 
                 case 0x00: //Break
+                    _Scheduler.justTerminated = true;
                     this.isExecuting = false;
+                    _Scheduler.finishedPIDs.push(_PCB.runningPID);
+                    _PCB.processes[_PCB.runningPID].LastTick = _Scheduler.TurnaroundTime;
                     _PCB.terminate(_PCB.runningPID);
                     this.init();
-                    _Scheduler.schedule();
+                    _Scheduler.CQ == 1;
+                    _Scheduler.contextSwitch();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
-                    console.log(_PCB.processes);
+                    
                     break;
                 
 

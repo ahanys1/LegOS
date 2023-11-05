@@ -62,6 +62,7 @@ var TSOS;
                 this.fetch();
             }
             _Scheduler.handleCPUBurst();
+            _Scheduler.TurnaroundTime++;
         }
         //
         //PIPELINE - This is where the things do stuff. I'm porting this almost directly from Org and arch because I'm too lazy to refactor it more than I already have to.
@@ -100,13 +101,16 @@ var TSOS;
                 case 0xEA: //No Operation
                     break;
                 case 0x00: //Break
+                    _Scheduler.justTerminated = true;
                     this.isExecuting = false;
+                    _Scheduler.finishedPIDs.push(_PCB.runningPID);
+                    _PCB.processes[_PCB.runningPID].LastTick = _Scheduler.TurnaroundTime;
                     _PCB.terminate(_PCB.runningPID);
                     this.init();
-                    _Scheduler.schedule();
+                    _Scheduler.CQ == 1;
+                    _Scheduler.contextSwitch();
                     _CPUdisplay.updateAll();
                     _RAMdisplay.updateDisplay();
-                    console.log(_PCB.processes);
                     break;
                 case 0xFF: //System Call
                     if ((this.Xreg == 0x01) || (this.Xreg == 0x02)) {

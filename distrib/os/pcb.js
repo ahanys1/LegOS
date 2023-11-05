@@ -38,7 +38,9 @@ var TSOS;
                 Xreg: 0,
                 Yreg: 0,
                 Zflag: 0,
-                Status: "Resident"
+                Status: "Resident",
+                ExecutionLength: 0,
+                LastTick: 0
             };
             //create a new row in the display
             const tableBody = document.getElementById("pcbBody");

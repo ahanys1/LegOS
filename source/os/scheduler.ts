@@ -5,13 +5,19 @@ module TSOS {
         constructor(
             public readyQueue: TSOS.Queue = new TSOS.Queue,
             private quantum: number = 6, // Set the default quantum
-            public CQ: number = 1
+            public CQ: number = 1,
+            public TurnaroundTime: number = 0,
+            public finishedPIDs: number[] = [],
+            public justTerminated: boolean = false
         ) {}
 
         public init(){
             this.readyQueue = new TSOS.Queue();
             this.quantum = 6; 
             this.CQ = 1;
+            this.TurnaroundTime = 0;
+            this.finishedPIDs = [];
+            this.justTerminated = false;
         }
 
         public schedule(): void {
@@ -21,8 +27,12 @@ module TSOS {
                 currentProcess.Status = "Ready";
                 _PCB.updateStatusDisplay();
             }
-                // Rotate the queue (move the current process to the back)
-                this.readyQueue.enqueue(this.readyQueue.dequeue());
+                // Rotate the queue (move the current process to the back) only if one just wasn't terminated
+                if (!this.justTerminated){
+                    this.readyQueue.enqueue(this.readyQueue.dequeue());
+                } else {
+                    _Scheduler.justTerminated = false;
+                }
 
                 // Get the next process to run
                 const nextProcess = this.readyQueue.peek();
@@ -30,10 +40,22 @@ module TSOS {
                 _PCB.runningPID = nextProcess.PID;
                 
                 _CPU.isExecuting = true;
-            } else {
+            } else { //done executing all programs
                 _CPU.isExecuting = false;
                 _Console.advanceLine();
+                for (let i = 0; i < this.finishedPIDs.length; i++){
+                    _Console.putText(`PID: ${this.finishedPIDs[i]}`);
+                    _Console.advanceLine();
+                    _Console.putText(`Turnaround Time: ${_PCB.processes[this.finishedPIDs[i]].LastTick} CPU cycles`);
+                    _Console.advanceLine();
+                    _Console.putText(`Wait time: ${_PCB.processes[this.finishedPIDs[i]].LastTick - _PCB.processes[this.finishedPIDs[i]].ExecutionLength} CPU cycles`);
+                    _Console.advanceLine();
+                    _Console.putText("------------------");
+                    _Console.advanceLine();
+                }
                 _Console.putText("=C ");
+                this.finishedPIDs = [];
+                this.TurnaroundTime = 0;
             }
         }
 
@@ -44,8 +66,9 @@ module TSOS {
             }
             this.CQ++;
             let dispCQ = document.getElementById("CQ");
+            _PCB.processes[_PCB.runningPID].ExecutionLength++; 
             
-            if (_PCB.runningPID === null  || this.CQ > this.quantum) {
+            if (_PCB.runningPID === null  || this.CQ > this.quantum ) {
                 this.CQ = 1;
                 this.contextSwitch();
             }
