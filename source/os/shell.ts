@@ -139,7 +139,7 @@ module TSOS {
 
             sc = new ShellCommand(this.shellQuantum,
                 "quantum",
-                "<pid> - updates the quantum to the set PID");
+                "<q> - updates the quantum to the set PID");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
@@ -361,7 +361,7 @@ module TSOS {
                         _StdOut.putText("'killall' kills all running processes");
                         break;
                     case "quantum":
-                        _StdOut.putText("'quantum <pid>' updates the quantum for the Round Robin CPU scheduling.");
+                        _StdOut.putText("'quantum <q>' updates the quantum for the Round Robin CPU scheduling.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -545,7 +545,7 @@ module TSOS {
         public shellKillAll(args: string[]){
             if (_PCB.processes[0]){
                 for (const pid in _PCB.processes){
-                    if ((_PCB.processes[pid].Status != "Resident" && _PCB.processes[pid].Status != "Resident") && _PCB.processes[pid] !== undefined){
+                    if ((_PCB.processes[pid].Status != "Resident" && _PCB.processes[pid].Status != "Terminated") && _PCB.processes[pid] !== undefined){
                         _PCB.terminate(_PCB.processes[pid].PID);
                     }
                 }

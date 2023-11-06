@@ -232,7 +232,7 @@ module TSOS {
                     let pcb = document.getElementById("PCB");
                     let container = document.getElementById("middle");
 
-                    container.insertBefore(bsod, console);
+                    container.insertBefore(bsod, console); //swaps the bsod image with the terminal
                     container.appendChild(console);
 
                     console.style.visibility = "hidden";
