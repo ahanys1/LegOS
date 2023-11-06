@@ -44,6 +44,7 @@ module TSOS {
                 _CPU.isExecuting = false;
                 _Console.advanceLine();
                 for (let i = 0; i < this.finishedPIDs.length; i++){
+                    _PCB.processes[this.finishedPIDs[i]].LastTick++;
                     _Console.putText(`PID: ${this.finishedPIDs[i]}`);
                     _Console.advanceLine();
                     _Console.putText(`Turnaround Time: ${_PCB.processes[this.finishedPIDs[i]].LastTick} CPU cycles`);

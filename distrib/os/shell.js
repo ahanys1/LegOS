@@ -347,13 +347,11 @@ var TSOS;
                     console.log(_MMU.PIDs);
                 }
                 else {
-                    _StdOut.putText(" ERR: No Valid Space. Aborting...");
-                    _MMU.PIDs.pop();
+                    _Kernel.krnTrapError("NO SPACE");
                 }
             }
             else {
-                _StdOut.putText("ERR: Program could not be loaded.");
-                console.log(invalidChars);
+                _Kernel.krnTrapError("NOT LOADED", invalidChars);
             }
         }
         shellRun(args) {
@@ -370,7 +368,7 @@ var TSOS;
                 }
             }
             else {
-                _StdOut.putText("ERR: Program with PID " + pidToRun + " can not be run.");
+                _Kernel.krnTrapError("CANNOT RUN", [pidToRun]);
             }
         }
         shellRunAll(args) {
@@ -433,8 +431,7 @@ var TSOS;
             }
         }
         shellBSOD(args) {
-            _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
-            console.log("got to here");
+            _Kernel.krnTrapError("BSOD");
         }
         shellClearMem(args) {
             _Memory.reset();
@@ -450,7 +447,7 @@ var TSOS;
                 }
             }
             else {
-                _StdOut.putText("ERR: There are no processes.");
+                _Kernel.krnTrapError("PS");
             }
         }
         shellKill(args) {
@@ -458,7 +455,7 @@ var TSOS;
                 _PCB.terminate(parseInt(args[0]));
             }
             else {
-                _StdOut.putText("ERR: a program must be running for it to be killed.");
+                _Kernel.krnTrapError("KILL");
             }
         }
         shellKillAll(args) {
@@ -475,7 +472,7 @@ var TSOS;
                 _Scheduler.updateQuantum(parseInt(args[0]));
             }
             else {
-                _StdOut.putText("ERR: quantum must be greater than 0.");
+                _Kernel.krnTrapError("QUANTUM");
             }
         }
     }

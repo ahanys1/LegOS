@@ -1,7 +1,7 @@
 module TSOS{
-    interface ProcessInfo{
-        PID: number;
-        Priority: number;
+    interface ProcessInfo{ //look, I realized after I went down this rabbit hole that there was a far better (and probably more correct) way to do this. 
+        PID: number;       //instead of making a new PCB for each program, I create a new entry in my PCB's Dictionary of all the programs.
+        Priority: number;  //Functionally, this produces the exact same result. If you're wondering where I got this idea, I used a lot of dictionaries at my internship this past summer.
         Location: string;
         Segment: number;
         Base: number;
@@ -123,6 +123,13 @@ module TSOS{
             _MA.deleteProgram(this.processes[pid].Segment);
             _Scheduler.readyQueue.dequeue();
             this.updateRunning();
+            _Scheduler.CQ == 1;
+            _Scheduler.contextSwitch();
+            _CPUdisplay.updateAll();
+            _RAMdisplay.updateDisplay();
+            _StdOut.advanceLine();
+            _StdOut.putText(`Process ${pid} Terminated.`);
+            _StdOut.advanceLine();
         }
 
         public terminateAll(){

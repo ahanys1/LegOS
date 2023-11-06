@@ -107,10 +107,10 @@ var TSOS;
                     _PCB.processes[_PCB.runningPID].LastTick = _Scheduler.TurnaroundTime;
                     _PCB.terminate(_PCB.runningPID);
                     this.init();
-                    _Scheduler.CQ == 1;
-                    _Scheduler.contextSwitch();
-                    _CPUdisplay.updateAll();
-                    _RAMdisplay.updateDisplay();
+                    //_Scheduler.CQ == 1;
+                    //_Scheduler.contextSwitch();
+                    //_CPUdisplay.updateAll();
+                    //_RAMdisplay.updateDisplay();
                     break;
                 case 0xFF: //System Call
                     if ((this.Xreg == 0x01) || (this.Xreg == 0x02)) {
@@ -118,6 +118,8 @@ var TSOS;
                         this.execute1();
                     }
                     break;
+                default:
+                    _Kernel.krnTrapError("INVALID OP");
             }
         }
         decode2() {

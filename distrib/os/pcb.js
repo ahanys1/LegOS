@@ -103,6 +103,13 @@ var TSOS;
             _MA.deleteProgram(this.processes[pid].Segment);
             _Scheduler.readyQueue.dequeue();
             this.updateRunning();
+            _Scheduler.CQ == 1;
+            _Scheduler.contextSwitch();
+            _CPUdisplay.updateAll();
+            _RAMdisplay.updateDisplay();
+            _StdOut.advanceLine();
+            _StdOut.putText(`Process ${pid} Terminated.`);
+            _StdOut.advanceLine();
         }
         terminateAll() {
             for (const pid in this.processes) {

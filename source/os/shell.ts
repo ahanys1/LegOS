@@ -429,12 +429,10 @@ module TSOS {
                     _RAMdisplay.updateDisplay();
                     console.log(_MMU.PIDs);
                 } else {
-                    _StdOut.putText(" ERR: No Valid Space. Aborting...");
-                    _MMU.PIDs.pop();
+                    _Kernel.krnTrapError("NO SPACE");
                 }
             }else{
-                _StdOut.putText("ERR: Program could not be loaded.");
-                console.log(invalidChars);
+                _Kernel.krnTrapError("NOT LOADED", invalidChars);
             }
         }
 
@@ -451,7 +449,7 @@ module TSOS {
                     _Scheduler.schedule();
                 }
             } else {
-                _StdOut.putText("ERR: Program with PID " + pidToRun + " can not be run.");
+                _Kernel.krnTrapError("CANNOT RUN",[pidToRun]);
             }
         }
 
@@ -515,8 +513,7 @@ module TSOS {
         }
 
         public shellBSOD(args: string[]){
-            _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
-            console.log("got to here");
+            _Kernel.krnTrapError("BSOD");
         }
 
         public shellClearMem(args: string[]){
@@ -533,7 +530,7 @@ module TSOS {
                     _StdOut.advanceLine();
                 }
             } else {
-                _StdOut.putText("ERR: There are no processes.");
+                _Kernel.krnTrapError("PS");
             }
         }
 
@@ -541,7 +538,7 @@ module TSOS {
             if ((_PCB.processes[parseInt(args[0])].Status != "Resident" && _PCB.processes[parseInt(args[0])].Status != "Terminated") && _PCB.processes[_PCB.runningPID] !== undefined){
                 _PCB.terminate(parseInt(args[0]));
             } else {
-                _StdOut.putText("ERR: a program must be running for it to be killed.");
+                _Kernel.krnTrapError("KILL");
             }
         }
 
@@ -559,7 +556,7 @@ module TSOS {
             if (parseInt(args[0]) > 0){
                 _Scheduler.updateQuantum(parseInt(args[0]));
             } else {
-                _StdOut.putText("ERR: quantum must be greater than 0.");
+                _Kernel.krnTrapError("QUANTUM");
             }
         }
 
