@@ -47,6 +47,7 @@ h3 {
   border-style: none;
   margin: 5px;
   padding: 5px;
+  
 }
 
 .footerText {
@@ -135,21 +136,25 @@ table{
 #btnStartOS{
   background-image: url(/distrib/images/brick-green.png);
   background-size: contain;
+  cursor: pointer;
 }
 
 #btnHaltOS{
   background-image: url(/distrib/images/brick-red.png);
   background-size: contain;
+  cursor: pointer;
 }
 
 #btnReset{
   background-image: url(/distrib/images/brick-green.png);
   background-size: contain;
+  cursor: pointer;
 }
 
 #btnStepToggle{
   background-image: url(/distrib/images/brick-red.png);
   background-size: contain;
+  cursor: pointer;
 }
 
 #btnStep{
@@ -160,6 +165,7 @@ table{
   padding: 5px;
   background-image: url(/distrib/images/brick-yellow.png);
   background-size:cover;
+  cursor:not-allowed;
 }
 
 #CPUHeader{
@@ -213,5 +219,21 @@ table{
   margin-left: auto;
   align-items: center;
   visibility: hidden;
+}
+#MemContainer{
+  background-image: url(/distrib/images/lego-side.png);
+  background-size:  cover;
+  background-color: transparent;
+  padding-left: 65px;
+  padding-top: 100px;
+  
+}
+#Mem{
+  background-color: transparent;
+}
+
+#memTableContainer{
+  height: 300px;
+  overflow: scroll;
 }
 

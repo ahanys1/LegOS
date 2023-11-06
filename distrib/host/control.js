@@ -67,6 +67,7 @@ var TSOS;
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
             btn.style.backgroundImage = 'url("/distrib/images/brick-yellow.png")';
+            btn.style.cursor = "not-allowed";
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new TSOS.Cpu(); // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init(); //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
@@ -105,11 +106,13 @@ var TSOS;
                 btn.style.backgroundImage = 'url("/distrib/images/brick-green.png")';
                 stepButton.style.backgroundImage = 'url("/distrib/images/brick-green.png")';
                 stepButton.disabled = false;
+                stepButton.style.cursor = "pointer";
             }
             else {
                 btn.style.backgroundImage = 'url("/distrib/images/brick-red.png")';
                 stepButton.style.backgroundImage = 'url("/distrib/images/brick-yellow.png")';
                 stepButton.disabled = true;
+                stepButton.style.cursor = "not-allowed";
             }
         }
         static hostBtnStep_click(btn) {
