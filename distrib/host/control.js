@@ -66,6 +66,7 @@ var TSOS;
             document.getElementById("btnReset").disabled = false;
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
+            btn.style.backgroundImage = 'url("/distrib/images/brick-yellow.png")';
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new TSOS.Cpu(); // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init(); //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
@@ -101,11 +102,13 @@ var TSOS;
             const stepButton = document.getElementById("btnStep");
             _stepModeEnabled = !_stepModeEnabled;
             if (_stepModeEnabled) {
-                btn.style.color = "green";
+                btn.style.backgroundImage = 'url("/distrib/images/brick-green.png")';
+                stepButton.style.backgroundImage = 'url("/distrib/images/brick-green.png")';
                 stepButton.disabled = false;
             }
             else {
-                btn.style.color = "red";
+                btn.style.backgroundImage = 'url("/distrib/images/brick-red.png")';
+                stepButton.style.backgroundImage = 'url("/distrib/images/brick-yellow.png")';
                 stepButton.disabled = true;
             }
         }

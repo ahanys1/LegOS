@@ -40,7 +40,7 @@
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-    <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip3.js"></script> 
+   <script type="text/javascript" src="https://alanclasses.github.io/TSOS/test/glados-ip3.js"></script>
    
 </head>
 
@@ -86,22 +86,17 @@
          <input type="button"
              id = "btnStep"
              name="brnStep"
-             class="normal_button"
              disabled="disabled"
-             value="Step"
+             value=">"
              tabindex="4"
              onclick="TSOS.Control.hostBtnStep_click(this)">
          
    </div>
 
-   <div id="divConsole" style="margin:4px; width:800px; height:500px; float:left;">
-      <canvas id="display"
-              width="800px"
-              height="500px"
-              tabindex="3">
-      </canvas>
-      <div id = "DisplaysContainer" style="margin-top: 515px;">
-         <table id = "CPU" border="4" style = "float: left;">
+   <div id="divItems" class="flex-container">
+      <div id="left">
+         <h3 id="CPUHeader">CPU</h3>
+         <table id = "CPU" border="4">
             <tr>
                <th>PC</th>
                <th>Acc</th>
@@ -119,68 +114,78 @@
             <tr>
             </tr>
          </table>
-         
+         <h3 id="memoryHeader">Memory</h3>
+         <div style="height: 300px; overflow: scroll;">
+            <table id = "Mem" border="4" style = " margin-left: 10px;">
+            
+            </table>
+         </div>
+
          <h3 id="Quantum">Quantum: 6</h3>
          <h3 id="CQ">CQ: 1</h3>
+
+      </div>
+
+      <div id="middle">
+         <div id="divConsole" style="margin:4px; width:800px; height:500px;">
+            <canvas id="display"
+               width="800px"
+               height="500px"
+               tabindex="3">
+            </canvas>
+         </div>
+         
+         <table id = "PCB" border="4">
+            <thead>
+               <tr>
+                  <th>PID</th>
+                  <th>Priority</th>
+                  <th>Location</th>
+                  <th>Segment</th>
+                  <th>Base</th>
+                  <th>Limit</th>
+                  <th>PC</th>
+                  <th>Acc</th>
+                  <th>IR</th>
+                  <th>Xreg</th>
+                  <th>Yreg</th>
+                  <th>Zflag</th>
+                  <th>Status</th>
+               </tr>
+            </thead>
+            <tbody id = "pcbBody">
+            </tbody>
+         </table>
+         <div id="bsod" class="bsod"></div>
+      </div>
+
+      <div id="right">
+         <div id="divLog">
+            <h3 id="hostLogLabel">
+               Host Log</h3>
+               <textarea name="taHostLog"
+                         id  ="taHostLog"
+                         rows="26"
+                         cols="48"
+               ></textarea>
+            
+         </div>
+
+         <div id="divUserProgramInput">
+            <h3 id="programInputLabel">
+               User Program Input</h3>
+               <textarea name="taProgramInput"
+                         id  ="taProgramInput"
+                         rows="8"
+                         cols="48"
+               >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
+            
+            
+         </div>
       </div>
    </div>
-
-   <div id="bsod" class="bsod"></div>
-   
-
-   <div id="divLog" style="margin-left:820px;">
-      <label style="background-color: yellowgreen;">
-         Host Log
-         <br>
-         <textarea name="taHostLog"
-                   id  ="taHostLog"
-                   rows="26"
-                   cols="48"
-         ></textarea>
-      </label>
-      
-   </div>
-   
-   <div id="divUserProgramInput" style="margin-left:820px;">
-      <label style="background-color: yellowgreen;">
-         User Program Input
-         <br>
-         <textarea name="taProgramInput"
-                   id  ="taProgramInput"
-                   rows="8"
-                   cols="48"
-         >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
-      </label>
-      
-   </div>
-   
-   <table id = "PCB" border="4" style = "float: left;">
-      <thead>
-         <tr>
-            <th>PID</th>
-            <th>Priority</th>
-            <th>Location</th>
-            <th>Segment</th>
-            <th>Base</th>
-            <th>Limit</th>
-            <th>PC</th>
-            <th>Acc</th>
-            <th>IR</th>
-            <th>Xreg</th>
-            <th>Yreg</th>
-            <th>Zflag</th>
-            <th>Status</th>
-         </tr>
-      </thead>
-      <tbody id = "pcbBody">
-      </tbody>
-   </table>
-   <div style="height: 150px; overflow: scroll; float: left;">
-      <table id = "Mem" border="4" style = "float: right; margin-left: 10px;">
-      
-      </table>
-   </div>
 </div>
+
 
 <div class="taskBar">
    <label id="date-time" style="margin-right: 383px;"></label>

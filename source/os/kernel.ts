@@ -228,6 +228,14 @@ module TSOS {
                 case "BSOD":
                 default:
                     let bsod = document.getElementById("bsod");
+                    let console = document.getElementById("divConsole");
+                    let pcb = document.getElementById("PCB");
+                    let container = document.getElementById("middle");
+
+                    container.insertBefore(bsod, console);
+                    container.appendChild(console);
+
+                    console.style.visibility = "hidden";
                     bsod.style.visibility = "visible";
                     this.krnShutdown();
                     clearInterval(_hardwareClockID);
