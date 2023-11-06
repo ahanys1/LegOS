@@ -536,7 +536,13 @@ module TSOS {
 
         public shellKill(args: string[]){
             if ((_PCB.processes[parseInt(args[0])].Status != "Resident" && _PCB.processes[parseInt(args[0])].Status != "Terminated") && _PCB.processes[_PCB.runningPID] !== undefined){
-                _PCB.terminate(parseInt(args[0]));
+                if (_PCB.processes[parseInt(args[0])].Status == "Running"){
+                    _PCB.terminate(parseInt(args[0]));
+                } else if (_PCB.processes[parseInt(args[0])].Status == "Ready"){ //if not active running program terminate differently
+                    _PCB.processes[parseInt(args[0])].Status = "Terminated"; //set status terminated
+                    _MA.deleteProgram(_PCB.processes[parseInt(args[0])].Segment); //delete that program from the RAM
+                    
+                }
             } else {
                 _Kernel.krnTrapError("KILL");
             }

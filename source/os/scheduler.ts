@@ -26,7 +26,7 @@ module TSOS {
                 if (currentProcess.Status != "Terminated"){
                 currentProcess.Status = "Ready";
                 _PCB.updateStatusDisplay();
-            }
+                }
                 // Rotate the queue (move the current process to the back) only if one just wasn't terminated
                 if (!this.justTerminated){
                     this.readyQueue.enqueue(this.readyQueue.dequeue());
