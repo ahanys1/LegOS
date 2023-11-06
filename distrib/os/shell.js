@@ -366,6 +366,7 @@ var TSOS;
                     console.log(_PCB.runningPID);
                     _Scheduler.schedule();
                 }
+                document.getElementById("runningGIF").style.visibility = "visible";
             }
             else {
                 _Kernel.krnTrapError("CANNOT RUN", [pidToRun]);
@@ -387,6 +388,7 @@ var TSOS;
                     }
                 }
             }
+            document.getElementById("runningGIF").style.visibility = "visible";
         }
         shellTrace(args) {
             if (args.length > 0) {

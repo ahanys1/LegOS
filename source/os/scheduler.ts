@@ -57,6 +57,7 @@ module TSOS {
                 _Console.putText("=C ");
                 this.finishedPIDs = [];
                 this.TurnaroundTime = 0;
+                document.getElementById("runningGIF").style.visibility = "hidden";
             }
         }
 

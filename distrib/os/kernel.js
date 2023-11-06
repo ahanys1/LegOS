@@ -69,6 +69,8 @@ var TSOS;
             // More?
             //
             this.krnTrace("end shutdown OS");
+            _StdOut.clearScreen();
+            _StdOut.putText("System successfully shutdown. Please reset the system.");
         }
         krnOnCPUClockPulse() {
             /* This gets called from the host hardware simulation every time there is a hardware clock pulse.

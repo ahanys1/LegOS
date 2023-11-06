@@ -83,6 +83,8 @@ module TSOS {
             // More?
             //
             this.krnTrace("end shutdown OS");
+            _StdOut.clearScreen(); 
+            _StdOut.putText("System successfully shutdown. Please reset the system.");
         }
 
 

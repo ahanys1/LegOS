@@ -448,6 +448,7 @@ module TSOS {
                     console.log(_PCB.runningPID);
                     _Scheduler.schedule();
                 }
+                document.getElementById("runningGIF").style.visibility = "visible";
             } else {
                 _Kernel.krnTrapError("CANNOT RUN",[pidToRun]);
             }
@@ -469,6 +470,7 @@ module TSOS {
                     }
                 }
             }
+            document.getElementById("runningGIF").style.visibility = "visible";
         }
 
         public shellTrace(args: string[]) {
