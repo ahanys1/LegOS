@@ -107,11 +107,11 @@ var TSOS;
                     this.putText(this.buffer);
                 }
                 else if (chr === "^C") {
-                    _CPU.isExecuting = false;
                     this.advanceLine();
                     this.putText("^C");
                     this.advanceLine();
                     this.putText("=C ");
+                    _OsShell.shellKillAll(null);
                 }
                 else {
                     // This is a "normal" character, so ...
@@ -120,7 +120,6 @@ var TSOS;
                     // ... and add it to our buffer.
                     this.buffer += chr;
                 }
-                // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }
         }
         putText(text) {
