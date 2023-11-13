@@ -40,5 +40,13 @@ module TSOS {
             }
             return retVal;
         }
+
+        //wanted a way to see the next in line without dequeueing it
+        public peek() {
+            if (this.q.length > 0) {
+                return this.q[0]; // Return the first element without removing it
+            }
+            return null; // Queue is empty
+        }
     }
 }

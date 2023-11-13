@@ -53,7 +53,8 @@ module TSOS {
             if(this.isExecuting){
                 this.fetch();
             }
-            
+            _Scheduler.handleCPUBurst();
+            _Scheduler.TurnaroundTime++;
 
         }
 
@@ -66,7 +67,7 @@ module TSOS {
             _CPUdisplay.updateIR();
             this.PC++;
             _CPUdisplay.updatePC();
-            _PCB.updateAll(_PCB.runningPID);
+            _PCB.updateRunning();
             this.decode1();
         }
 
@@ -99,14 +100,17 @@ module TSOS {
                     break;
                 
                 case 0x00: //Break
+                    _Scheduler.justTerminated = true;
                     this.isExecuting = false;
-                    _Memory.ram = _SavedState;
+                    _Scheduler.finishedPIDs.push(_PCB.runningPID);
+                    _PCB.processes[_PCB.runningPID].LastTick = _Scheduler.TurnaroundTime;
+                    _PCB.terminate(_PCB.runningPID);
                     this.init();
-                    _CPUdisplay.updateAll();
-                    _RAMdisplay.updateDisplay();
-                    _PCB.updateAll(_PCB.runningPID);
-                    _Console.advanceLine();
-                    _Console.putText("=C ");
+                    //_Scheduler.CQ == 1;
+                    //_Scheduler.contextSwitch();
+                    //_CPUdisplay.updateAll();
+                    //_RAMdisplay.updateDisplay();
+                    
                     break;
                 
 
@@ -116,6 +120,8 @@ module TSOS {
                         this.execute1();
                     }
                     break;
+                default:
+                    _Kernel.krnTrapError("INVALID OP");
 
             }
         }

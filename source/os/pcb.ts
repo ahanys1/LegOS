@@ -1,109 +1,148 @@
 module TSOS{
-    //ment for handling updates to the cpu display
-    //this is very bare bones rn and my goal is to meet the requirements for credit
+    interface ProcessInfo{ //look, I realized after I went down this rabbit hole that there was a far better (and probably more correct) way to do this. 
+        PID: number;       //instead of making a new PCB for each program, I create a new entry in my PCB's Dictionary of all the programs.
+        Priority: number;  //Functionally, this produces the exact same result. If you're wondering where I got this idea, I used a lot of dictionaries at my internship this past summer.
+        Location: string;
+        Segment: number;
+        Base: number;
+        Limit: number;
+        PC: number;
+        Acc: number;
+        IR: number;
+        Xreg: number;
+        Yreg: number;
+        Zflag: number;
+        Status: "Resident" | "Ready" | "Running" | "Terminated";
+        ExecutionLength: number;
+        LastTick: number;
+    }
+
     export class PCB{
         constructor(
             private PCBTable: HTMLTableElement = document.getElementById("PCB") as HTMLTableElement,
-            private pZero: HTMLTableRowElement = document.getElementById("pZero") as HTMLTableRowElement,
-            private pOne: HTMLTableRowElement = document.getElementById("pOne") as HTMLTableRowElement,
-            private pTwo: HTMLTableRowElement = document.getElementById("pTwo") as HTMLTableRowElement,
-            public runningPID: number = null
+            public runningPID: number = null,
+            public processes: {[PID: number]: ProcessInfo} = {}
         ){}
 
         public init(): void {
             this.PCBTable = document.getElementById("PCB") as HTMLTableElement;
-            this.pZero = document.getElementById("pZero") as HTMLTableRowElement;
-            this.pOne = document.getElementById("pOne") as HTMLTableRowElement;
-            this.pTwo = document.getElementById("pTwo") as HTMLTableRowElement;
             this.runningPID = null;
+            this.processes = {};
         }
 
-        public addProgram(pid: number){
-            if(pid == 0){
-                for (let i = 0; i < 7; i++){ //fill blank cells
-                    let cell = this.pZero.insertCell();
-                    switch(i){
-                        case 0:
-                            cell.innerText = "0";
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:    
-                            cell.innerText = "0x00";
-                            break;
-                        case 6:
-                            cell.innerText = "Ready";
-                            break;
-                    }
-                }
-
-            }else if (pid == 1){
-                for (let i = 0; i < 7; i++){ //fill blank cells
-                    let cell = this.pOne.insertCell();
-                    switch(i){
-                        case 0:
-                            cell.innerText = "0";
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:    
-                            cell.innerText = "0x00";
-                            break;
-                        case 6:
-                            cell.innerText = "Ready";
-                            break;
-                    }
-                }
-
-            }else if (pid == 2){
-                for (let i = 0; i < 7; i++){ //fill blank cells
-                    let cell = this.pTwo.insertCell();
-                    switch(i){
-                        case 0:
-                            cell.innerText = "0";
-                            break;
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:    
-                            cell.innerText = "0x00";
-                            break;
-                        case 6:
-                            cell.innerText = "Ready";
-                            break;
-                    }
-                }
+        public addProgram(pid: number, segment: number){//creates an entry for the new program, give it resident status
+            let base: number;
+            if (segment == 0){
+                base = 0;
+            } else if (segment == 1){
+                base = 256;
+            } else if (segment == 2){
+                base = 512;
             }
+            this.processes[pid] = {
+                PID: pid,
+                Priority: 8,
+                Location: "Memory",
+                Segment: segment,
+                Base: base,
+                Limit: base + 255,
+                PC: 0,
+                Acc: 0,
+                IR: 0,
+                Xreg: 0,
+                Yreg: 0,
+                Zflag: 0,
+                Status: "Resident",
+                ExecutionLength: 0,
+                LastTick: 0
+            };
+
+            //create a new row in the display
+            const tableBody = document.getElementById("pcbBody") as HTMLTableElement;
+            const row = tableBody.insertRow();
+            const cellPID = row.insertCell(0);
+            const cellPriority = row.insertCell(1);
+            const cellLocation = row.insertCell(2);
+            const cellSegment = row.insertCell(3);
+            const cellBase = row.insertCell(4);
+            const cellLimit = row.insertCell(5);
+            const cellPC = row.insertCell(6);
+            const cellAcc = row.insertCell(7);
+            const cellIR = row.insertCell(8);
+            const cellXreg = row.insertCell(9);
+            const cellYreg = row.insertCell(10);
+            const cellZflag = row.insertCell(11);
+            const cellStatus = row.insertCell(12);
+
+            cellPriority.textContent = this.processes[pid].Priority.toString();
+            cellLocation.textContent = this.processes[pid].Location;
+            cellSegment.textContent = this.processes[pid].Segment.toString();
+            cellBase.textContent = Utils.hexLog(this.processes[pid].Base, true);
+            cellLimit.textContent = Utils.hexLog(this.processes[pid].Limit, true);
+            cellPID.textContent = pid.toString();
+            cellPC.textContent = this.processes[pid].PC.toString();
+            cellAcc.textContent = Utils.hexLog(this.processes[pid].Acc, false);
+            cellIR.textContent = Utils.hexLog(this.processes[pid].IR, false);
+            cellXreg.textContent = Utils.hexLog(this.processes[pid].Xreg, false);
+            cellYreg.textContent = Utils.hexLog(this.processes[pid].Yreg, false);
+            cellZflag.textContent = Utils.hexLog(this.processes[pid].Zflag, false);
+            cellStatus.textContent = this.processes[pid].Status;
         }
 
         kickStart(pid: number){ //used for passing the running program and "kickstarting" the program
-            _CPU.isExecuting = true;
             this.runningPID = pid;
+            _CPU.isExecuting = true;
+            this.processes[pid].Status = "Running";
         }
 
-        public updateAll(pid: number){
-            if (pid == 0){
-                this.pZero.cells.item(1).innerText = _CPU.PC.toString();
-                this.pZero.cells.item(2).innerText = Utils.hexLog(_CPU.Acc,false);
-                this.pZero.cells.item(3).innerText = Utils.hexLog(_CPU.IR,false);
-                this.pZero.cells.item(4).innerText = Utils.hexLog(_CPU.Xreg,false);
-                this.pZero.cells.item(5).innerText = Utils.hexLog(_CPU.Yreg,false);
-                this.pZero.cells.item(6).innerText = Utils.hexLog(_CPU.Zflag,false);
-                if(_CPU.isExecuting){
-                    this.pZero.cells.item(7).innerText = "Running";
-                }else{
-                    this.pZero.cells.item(7).innerText = "Ready";
-                }
-            } else if (pid == 1){
-                //pid 1, will implement these later. Just want to get this done ASAP, and they're not required for now.
-            } else if (pid == 2){
-                //pid 2
+        public updateRunning() {
+            //update dictinary first
+            this.processes[this.runningPID].PC = _CPU.PC;
+            this.processes[this.runningPID].Acc = _CPU.Acc;
+            this.processes[this.runningPID].IR = _CPU.IR;
+            this.processes[this.runningPID].Xreg = _CPU.Xreg;
+            this.processes[this.runningPID].Yreg = _CPU.Yreg;
+            this.processes[this.runningPID].Zflag = _CPU.Zflag;
+            //console.log(this.processes);
+            
+            //now update visuals
+            let row = this.PCBTable.rows[this.runningPID + 1];
+            row.cells[6].innerHTML = this.processes[this.runningPID].PC.toString();
+            row.cells[7].innerHTML = Utils.hexLog(this.processes[this.runningPID].Acc, false);
+            row.cells[8].innerHTML = Utils.hexLog(this.processes[this.runningPID].IR, false);
+            row.cells[9].innerHTML = Utils.hexLog(this.processes[this.runningPID].Xreg, false);
+            row.cells[10].innerHTML = Utils.hexLog(this.processes[this.runningPID].Yreg, false);
+            row.cells[11].innerHTML = Utils.hexLog(this.processes[this.runningPID].Zflag, false);
+            row.cells[12].innerHTML = this.processes[this.runningPID].Status;
+        }
+
+        public terminate(pid: number){
+            this.processes[pid].Status = "Terminated";
+            let row = this.PCBTable.rows[pid + 1] as HTMLTableRowElement;
+            row.cells[12].innerHTML = this.processes[pid].Status;
+            _MA.deleteProgram(this.processes[pid].Segment);
+            _Scheduler.readyQueue.dequeue();
+            this.updateRunning();
+            _Scheduler.CQ == 1;
+            _Scheduler.contextSwitch();
+            _CPUdisplay.updateAll();
+            _RAMdisplay.updateDisplay();
+            _StdOut.advanceLine();
+            _StdOut.putText(`Process ${pid} Terminated.`);
+            _StdOut.advanceLine();
+        }
+
+        public terminateAll(){
+            for (const pid in this.processes){
+                this.processes[pid].Status = "Terminated";
+                let row = this.PCBTable.rows[parseInt(pid)+1] as HTMLTableRowElement;
+                row.cells[12].innerHTML = this.processes[pid].Status;
             }
+        }
+
+        public updateStatusDisplay(){
+            let row = this.PCBTable.rows[this.runningPID + 1];
+            row.cells[12].innerHTML = this.processes[this.runningPID].Status;
         }
     }
 }

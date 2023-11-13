@@ -26,17 +26,78 @@ module TSOS {
         }
 
         //read from the memory module
-        read(){
-            this.mdr = _Memory.ram[this.mar];
-            return this.mdr;
+        read(segment: number){
+            let accessValid = true;
+            let falseAccessAddress;
+            if (segment  == 0){
+                if (this.mar + partition.zero >= _PCB.processes[_PCB.runningPID].Base && this.mar + partition.zero <= _PCB.processes[_PCB.runningPID].Limit){
+                    this.mdr = _Memory.ram[this.mar + partition.zero];
+                } else{
+                    accessValid = false;
+                    falseAccessAddress = this.mar + partition.zero;
+                }
+            } else if (segment  == 1){
+                if (this.mar + partition.one >= _PCB.processes[_PCB.runningPID].Base && this.mar + partition.one <= _PCB.processes[_PCB.runningPID].Limit){
+                    this.mdr = _Memory.ram[this.mar + partition.one];
+                } else{
+                    accessValid = false;
+                    falseAccessAddress = this.mar + partition.one;
+                }
+            } else if (segment  == 2){
+                if (this.mar + partition.two >= _PCB.processes[_PCB.runningPID].Base && this.mar + partition.two <= _PCB.processes[_PCB.runningPID].Limit){
+                    this.mdr = _Memory.ram[this.mar + partition.two];
+                } else{
+                    accessValid = false;
+                    falseAccessAddress = this.mar + partition.two;
+                }
+            }
+            if (accessValid){
+                return this.mdr;
+            } else {
+                _Kernel.krnTrapError("ACCESS", [falseAccessAddress]);
+            }
         }
 
         //write to the memory module
-        write(){
+        write(segment: number){
             if(this.mdr >0xFF){
                 this.mdr = this.mdr - 0xFF; //handles overflow by looping around
             }
-            _Memory.ram[this.mar] = this.mdr;
+            if (segment == 0){
+                if (this.mar + partition.zero >= 0x0000 && this.mar + partition.zero <= 0x00FF){
+                    _Memory.ram[this.mar + partition.zero] = this.mdr;
+                } else {
+                    _Kernel.krnTrapError("ACCESS", [this.mar + partition.zero]);
+                }
+            } else if (segment == 1){
+                if (this.mar + partition.one >= 0x0100 && this.mar + partition.one <= 0x01FF){
+                    _Memory.ram[this.mar + partition.one] = this.mdr;
+                } else {
+                    _Kernel.krnTrapError("ACCESS", [this.mar + partition.one]);
+                }
+            } else if (segment == 2){
+                if (this.mar + partition.two >= 0x0200 && this.mar + partition.two <= 0x02FF){
+                    _Memory.ram[this.mar + partition.two] = this.mdr;
+                } else {
+                    _Kernel.krnTrapError("ACCESS", [this.mar + partition.two]);
+                }
+            }
+        }
+
+        deleteProgram(segment: number){
+            if (segment == 0){
+                for (let i = 0; i <= 255; i++){
+                    _Memory.ram[i] = 0x00;
+                }
+            } else if(segment == 1){
+                for (let i = 256; i <= 511; i++){
+                    _Memory.ram[i] = 0x00;
+                }
+            } else if (segment == 2){
+                for (let i = 512; i <= 768; i++){
+                    _Memory.ram[i] = 0x00;
+                }
+            }
         }
     }
     

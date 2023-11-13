@@ -61,7 +61,19 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<pid> - Runs the program loaded at pid");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - Runs all programs in the Resident List");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - executes a Blue Screen of Death error.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " - clears all memory partitions.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", " - displays the PID and state of all processes.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "<pid> - kills the specified prodess.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - Kills all running processes.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<q> - updates the quantum to the set PID");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -249,9 +261,27 @@ var TSOS;
                         break;
                     case "run":
                         _StdOut.putText("'run <pid>' will execute the program loaded at the specefied program ID.");
+                        break;
                     case "bsod":
                         _StdOut.putText("'bsod' initiates the process for handling a fatal system error. Requires a full reset.");
                         break;
+                    case "clearmem":
+                        _StdOut.putText("'clearmem' clears the memory and terminates all programs.");
+                        break;
+                    case "runall":
+                        _StdOut.putText("'runall' runs all programs in the resident list.");
+                        break;
+                    case "ps":
+                        _StdOut.putText("'ps' displays the PID and state for all proceses.");
+                        break;
+                    case "kill":
+                        _StdOut.putText("'kill <pid>' kills the specified program.");
+                        break;
+                    case "killall":
+                        _StdOut.putText("'killall' kills all running processes");
+                        break;
+                    case "quantum":
+                        _StdOut.putText("'quantum <q>' updates the quantum for the Round Robin CPU scheduling.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -303,38 +333,62 @@ var TSOS;
             if (isValid) {
                 _StdOut.putText("Program is Valid. Loading into Memory...");
                 let programArray = program.split(" ");
-                programArray.forEach((code, index) => {
-                    _MMU.writeImm(index, parseInt(code, 16));
-                    index++;
-                });
                 if (_MMU.PIDs[0] === 42069) { //initialize PIDs if empty
                     _MMU.PIDs = [0];
                 }
                 else {
                     _MMU.PIDs.push(_MMU.PIDs[_MMU.PIDs.length - 1] + 1); //pushes next PID to array
                 }
-                _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
-                _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length - 1]);
-                _RAMdisplay.updateDisplay();
-                console.log(_MMU.PIDs);
+                let segment = _MMU.findValidSpace();
+                if (_MMU.writeInit(programArray, segment)) {
+                    _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
+                    _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length - 1], segment);
+                    _RAMdisplay.updateDisplay();
+                    console.log(_MMU.PIDs);
+                }
+                else {
+                    _Kernel.krnTrapError("NO SPACE");
+                }
             }
             else {
-                _StdOut.putText("ERR: Program could not be loaded.");
-                console.log(invalidChars);
+                _Kernel.krnTrapError("NOT LOADED", invalidChars);
             }
         }
         shellRun(args) {
-            if (_MMU.PIDs.includes(parseInt(args[0]))) { //make sure it's a valid op code
-                if (args[0] == "0") {
-                    _CPU.init();
-                    _SavedState = _Memory.ram;
-                    _CPU.PC = partition.zero;
-                } //TODO: allow for multiple programs. for now, just do 1.
-                _PCB.kickStart(0);
+            const pidToRun = parseInt(args[0]);
+            if (pidToRun in _PCB.processes && _PCB.processes[pidToRun].Status == "Resident") {
+                // Add the program with the specified PID to the ready queue
+                _Scheduler.readyQueue.enqueue(_PCB.processes[pidToRun]);
+                // Start the CPU execution if not executing
+                if (!_CPU.isExecuting) {
+                    _Scheduler.CQ = 1;
+                    _PCB.runningPID = pidToRun;
+                    console.log(_PCB.runningPID);
+                    _Scheduler.schedule();
+                }
+                document.getElementById("runningGIF").style.visibility = "visible";
             }
             else {
-                _StdOut.putText("ERR: Invalid Program ID.");
+                _Kernel.krnTrapError("CANNOT RUN", [pidToRun]);
             }
+        }
+        shellRunAll(args) {
+            for (const pid in _PCB.processes) {
+                if (_PCB.processes[pid].Status === "Resident") {
+                    _Scheduler.readyQueue.enqueue(_PCB.processes[pid]);
+                    _PCB.processes[pid].Status = "Ready"; // Update the status to "Ready"
+                }
+                // Start the CPU execution if not already executing
+                if (!_CPU.isExecuting) {
+                    _Scheduler.CQ = 1;
+                    const nextProcess = _Scheduler.readyQueue.peek();
+                    if (nextProcess) {
+                        _PCB.runningPID = nextProcess.PID;
+                        _Scheduler.schedule();
+                    }
+                }
+            }
+            document.getElementById("runningGIF").style.visibility = "visible";
         }
         shellTrace(args) {
             if (args.length > 0) {
@@ -379,8 +433,55 @@ var TSOS;
             }
         }
         shellBSOD(args) {
-            _Kernel.krnTrapError("BSOD executed. Good job, you broke it.");
-            console.log("got to here");
+            _Kernel.krnTrapError("BSOD");
+        }
+        shellClearMem(args) {
+            _Memory.reset();
+            _PCB.terminateAll();
+            _RAMdisplay.updateDisplay();
+        }
+        shellPS(args) {
+            if (_PCB.processes[0]) { //if pcb has contents
+                for (const pid in _PCB.processes) {
+                    const processInfo = _PCB.processes[pid];
+                    _StdOut.putText(`PID: ${processInfo.PID} | State: ${processInfo.Status}`);
+                    _StdOut.advanceLine();
+                }
+            }
+            else {
+                _Kernel.krnTrapError("PS");
+            }
+        }
+        shellKill(args) {
+            if ((_PCB.processes[parseInt(args[0])].Status != "Resident" && _PCB.processes[parseInt(args[0])].Status != "Terminated") && _PCB.processes[_PCB.runningPID] !== undefined) {
+                if (_PCB.processes[parseInt(args[0])].Status == "Running") {
+                    _PCB.terminate(parseInt(args[0]));
+                }
+                else if (_PCB.processes[parseInt(args[0])].Status == "Ready") { //if not active running program terminate differently
+                    _PCB.processes[parseInt(args[0])].Status = "Terminated"; //set status terminated
+                    _MA.deleteProgram(_PCB.processes[parseInt(args[0])].Segment); //delete that program from the RAM
+                }
+            }
+            else {
+                _Kernel.krnTrapError("KILL");
+            }
+        }
+        shellKillAll(args) {
+            if (_PCB.processes[0]) {
+                for (const pid in _PCB.processes) {
+                    if ((_PCB.processes[pid].Status != "Resident" && _PCB.processes[pid].Status != "Terminated") && _PCB.processes[pid] !== undefined) {
+                        _PCB.terminate(_PCB.processes[pid].PID);
+                    }
+                }
+            }
+        }
+        shellQuantum(args) {
+            if (parseInt(args[0]) > 0) {
+                _Scheduler.updateQuantum(parseInt(args[0]));
+            }
+            else {
+                _Kernel.krnTrapError("QUANTUM");
+            }
         }
     }
     TSOS.Shell = Shell;

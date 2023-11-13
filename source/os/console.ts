@@ -104,11 +104,11 @@ module TSOS {
                     this.buffer = commands[0];
                     this.putText(this.buffer);
                 } else if(chr === "^C"){
-                    _CPU.isExecuting = false;
                     this.advanceLine();
                     this.putText("^C");
                     this.advanceLine();
                     this.putText("=C ");
+                    _OsShell.shellKillAll(null);
                 
                 }else {
                     // This is a "normal" character, so ...
@@ -117,7 +117,6 @@ module TSOS {
                     // ... and add it to our buffer.
                     this.buffer += chr;
                 }
-                // TODO: Add a case for Ctrl-C that would allow the user to break the current program.
             }
         }
 

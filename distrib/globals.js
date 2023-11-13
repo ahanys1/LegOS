@@ -11,11 +11,12 @@
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
 //
 const APP_NAME = "LegOS"; // 'cause Bob and I were at a loss for a better name.
-const APP_VERSION = "0.4.8"; // What did you expect?
+const APP_VERSION = "0.8.4"; // What did you expect?
 const CPU_CLOCK_INTERVAL = 100; // This is in ms (milliseconds) so 1000 = 1 second.
 const TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ = 1;
+const CONTEXT_SWITCH_IRQ = 2;
 var partition;
 (function (partition) {
     partition[partition["zero"] = 0] = "zero";
@@ -23,7 +24,6 @@ var partition;
     partition[partition["two"] = 512] = "two";
 })(partition || (partition = {}));
 var _stepModeEnabled = false; //step mode
-let _SavedState = [];
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -54,6 +54,8 @@ var _OsShell;
 var _CPUdisplay;
 var _RAMdisplay;
 var _PCB;
+var _Scheduler;
+var _Dispatcher;
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode = false;
 // Global Device Driver Objects - page 12

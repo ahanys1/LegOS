@@ -60,6 +60,12 @@ module TSOS {
              _PCB = new PCB();
              _PCB.init();
 
+             //start scheduler
+            _Scheduler = new Scheduler();
+            _Scheduler.init();
+            //and dispatcher
+            _Dispatcher = new Dispatcher();
+
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();
@@ -77,6 +83,8 @@ module TSOS {
             // More?
             //
             this.krnTrace("end shutdown OS");
+            _StdOut.clearScreen(); 
+            _StdOut.putText("System successfully shutdown. Please reset the system.");
         }
 
 
@@ -133,6 +141,9 @@ module TSOS {
                     _krnKeyboardDriver.isr(params);   // Kernel mode device driver
                     _StdIn.handleInput();
                     break;
+                case CONTEXT_SWITCH_IRQ:
+                    _Dispatcher.completeContextSwitch();
+                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
@@ -179,13 +190,59 @@ module TSOS {
              }
         }
 
-        public krnTrapError(msg) {
+        public krnTrapError(msg, params = []) {
             Control.hostLog("OS ERROR - TRAP: " + msg);
-            console.log("got to kernel");
-            // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
-            let bsod = document.getElementById("bsod");
-            bsod.style.visibility = "visible";
-            this.krnShutdown();
+            switch(msg){
+                case "INVALID OP":
+                    _StdOut.putText("ERR: INVALID OP: " + Utils.hexLog(_CPU.IR, false) + " IN PID: " + _PCB.runningPID);
+                    _StdOut.advanceLine();
+                    _PCB.terminate(_PCB.runningPID);
+                    
+                    break;
+                case "NO SPACE":
+                    _StdOut.putText(" ERR: No Valid Space. Aborting...");
+                    _MMU.PIDs.pop();
+                    break;
+                case "NOT LOADED":
+                    _StdOut.putText("ERR: Program could not be loaded. Invalid Characters:");
+                    _StdOut.advanceLine();
+                    for (let i = 0; i < params.length; i++){
+                        _StdOut.putText(`${params[i]} `);
+                    }
+                    break;
+                case "CANNOT RUN":
+                    _StdOut.putText("ERR: Program with PID " + params[0] + " can not be run.");
+                    break;
+                case "PS":
+                    _StdOut.putText("ERR: There are no processes.");
+                    break;
+                case "KILL":
+                    _StdOut.putText("ERR: a program must be running for it to be killed.");
+                    break;
+                case "QUANTUM":
+                    _StdOut.putText("ERR: quantum must be greater than 0.");
+                    break;
+                case "ACCESS":
+                    _StdOut.putText(`ERR: ACCESS OUT OF BOUNDS at ${Utils.hexLog(params[0], true)}`);
+                    _StdOut.advanceLine();
+                    _PCB.terminate(_PCB.runningPID);
+                    break;
+                case "BSOD":
+                default:
+                    let bsod = document.getElementById("bsod");
+                    let console = document.getElementById("divConsole");
+                    let pcb = document.getElementById("PCB");
+                    let container = document.getElementById("middle");
+
+                    container.insertBefore(bsod, console); //swaps the bsod image with the terminal
+                    container.appendChild(console);
+
+                    console.style.visibility = "hidden";
+                    bsod.style.visibility = "visible";
+                    this.krnShutdown();
+                    clearInterval(_hardwareClockID);
+            }
+            
         }
     }
 }
