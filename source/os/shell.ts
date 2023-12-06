@@ -139,7 +139,7 @@ module TSOS {
 
             sc = new ShellCommand(this.shellQuantum,
                 "quantum",
-                "<q> - updates the quantum to the set PID");
+                "<q> - updates the quantum to the set number");
             this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs

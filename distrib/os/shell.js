@@ -73,7 +73,7 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - Kills all running processes.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<q> - updates the quantum to the set PID");
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<q> - updates the quantum to the set number");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
