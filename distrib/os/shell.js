@@ -83,6 +83,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRead, "read", '<filename> - reads the data on the specified file.');
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellDelete, "delete", '<filename> - removes filename from storage.');
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -537,8 +539,15 @@ var TSOS;
         }
         shellRead(args) {
             if (_krnDiskDriver.isFormated) {
-                console.log(_krnDiskDriver.read(args[0]));
-                _StdOut.putText(_krnDiskDriver.read(args[0]));
+                _StdOut.putText(_krnDiskDriver.read(args[0])); //works but, if it goes off the screen it doesn't line wrap. gotta fix that eventually.
+            }
+            else {
+                _Kernel.krnTrapError("DISK NOT FORMAT");
+            }
+        }
+        shellDelete(args) {
+            if (_krnDiskDriver.isFormated) {
+                _krnDiskDriver.delete(args[0]);
             }
             else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");

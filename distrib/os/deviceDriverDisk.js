@@ -221,8 +221,28 @@ var TSOS;
                 rawDataArr = TSOS.Utils.splitEveryOther(rawData);
                 nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
             }
-            console.log(output);
             return output;
+        }
+        delete(fileName) {
+            let FATEntry = this.findFATEntry(fileName);
+            let FATasArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(FATEntry));
+            let pointedLoc = this.formatTSB(parseInt(FATasArr[1]), parseInt(FATasArr[2]), parseInt(FATasArr[3]));
+            let rawData = sessionStorage.getItem(pointedLoc);
+            let rawDataArr = TSOS.Utils.splitEveryOther(rawData);
+            let nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
+            while (pointedLoc !== "0.0.0") {
+                //overwrite the data
+                rawData = this.fetchBlank();
+                sessionStorage.setItem(pointedLoc, rawData);
+                pointedLoc = nextPoint;
+                rawData = sessionStorage.getItem(pointedLoc);
+                rawDataArr = TSOS.Utils.splitEveryOther(rawData);
+                nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
+            }
+            //overwrite the FAT
+            rawData = this.fetchBlank();
+            sessionStorage.setItem(FATEntry, rawData);
+            _DiskDisplay.update();
         }
     }
     TSOS.DeviceDriverDisk = DeviceDriverDisk;
