@@ -50,6 +50,8 @@ var TSOS;
             //start mem display
             _RAMdisplay = new TSOS.RAMdisplay();
             _RAMdisplay.init();
+            //start disk display
+            _DiskDisplay = new TSOS.diskDisplay();
             //start pcb
             _PCB = new TSOS.PCB();
             _PCB.init();

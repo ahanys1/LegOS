@@ -66,6 +66,7 @@ var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
 var _CPUdisplay: TSOS.CPUdisplay;
 var _RAMdisplay: TSOS.RAMdisplay;
+var _DiskDisplay: TSOS.diskDisplay;
 var _PCB: TSOS.PCB;
 var _Scheduler: TSOS.Scheduler;
 var _Dispatcher: TSOS.Dispatcher

@@ -76,19 +76,19 @@ module TSOS {
             // date
             sc = new ShellCommand(this.shellDate,
                                     "date",
-                                    " - Displays current Date and Time.");
+                                    "- Displays current Date and Time.");
             this.commandList[this.commandList.length] = sc;
 
             // whereami
             sc = new ShellCommand(this.shellWhereAmI,
                 "whereami",
-                " - Displays current location.");
+                "- Displays current location.");
             this.commandList[this.commandList.length] = sc;
 
             //legohey
             sc = new ShellCommand(this.shellLegoHey,
                 "legohey",
-                " - There's a fire in Lego City!");
+                "- There's a fire in Lego City!");
             this.commandList[this.commandList.length] = sc;
 
             //status <string>
@@ -99,7 +99,7 @@ module TSOS {
 
             sc = new ShellCommand(this.shellLoad,
                 "load",
-                " - loads the program from the program input.");
+                "- loads the program from the program input.");
             this.commandList[this.commandList.length] = sc;
             
             sc = new ShellCommand(this.shellRun,
@@ -109,22 +109,22 @@ module TSOS {
 
             sc = new ShellCommand(this.shellRunAll,
                 "runall",
-                " - Runs all programs in the Resident List");
+                "- Runs all programs in the Resident List");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellBSOD,
                 "bsod",
-                " - executes a Blue Screen of Death error.");
+                "- executes a Blue Screen of Death error.");
             this.commandList[this.commandList.length] = sc; 
             
             sc = new ShellCommand(this.shellClearMem,
                 "clearmem",
-                " - clears all memory partitions.");
+                "- clears all memory partitions.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellPS,
                 "ps",
-                " - displays the PID and state of all processes.");
+                "- displays the PID and state of all processes.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellKill,
@@ -134,14 +134,18 @@ module TSOS {
 
             sc = new ShellCommand(this.shellKillAll,
                 "killall",
-                " - Kills all running processes.");
+                "- Kills all running processes.");
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellQuantum,
                 "quantum",
-                "<q> - updates the quantum to the set number");
+                "<q> - updates the quantum to the set number.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellFormat,
+                "format", 
+                "- Initialize all blocks in all sectors in all tracks of the disk.");
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -362,6 +366,10 @@ module TSOS {
                         break;
                     case "quantum":
                         _StdOut.putText("'quantum <q>' updates the quantum for the Round Robin CPU scheduling.");
+                        break;
+                    case "format":
+                        _StdOut.putText("'format' Initializes all blocks in all sectors in all tracks of the disk.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -566,6 +574,11 @@ module TSOS {
             } else {
                 _Kernel.krnTrapError("QUANTUM");
             }
+        }
+
+        public shellFormat(args: string[]){
+            _krnDiskDriver.format();
+            _StdOut.putText("Disk successfully formated.")
         }
 
     }

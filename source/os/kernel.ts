@@ -62,6 +62,9 @@ module TSOS {
              _RAMdisplay = new RAMdisplay();
              _RAMdisplay.init();
 
+             //start disk display
+             _DiskDisplay = new diskDisplay();
+
              //start pcb
              _PCB = new PCB();
              _PCB.init();

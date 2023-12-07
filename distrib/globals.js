@@ -53,6 +53,7 @@ var _Console;
 var _OsShell;
 var _CPUdisplay;
 var _RAMdisplay;
+var _DiskDisplay;
 var _PCB;
 var _Scheduler;
 var _Dispatcher;

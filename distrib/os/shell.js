@@ -46,34 +46,36 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
             // date
-            sc = new TSOS.ShellCommand(this.shellDate, "date", " - Displays current Date and Time.");
+            sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays current Date and Time.");
             this.commandList[this.commandList.length] = sc;
             // whereami
-            sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", " - Displays current location.");
+            sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Displays current location.");
             this.commandList[this.commandList.length] = sc;
             //legohey
-            sc = new TSOS.ShellCommand(this.shellLegoHey, "legohey", " - There's a fire in Lego City!");
+            sc = new TSOS.ShellCommand(this.shellLegoHey, "legohey", "- There's a fire in Lego City!");
             this.commandList[this.commandList.length] = sc;
             //status <string>
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - sets the system status message.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", " - loads the program from the program input.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- loads the program from the program input.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<pid> - Runs the program loaded at pid");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", " - Runs all programs in the Resident List");
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Runs all programs in the Resident List");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", " - executes a Blue Screen of Death error.");
+            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", "- executes a Blue Screen of Death error.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", " - clears all memory partitions.");
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- clears all memory partitions.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellPS, "ps", " - displays the PID and state of all processes.");
+            sc = new TSOS.ShellCommand(this.shellPS, "ps", "- displays the PID and state of all processes.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellKill, "kill", "<pid> - kills the specified prodess.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", " - Kills all running processes.");
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", "- Kills all running processes.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<q> - updates the quantum to the set number");
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<q> - updates the quantum to the set number.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Initialize all blocks in all sectors in all tracks of the disk.");
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -282,6 +284,10 @@ var TSOS;
                         break;
                     case "quantum":
                         _StdOut.putText("'quantum <q>' updates the quantum for the Round Robin CPU scheduling.");
+                        break;
+                    case "format":
+                        _StdOut.putText("'format' Initializes all blocks in all sectors in all tracks of the disk.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -482,6 +488,10 @@ var TSOS;
             else {
                 _Kernel.krnTrapError("QUANTUM");
             }
+        }
+        shellFormat(args) {
+            _krnDiskDriver.format();
+            _StdOut.putText("Disk successfully formated.");
         }
     }
     TSOS.Shell = Shell;

@@ -27,6 +27,7 @@
    <script type="text/javascript" src="distrib/os/deviceDriver.js"></script>
    <script type="text/javascript" src="distrib/os/deviceDriverKeyboard.js"></script>
    <script type="text/javascript" src="distrib/os/deviceDriverDisk.js"></script>
+   <script type="text/javascript" src="distrib/os/diskDisplay.js"></script>
    <script type="text/javascript" src="distrib/os/queue.js"></script>
    <script type="text/javascript" src="distrib/os/shell.js"></script>
    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
@@ -135,28 +136,42 @@
                tabindex="3">
             </canvas>
          </div>
-         <table id = "PCB" border="4">
-            <thead>
-               <tr>
-                  <th>PID</th>
-                  <th>Priority</th>
-                  <th>Location</th>
-                  <th>Segment</th>
-                  <th>Base</th>
-                  <th>Limit</th>
-                  <th>PC</th>
-                  <th>Acc</th>
-                  <th>IR</th>
-                  <th>Xreg</th>
-                  <th>Yreg</th>
-                  <th>Zflag</th>
-                  <th>Status</th>
-               </tr>
-            </thead>
+         <div id = "PCBContainer">
+            <table id = "PCB" border="4">
+               <thead>
+                  <tr>
+                     <th>PID</th>
+                     <th>Priority</th>
+                     <th>Location</th>
+                     <th>Segment</th>
+                     <th>Base</th>
+                     <th>Limit</th>
+                     <th>PC</th>
+                     <th>Acc</th>
+                     <th>IR</th>
+                     <th>Xreg</th>
+                     <th>Yreg</th>
+                     <th>Zflag</th>
+                     <th>Status</th>
+                  </tr>
+               </thead>
             
                <tbody id = "pcbBody"></tbody> 
             
-         </table>
+            </table>
+         </div>
+         <div id="diskContainer">
+            <table id = "Disk" border="4">
+               <thead>
+                  <tr>
+                     <th>T.S.B</th>
+                     <th>Data</th>
+                  </tr>
+               </thead>
+               <tbody id = "diskTableBody"></tbody>
+            </table>
+         </div>
+
          <div id="bsod" class="bsod"></div>
       </div>
 
