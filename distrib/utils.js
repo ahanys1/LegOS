@@ -60,6 +60,9 @@ var TSOS;
                 return hexString;
             }
         }
+        static splitEveryOther(str) {
+            return str.match(/.{1,2}/g) || []; //some regex black magic that chatgpt gave me
+        }
     }
     TSOS.Utils = Utils;
 })(TSOS || (TSOS = {}));

@@ -65,5 +65,14 @@ module TSOS {
     
         }
 
+        public static splitEveryOther(str: string): string[]{
+            return str.match(/.{1,2}/g) || []; //some regex black magic that chatgpt gave me
+        }
+        /* Explanation:
+        In the regular expression /.{1,2}/g:
+        .{1,2} matches any character (except for a newline) between 1 and 2 times.
+        g is the global flag that makes the regular expression match all occurrences in the string, rather than just the first one.
+        */
+
     }
 }

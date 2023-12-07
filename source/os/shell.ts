@@ -146,6 +146,16 @@ module TSOS {
                 "format", 
                 "- Initialize all blocks in all sectors in all tracks of the disk.");
             this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellCreate,
+                "create",
+                "<filename> — Create a File.");
+            this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellWrite,
+                "write",
+                '<filename> <"data"> - writes the data inside the quotations.');
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -370,6 +380,9 @@ module TSOS {
                     case "format":
                         _StdOut.putText("'format' Initializes all blocks in all sectors in all tracks of the disk.");
                         break;
+                    case "create":
+                        _StdOut.putText("'create <filename>' creates a file on disk with that filename.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -579,6 +592,32 @@ module TSOS {
         public shellFormat(args: string[]){
             _krnDiskDriver.format();
             _StdOut.putText("Disk successfully formated.")
+        }
+
+        public shellCreate(args: string[]){
+            if (_krnDiskDriver.isFormated){
+                if (args[0].length <= 28){
+                    _krnDiskDriver.createFile(args[0]);
+                    _StdOut.putText(`File ${args[0]} created.`);
+                } else {
+                    _Kernel.krnTrapError("FILENAME TOO LONG"); //TODO
+                }
+            } else {
+                _Kernel.krnTrapError("DISK NOT FORMAT"); //TODO
+            }
+        }
+
+        public shellWrite(args: string[]){
+            if (_krnDiskDriver.isFormated){
+                if(args[1][0] === '"' && args[args.length-1][args[args.length-1].length-1]){ // 50/50 shot i got that right, but I think that checks if the args both start and end in quotes
+                    let fileName = args.shift();
+                    let data = args.join(" ");
+                    data = data.slice(1,-1);//slice the quotes off
+                    _krnDiskDriver.write(fileName, data);
+                }
+            } else {
+                _Kernel.krnTrapError("DISK NOT FORMAT");
+            }
         }
 
     }
