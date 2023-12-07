@@ -203,15 +203,26 @@ var TSOS;
                 }
             }
             sessionStorage.setItem(pointedLoc, dataEntryArr.join(""));
-            /*if (encodedArr.length <= 60){ //if it fits in one block, just deal with it
-                for (let i = 0; i < encodedArr.length; i++){
-                    dataEntryArr[i+4] = encodedArr[i];
-                }
-                sessionStorage.setItem(pointedLoc, dataEntryArr.join(""));
-            } else {//if it's too big, fill other blocks too
-
-            }*/
             _DiskDisplay.update();
+        }
+        read(fileName) {
+            let FATEntry = this.findFATEntry(fileName);
+            let FATasArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(FATEntry));
+            let pointedLoc = this.formatTSB(parseInt(FATasArr[1]), parseInt(FATasArr[2]), parseInt(FATasArr[3]));
+            let rawData = sessionStorage.getItem(pointedLoc);
+            let rawDataArr = TSOS.Utils.splitEveryOther(rawData);
+            let nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
+            let output = "";
+            while (pointedLoc !== "0.0.0") {
+                let currentData = this.decodeData(rawData);
+                output = output + currentData;
+                pointedLoc = nextPoint;
+                rawData = sessionStorage.getItem(pointedLoc);
+                rawDataArr = TSOS.Utils.splitEveryOther(rawData);
+                nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
+            }
+            console.log(output);
+            return output;
         }
     }
     TSOS.DeviceDriverDisk = DeviceDriverDisk;

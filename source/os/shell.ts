@@ -156,6 +156,10 @@ module TSOS {
                 "write",
                 '<filename> <"data"> - writes the data inside the quotations.');
             this.commandList[this.commandList.length] = sc;
+            sc = new ShellCommand(this.shellRead,
+                "read",
+                '<filename> - reads the data on the specified file.');
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -382,6 +386,9 @@ module TSOS {
                         break;
                     case "create":
                         _StdOut.putText("'create <filename>' creates a file on disk with that filename.");
+                        break;
+                    case "write":
+                        _StdOut.putText("'write <filename> <data> writes the quotes surrounded data to the file specified on the disk.");
                         break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
@@ -614,7 +621,17 @@ module TSOS {
                     let data = args.join(" ");
                     data = data.slice(1,-1);//slice the quotes off
                     _krnDiskDriver.write(fileName, data);
+                } else {
+                    _Kernel.krnTrapError("QUOTES");
                 }
+            } else {
+                _Kernel.krnTrapError("DISK NOT FORMAT");
+            }
+        }
+
+        public shellRead(args: string[]){
+            if (_krnDiskDriver.isFormated){
+                _StdOut.putText(_krnDiskDriver.read(args[0])); //works but, if it goes off the screen it doesn't line wrap. gotta fix that eventually.
             } else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");
             }

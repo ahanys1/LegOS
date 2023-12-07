@@ -206,7 +206,6 @@
                         dataEntryArr[2] = "0" + s;
                         dataEntryArr[3] = "0" + b;
                         sessionStorage.setItem(pointedLoc, dataEntryArr.join(""));
-
                         //reset the array and location
                         pointedLoc = available;
                         dataEntryArr.fill("00");
@@ -221,5 +220,23 @@
             _DiskDisplay.update();
         }
         
+        public read(fileName: string):string{
+            let FATEntry = this.findFATEntry(fileName);
+            let FATasArr = Utils.splitEveryOther(sessionStorage.getItem(FATEntry));
+            let pointedLoc = this.formatTSB(parseInt(FATasArr[1]), parseInt(FATasArr[2]), parseInt(FATasArr[3]));
+            let rawData = sessionStorage.getItem(pointedLoc);
+            let rawDataArr = Utils.splitEveryOther(rawData);
+            let nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
+            let output: string = "";
+            while (pointedLoc !== "0.0.0"){
+                let currentData = this.decodeData(rawData);
+                output = output + currentData;
+                pointedLoc = nextPoint;
+                rawData = sessionStorage.getItem(pointedLoc);
+                rawDataArr = Utils.splitEveryOther(rawData);
+                nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
+            }
+            return output;
+        }
     }
 }

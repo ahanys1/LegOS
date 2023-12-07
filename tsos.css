@@ -241,6 +241,7 @@ table{
   height: 400px;
   width: 800px;
   overflow: scroll;
+  font-family: monospace;
 }
 
 #PCBContainer{
