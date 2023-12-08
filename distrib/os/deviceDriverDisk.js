@@ -31,8 +31,7 @@ var TSOS;
                 let eeA = easterEggStr.split(" ");
                 for (let i = 0; i < eeA.length; i++) {
                     blank[i] = eeA[i];
-                } //for some reason this adds an extra value to the end??
-                blank.pop();
+                }
             }
             let blankStr = blank.join("");
             return blankStr;
@@ -76,19 +75,20 @@ var TSOS;
             return encoded;
         }
         decodeData(data) {
-            let dataArr = TSOS.Utils.splitEveryOther(data);
             let i = 4; //4th position is always beginning of data
             let decoded = "";
+            let dataArr = TSOS.Utils.splitEveryOther(data);
             while (dataArr[i] !== "00") { //00 terminates
                 decoded += String.fromCharCode(parseInt(dataArr[i], 16));
                 i++;
-                if (i === 64) { //if the index went too high look for linked and reset // at the moment I have 0 clue if this works, I will test it eventually
+                if (i === 64) { // for whatever reason this only works for blocks of 2???? idk I'm gonn astart doing other stuff and come back to this
                     const nextBlock = this.formatTSB(parseInt(dataArr[1]), parseInt(dataArr[2]), parseInt(dataArr[3]));
                     dataArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(nextBlock));
+                    //console.log(`Switched to next block: ${nextBlock} with data: ${dataArr}`);
                     i = 4;
                 }
+                //console.log(`i: ${i}, dataArr[i]: ${dataArr[i]}, decoded: ${decoded}`);
             }
-            console.log(decoded);
             return decoded;
         }
         findFATEntry(filename) {
@@ -98,7 +98,6 @@ var TSOS;
                     if (block[1] === "1") {
                         const decodedData = this.decodeData(block);
                         if (decodedData === filename) {
-                            console.log(this.formatTSB(0, s, b));
                             return this.formatTSB(0, s, b);
                         }
                     }
@@ -166,43 +165,43 @@ var TSOS;
             }
         }
         write(fileName, data) {
-            let FATEntry = this.findFATEntry(fileName);
-            let FATasArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(FATEntry));
-            let pointedLoc = this.formatTSB(parseInt(FATasArr[1]), parseInt(FATasArr[2]), parseInt(FATasArr[3]));
-            let dataEntry = sessionStorage.getItem(pointedLoc);
-            let encodedData = this.encodeData(data);
-            let encodedArr = TSOS.Utils.splitEveryOther(encodedData);
-            //first, let's clear the existing data
-            dataEntry = this.fetchBlank();
-            //next convert to arr and mark occupied
-            let dataEntryArr = TSOS.Utils.splitEveryOther(dataEntry);
-            dataEntryArr[0] = "01";
+            const fatEntry = this.findFATEntry(fileName);
+            const FatEntryData = TSOS.Utils.splitEveryOther(sessionStorage.getItem(fatEntry)); //gets the data of FAT entry
+            const t = FatEntryData[1];
+            const s = FatEntryData[2];
+            const b = FatEntryData[3];
+            let dataAddress = this.formatTSB(parseInt(t), parseInt(s), parseInt(b));
+            let dataBlockArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(dataAddress));
+            let encodedData = TSOS.Utils.splitEveryOther(this.encodeData(data));
+            console.log(encodedData.join(""));
             let i = 0;
-            while (encodedArr[i]) {
-                dataEntryArr[4 + (i % 60)] = encodedArr[i];
+            while (i < encodedData.length) {
+                dataBlockArr[(i % 60) + 4] = encodedData[i];
+                console.log(`i: ${i} | Data: ${encodedData[i]} (Decoded: ${String.fromCharCode(parseInt(encodedData[i], 16))}) Written to block: ${dataAddress} Loc: ${(i % 60) + 4} as ${dataBlockArr[(i % 60) + 4]}`);
                 i++;
-                //if block is over
-                if (i % 60 === 0 && i !== 0) {
-                    //find free data
-                    const available = this.findFreeData();
-                    if (available) {
-                        //separate the new key and insert to prev
-                        const [t, s, b] = available.split(".");
-                        dataEntryArr[1] = "0" + t;
-                        dataEntryArr[2] = "0" + s;
-                        dataEntryArr[3] = "0" + b;
-                        sessionStorage.setItem(pointedLoc, dataEntryArr.join(""));
-                        //reset the array and location
-                        pointedLoc = available;
-                        dataEntryArr.fill("00");
-                        dataEntryArr[0] = "01";
+                if (i % 60 === 0 && i !== 0) { //if it's over the limit we need to go to a new block
+                    dataBlockArr[0] = "01";
+                    sessionStorage.setItem(dataAddress, dataBlockArr.join(""));
+                    const freeBlock = this.findFreeData();
+                    if (freeBlock) {
+                        const [nt, ns, nb] = freeBlock.split(".");
+                        dataBlockArr[1] = "0" + nt;
+                        dataBlockArr[2] = "0" + ns;
+                        dataBlockArr[3] = "0" + nb;
+                        sessionStorage.setItem(dataAddress, dataBlockArr.join(""));
+                        dataAddress = this.formatTSB(parseInt(nt), parseInt(ns), parseInt(nb));
+                        dataBlockArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(dataAddress));
+                        //
                     }
                     else {
                         _Kernel.krnTrapError("NO DISK SPACE");
                     }
                 }
             }
-            sessionStorage.setItem(pointedLoc, dataEntryArr.join(""));
+            dataBlockArr[1] = "00";
+            dataBlockArr[2] = "00";
+            dataBlockArr[3] = "00";
+            sessionStorage.setItem(dataAddress, dataBlockArr.join(""));
             _DiskDisplay.update();
         }
         read(fileName) {
@@ -213,14 +212,17 @@ var TSOS;
             let rawDataArr = TSOS.Utils.splitEveryOther(rawData);
             let nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
             let output = "";
-            while (pointedLoc !== "0.0.0") {
+            output = this.decodeData(rawData);
+            /*while (pointedLoc !== "0.0.0"){
                 let currentData = this.decodeData(rawData);
+                console.log(`data at ${pointedLoc}: ${currentData}`);
                 output = output + currentData;
                 pointedLoc = nextPoint;
                 rawData = sessionStorage.getItem(pointedLoc);
-                rawDataArr = TSOS.Utils.splitEveryOther(rawData);
+                rawDataArr = Utils.splitEveryOther(rawData);
                 nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
-            }
+            }*/
+            console.log(`Output: ${output}`);
             return output;
         }
         delete(fileName) {
@@ -243,6 +245,20 @@ var TSOS;
             rawData = this.fetchBlank();
             sessionStorage.setItem(FATEntry, rawData);
             _DiskDisplay.update();
+        }
+        fetchFileList() {
+            let output = [];
+            for (let s = 0; s < this.sectors; s++) {
+                for (let b = 0; b < this.blocks; b++) {
+                    let FATDataArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(this.formatTSB(0, s, b)));
+                    if ((FATDataArr[0] === "01") && (FATDataArr[1] !== "FF")) {
+                        console.log(FATDataArr);
+                        output.push(this.decodeData(FATDataArr.join("")));
+                    }
+                }
+            }
+            console.log(output);
+            return output;
         }
     }
     TSOS.DeviceDriverDisk = DeviceDriverDisk;

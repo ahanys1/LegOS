@@ -85,6 +85,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellDelete, "delete", '<filename> - removes filename from storage.');
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellLS, "ls", '- list the current files on disk.');
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -302,6 +304,8 @@ var TSOS;
                     case "write":
                         _StdOut.putText("'write <filename> <data> writes the quotes surrounded data to the file specified on the disk.");
                         break;
+                    case "ls":
+                        _StdOut.putText("'ls' lists all files currently stored on disk.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -548,6 +552,18 @@ var TSOS;
         shellDelete(args) {
             if (_krnDiskDriver.isFormated) {
                 _krnDiskDriver.delete(args[0]);
+            }
+            else {
+                _Kernel.krnTrapError("DISK NOT FORMAT");
+            }
+        }
+        shellLS(args) {
+            if (_krnDiskDriver.isFormated) {
+                let fileList = _krnDiskDriver.fetchFileList();
+                console.log(fileList);
+                for (let file of fileList) {
+                    _StdOut.putText(file + "    ");
+                }
             }
             else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");
