@@ -128,40 +128,46 @@ var TSOS;
             this.isFormated = true;
         }
         createFile(fileName) {
-            const freeFATAddress = this.findFreeFAT();
-            const freeDataAddress = this.findFreeData();
-            if (freeFATAddress && freeDataAddress) {
-                //first, fetch data as string array
-                let FATData = TSOS.Utils.splitEveryOther(sessionStorage.getItem(freeFATAddress));
-                let Data = TSOS.Utils.splitEveryOther(sessionStorage.getItem(freeDataAddress));
-                //next, mark blocks as occupied
-                FATData[0] = "01";
-                Data[0] = "01";
-                //now, set the FAT to point to the reserved Data
-                let DataAddressArr = freeDataAddress.split(".");
-                FATData[1] = "0" + DataAddressArr[0];
-                FATData[2] = "0" + DataAddressArr[1];
-                FATData[3] = "0" + DataAddressArr[2];
-                //now encode the name of the file as the ascii hex codes
-                let encodedFileName = TSOS.Utils.splitEveryOther(this.encodeData(fileName));
-                for (let i = 0; i < encodedFileName.length; i++) {
-                    FATData[4 + i] = encodedFileName[i];
-                }
-                /*for (let i = 0; i < fileName.length; i++){
-                    let charCode = fileName.charCodeAt(i).toString(16).toUpperCase();
-                    if (charCode.length == 1){ //deal with missing 0s
-                        charCode = "0" + charCode;
+            if (!this.findFATEntry(fileName)) {
+                const freeFATAddress = this.findFreeFAT();
+                const freeDataAddress = this.findFreeData();
+                if (freeFATAddress && freeDataAddress) {
+                    //first, fetch data as string array
+                    let FATData = TSOS.Utils.splitEveryOther(sessionStorage.getItem(freeFATAddress));
+                    let Data = TSOS.Utils.splitEveryOther(sessionStorage.getItem(freeDataAddress));
+                    //next, mark blocks as occupied
+                    FATData[0] = "01";
+                    Data[0] = "01";
+                    //now, set the FAT to point to the reserved Data
+                    let DataAddressArr = freeDataAddress.split(".");
+                    FATData[1] = "0" + DataAddressArr[0];
+                    FATData[2] = "0" + DataAddressArr[1];
+                    FATData[3] = "0" + DataAddressArr[2];
+                    //now encode the name of the file as the ascii hex codes
+                    let encodedFileName = TSOS.Utils.splitEveryOther(this.encodeData(fileName));
+                    for (let i = 0; i < encodedFileName.length; i++) {
+                        FATData[4 + i] = encodedFileName[i];
                     }
-                    FATData[4+i] = charCode;
-                }*/
-                //lastly, writeback the data to the disk...
-                sessionStorage.setItem(freeFATAddress, FATData.join(""));
-                sessionStorage.setItem(freeDataAddress, Data.join(""));
-                //...and update the display
-                _DiskDisplay.update();
+                    /*for (let i = 0; i < fileName.length; i++){
+                        let charCode = fileName.charCodeAt(i).toString(16).toUpperCase();
+                        if (charCode.length == 1){ //deal with missing 0s
+                            charCode = "0" + charCode;
+                        }
+                        FATData[4+i] = charCode;
+                    }*/
+                    //lastly, writeback the data to the disk...
+                    sessionStorage.setItem(freeFATAddress, FATData.join(""));
+                    sessionStorage.setItem(freeDataAddress, Data.join(""));
+                    //...and update the display
+                    _DiskDisplay.update();
+                    _StdOut.putText(`File ${fileName} created.`);
+                }
+                else {
+                    _Kernel.krnTrapError("NO DISK SPACE"); //TODO: disk space error handler
+                }
             }
             else {
-                _Kernel.krnTrapError("NO DISK SPACE"); //TODO: disk space error handler
+                _Kernel.krnTrapError("FILE EXISTS", [fileName]);
             }
         }
         write(fileName, data) {
@@ -271,18 +277,24 @@ var TSOS;
             }
         }
         rename(fileName, newName) {
-            let FATEntryArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(this.findFATEntry(fileName)));
-            let encodedNameArr = TSOS.Utils.splitEveryOther(this.encodeData(newName));
-            for (let i = 0; i < 60; i++) {
-                if (i < encodedNameArr.length) {
-                    FATEntryArr[i + 4] = encodedNameArr[i];
+            if (!this.findFATEntry(newName)) {
+                let FATEntryArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(this.findFATEntry(fileName)));
+                let encodedNameArr = TSOS.Utils.splitEveryOther(this.encodeData(newName));
+                for (let i = 0; i < 60; i++) {
+                    if (i < encodedNameArr.length) {
+                        FATEntryArr[i + 4] = encodedNameArr[i];
+                    }
+                    else {
+                        FATEntryArr[i + 4] = "00";
+                    }
                 }
-                else {
-                    FATEntryArr[i + 4] = "00";
-                }
+                sessionStorage.setItem(this.findFATEntry(fileName), FATEntryArr.join(""));
+                _DiskDisplay.update();
+                _StdOut.putText(`File ${fileName} renamed to ${newName}`);
             }
-            sessionStorage.setItem(this.findFATEntry(fileName), FATEntryArr.join(""));
-            _DiskDisplay.update();
+            else {
+                _Kernel.krnTrapError("FILE EXISTS", [newName]);
+            }
         }
     }
     TSOS.DeviceDriverDisk = DeviceDriverDisk;

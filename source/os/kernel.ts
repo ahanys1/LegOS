@@ -236,6 +236,28 @@ module TSOS {
                     _StdOut.advanceLine();
                     _PCB.terminate(_PCB.runningPID);
                     break;
+                case "DISK NOT FORMAT":
+                    _StdOut.putText(`ERR: Disk is not formatted. Please format the disk.`);
+                    break;
+                case "NO DISK SPACE":
+                    _StdOut.putText(`ERR: No disk space is available.`);
+                    break;
+                case "FILENAME TOO LONG":
+                    _StdOut.putText(`ERR: Filename:`);
+                    _StdOut.advanceLine();
+                    _StdOut.putText(`${params[0]}`);
+                    _StdOut.advanceLine();
+                    _StdOut.putText("is too long.");
+                    break;
+                case "FILE NOT FOUND":
+                    _StdOut.putText(`ERR: File ${params[0]} not found.`);
+                    break;
+                case "QUOTES": 
+                    _StdOut.putText("ERR: file contents must be surounded by quotes.");
+                    break;
+                case "FILE EXISTS":
+                    _StdOut.putText(`ERR: File ${params[0]} already exists.`);
+                    break;
                 case "BSOD":
                 default:
                     let bsod = document.getElementById("bsod");

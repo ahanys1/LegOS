@@ -517,29 +517,33 @@ var TSOS;
         }
         shellFormat(args) {
             _krnDiskDriver.format();
-            _StdOut.putText("Disk successfully formated.");
+            _StdOut.putText("Disk successfully formatted.");
         }
         shellCreate(args) {
             if (_krnDiskDriver.isFormated) {
                 if (args[0].length <= 28) {
                     _krnDiskDriver.createFile(args[0]);
-                    _StdOut.putText(`File ${args[0]} created.`);
                 }
                 else {
-                    _Kernel.krnTrapError("FILENAME TOO LONG"); //TODO
+                    _Kernel.krnTrapError("FILENAME TOO LONG", args);
                 }
             }
             else {
-                _Kernel.krnTrapError("DISK NOT FORMAT"); //TODO
+                _Kernel.krnTrapError("DISK NOT FORMAT");
             }
         }
         shellWrite(args) {
             if (_krnDiskDriver.isFormated) {
-                if (args[1][0] === '"' && args[args.length - 1][args[args.length - 1].length - 1]) { // 50/50 shot i got that right, but I think that checks if the args both start and end in quotes
-                    let fileName = args.shift();
-                    let data = args.join(" ");
-                    data = data.slice(1, -1); //slice the quotes off
-                    _krnDiskDriver.write(fileName, data);
+                if ((args[1][0]) === '"' && args[args.length - 1][args[args.length - 1].length - 1] === '"') { // 50/50 shot i got that right, but I think that checks if the args both start and end in quotes
+                    if (_krnDiskDriver.findFATEntry(args[0])) {
+                        let fileName = args.shift();
+                        let data = args.join(" ");
+                        data = data.slice(1, -1); //slice the quotes off
+                        _krnDiskDriver.write(fileName, data);
+                    }
+                    else {
+                        _Kernel.krnTrapError("FILE NOT FOUND", args);
+                    }
                 }
                 else {
                     _Kernel.krnTrapError("QUOTES");
@@ -551,7 +555,12 @@ var TSOS;
         }
         shellRead(args) {
             if (_krnDiskDriver.isFormated) {
-                _StdOut.putText(_krnDiskDriver.read(args[0])); //works but, if it goes off the screen it doesn't line wrap. gotta fix that eventually.
+                if (_krnDiskDriver.findFATEntry(args[0])) {
+                    _StdOut.putText(_krnDiskDriver.read(args[0]));
+                }
+                else {
+                    _Kernel.krnTrapError("FILE NOT FOUND", args);
+                }
             }
             else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");
@@ -559,7 +568,13 @@ var TSOS;
         }
         shellDelete(args) {
             if (_krnDiskDriver.isFormated) {
-                _krnDiskDriver.delete(args[0]);
+                if (_krnDiskDriver.findFATEntry(args[0])) {
+                    _krnDiskDriver.delete(args[0]);
+                    _StdOut.putText(`File: ${args[0]} deleted.`);
+                }
+                else {
+                    _Kernel.krnTrapError("FILE NOT FOUND", args);
+                }
             }
             else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");
@@ -579,8 +594,13 @@ var TSOS;
         }
         shellCopy(args) {
             if (_krnDiskDriver.isFormated) {
-                _krnDiskDriver.copy(args[0], args[1]);
-                _StdOut.putText(`File ${args[0]} coppied to ${args[1]}`);
+                if (_krnDiskDriver.findFATEntry(args[0])) {
+                    _krnDiskDriver.copy(args[0], args[1]);
+                    _StdOut.putText(`File ${args[0]} coppied to ${args[1]}`);
+                }
+                else {
+                    _Kernel.krnTrapError("FILE NOT FOUND", args);
+                }
             }
             else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");
@@ -588,8 +608,17 @@ var TSOS;
         }
         shellRename(args) {
             if (_krnDiskDriver.isFormated) {
-                _krnDiskDriver.rename(args[0], args[1]);
-                _StdOut.putText(`File ${args[0]} renamed to ${args[1]}`);
+                if (_krnDiskDriver.findFATEntry(args[0])) {
+                    if (args[1].length <= 28) {
+                        _krnDiskDriver.rename(args[0], args[1]);
+                    }
+                    else {
+                        _Kernel.krnTrapError("FILENAME TOO LONG", [args[1]]);
+                    }
+                }
+                else {
+                    _Kernel.krnTrapError("FILE NOT FOUND", args);
+                }
             }
             else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");
