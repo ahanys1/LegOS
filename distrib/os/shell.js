@@ -87,6 +87,10 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellLS, "ls", '- list the current files on disk.');
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellCopy, "copy", '<existingfileName> <newfileName> - copy the file data.');
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRename, "rename", '<existingfileName> <newfileName> - rename the file.');
+            this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             // Display the initial prompt.
@@ -306,6 +310,10 @@ var TSOS;
                         break;
                     case "ls":
                         _StdOut.putText("'ls' lists all files currently stored on disk.");
+                        break;
+                    case "copy":
+                        _StdOut.putText("'copy <existing file> <new file>' coppies the contents to a new file.");
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -564,6 +572,24 @@ var TSOS;
                 for (let file of fileList) {
                     _StdOut.putText(file + "    ");
                 }
+            }
+            else {
+                _Kernel.krnTrapError("DISK NOT FORMAT");
+            }
+        }
+        shellCopy(args) {
+            if (_krnDiskDriver.isFormated) {
+                _krnDiskDriver.copy(args[0], args[1]);
+                _StdOut.putText(`File ${args[0]} coppied to ${args[1]}`);
+            }
+            else {
+                _Kernel.krnTrapError("DISK NOT FORMAT");
+            }
+        }
+        shellRename(args) {
+            if (_krnDiskDriver.isFormated) {
+                _krnDiskDriver.rename(args[0], args[1]);
+                _StdOut.putText(`File ${args[0]} renamed to ${args[1]}`);
             }
             else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");

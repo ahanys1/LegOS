@@ -276,5 +276,31 @@
             console.log(output);
             return output;
         }
+
+        public copy(fileName: string, newFileName: string){
+            const data = this.read(fileName); // get the data with the read function we already made
+
+            if (this.findFATEntry(newFileName)) { //if the entry exists, we're gonna copy there
+                this.write(newFileName, data);
+            } else { //otherwise, create a new file
+                this.createFile(newFileName);
+                this.write(newFileName, data);
+            }
+
+        }
+
+        public rename(fileName: string, newName: string){
+            let FATEntryArr: string[] = Utils.splitEveryOther(sessionStorage.getItem(this.findFATEntry(fileName)));
+            let encodedNameArr: string[] = Utils.splitEveryOther(this.encodeData(newName));
+            for (let i = 0; i < 60; i ++){
+                if (i < encodedNameArr.length){
+                    FATEntryArr[i + 4] = encodedNameArr[i];
+                } else {
+                    FATEntryArr[i + 4] = "00";
+                }
+            }
+            sessionStorage.setItem(this.findFATEntry(fileName), FATEntryArr.join(""));
+            _DiskDisplay.update();
+        }
     }
 }

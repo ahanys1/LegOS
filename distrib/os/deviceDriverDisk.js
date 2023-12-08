@@ -260,6 +260,30 @@ var TSOS;
             console.log(output);
             return output;
         }
+        copy(fileName, newFileName) {
+            const data = this.read(fileName); // get the data with the read function we already made
+            if (this.findFATEntry(newFileName)) { //if the entry exists, we're gonna copy there
+                this.write(newFileName, data);
+            }
+            else { //otherwise, create a new file
+                this.createFile(newFileName);
+                this.write(newFileName, data);
+            }
+        }
+        rename(fileName, newName) {
+            let FATEntryArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(this.findFATEntry(fileName)));
+            let encodedNameArr = TSOS.Utils.splitEveryOther(this.encodeData(newName));
+            for (let i = 0; i < 60; i++) {
+                if (i < encodedNameArr.length) {
+                    FATEntryArr[i + 4] = encodedNameArr[i];
+                }
+                else {
+                    FATEntryArr[i + 4] = "00";
+                }
+            }
+            sessionStorage.setItem(this.findFATEntry(fileName), FATEntryArr.join(""));
+            _DiskDisplay.update();
+        }
     }
     TSOS.DeviceDriverDisk = DeviceDriverDisk;
 })(TSOS || (TSOS = {}));
