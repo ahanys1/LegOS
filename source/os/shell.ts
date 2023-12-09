@@ -415,6 +415,8 @@ module TSOS {
                     case "copy":
                         _StdOut.putText("'copy <existing file> <new file>' coppies the contents to a new file.");
                         break;
+                    case "rename":
+                        _StdOut.putText("'rename <existing file> <new file>' renames the file.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -476,13 +478,17 @@ module TSOS {
                     _MMU.PIDs.push(_MMU.PIDs[_MMU.PIDs.length - 1] + 1); //pushes next PID to array
                 }
                 let segment: number = _MMU.findValidSpace();
-                if (_MMU.writeInit(programArray, segment)){
+                let status = _MMU.writeInit(programArray, segment)
+                if (status === true){
                     _StdOut.putText(" Program Loaded. PID: " + _MMU.PIDs[_MMU.PIDs.length - 1]);
                     _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length -1], segment);
                     _RAMdisplay.updateDisplay();
                     console.log(_MMU.PIDs);
-                } else {
-                    _Kernel.krnTrapError("NO SPACE");
+                } else if (status === false){
+                    _StdOut.putText(` Program loaded to disk. PID: ${_MMU.PIDs[_MMU.PIDs.length - 1]}`);
+                    _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length -1], segment);
+                } else { //returns null if it's not formatted
+                    _Kernel.krnTrapError("DISK NOT FORMAT");
                 }
             }else{
                 _Kernel.krnTrapError("NOT LOADED", invalidChars);

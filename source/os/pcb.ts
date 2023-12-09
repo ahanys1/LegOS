@@ -2,7 +2,7 @@ module TSOS{
     interface ProcessInfo{ //look, I realized after I went down this rabbit hole that there was a far better (and probably more correct) way to do this. 
         PID: number;       //instead of making a new PCB for each program, I create a new entry in my PCB's Dictionary of all the programs.
         Priority: number;  //Functionally, this produces the exact same result. If you're wondering where I got this idea, I used a lot of dictionaries at my internship this past summer.
-        Location: string;
+        Location: "Memory" | "Disk";
         Segment: number;
         Base: number;
         Limit: number;
@@ -32,30 +32,51 @@ module TSOS{
 
         public addProgram(pid: number, segment: number){//creates an entry for the new program, give it resident status
             let base: number;
-            if (segment == 0){
-                base = 0;
-            } else if (segment == 1){
-                base = 256;
-            } else if (segment == 2){
-                base = 512;
+            if (segment >= 0){ //segment is -1 if it is loaded to the disk
+                if (segment == 0){
+                    base = 0;
+                } else if (segment == 1){
+                    base = 256;
+                } else if (segment == 2){
+                    base = 512;
+                }
+                this.processes[pid] = {
+                    PID: pid,
+                    Priority: 8,
+                    Location: "Memory",
+                    Segment: segment,
+                    Base: base,
+                    Limit: base + 255,
+                    PC: 0,
+                    Acc: 0,
+                    IR: 0,
+                    Xreg: 0,
+                    Yreg: 0,
+                    Zflag: 0,
+                    Status: "Resident",
+                    ExecutionLength: 0,
+                    LastTick: 0
+                };
+            } else {
+                this.processes[pid] = {
+                    PID: pid,
+                    Priority: 8,
+                    Location: "Disk",
+                    Segment: NaN,
+                    Base: NaN,
+                    Limit: NaN,
+                    PC: 0,
+                    Acc: 0,
+                    IR: 0,
+                    Xreg: 0,
+                    Yreg: 0,
+                    Zflag: 0,
+                    Status: "Resident",
+                    ExecutionLength: 0,
+                    LastTick: 0
+                };
             }
-            this.processes[pid] = {
-                PID: pid,
-                Priority: 8,
-                Location: "Memory",
-                Segment: segment,
-                Base: base,
-                Limit: base + 255,
-                PC: 0,
-                Acc: 0,
-                IR: 0,
-                Xreg: 0,
-                Yreg: 0,
-                Zflag: 0,
-                Status: "Resident",
-                ExecutionLength: 0,
-                LastTick: 0
-            };
+            
 
             //create a new row in the display
             const tableBody = document.getElementById("pcbBody") as HTMLTableElement;

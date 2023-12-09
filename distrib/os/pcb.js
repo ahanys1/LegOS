@@ -16,32 +16,53 @@ var TSOS;
         }
         addProgram(pid, segment) {
             let base;
-            if (segment == 0) {
-                base = 0;
+            if (segment >= 0) { //segment is -1 if it is loaded to the disk
+                if (segment == 0) {
+                    base = 0;
+                }
+                else if (segment == 1) {
+                    base = 256;
+                }
+                else if (segment == 2) {
+                    base = 512;
+                }
+                this.processes[pid] = {
+                    PID: pid,
+                    Priority: 8,
+                    Location: "Memory",
+                    Segment: segment,
+                    Base: base,
+                    Limit: base + 255,
+                    PC: 0,
+                    Acc: 0,
+                    IR: 0,
+                    Xreg: 0,
+                    Yreg: 0,
+                    Zflag: 0,
+                    Status: "Resident",
+                    ExecutionLength: 0,
+                    LastTick: 0
+                };
             }
-            else if (segment == 1) {
-                base = 256;
+            else {
+                this.processes[pid] = {
+                    PID: pid,
+                    Priority: 8,
+                    Location: "Disk",
+                    Segment: NaN,
+                    Base: NaN,
+                    Limit: NaN,
+                    PC: 0,
+                    Acc: 0,
+                    IR: 0,
+                    Xreg: 0,
+                    Yreg: 0,
+                    Zflag: 0,
+                    Status: "Resident",
+                    ExecutionLength: 0,
+                    LastTick: 0
+                };
             }
-            else if (segment == 2) {
-                base = 512;
-            }
-            this.processes[pid] = {
-                PID: pid,
-                Priority: 8,
-                Location: "Memory",
-                Segment: segment,
-                Base: base,
-                Limit: base + 255,
-                PC: 0,
-                Acc: 0,
-                IR: 0,
-                Xreg: 0,
-                Yreg: 0,
-                Zflag: 0,
-                Status: "Resident",
-                ExecutionLength: 0,
-                LastTick: 0
-            };
             //create a new row in the display
             const tableBody = document.getElementById("pcbBody");
             const row = tableBody.insertRow();

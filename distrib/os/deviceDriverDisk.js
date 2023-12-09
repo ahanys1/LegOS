@@ -127,7 +127,7 @@ var TSOS;
             _DiskDisplay.update();
             this.isFormated = true;
         }
-        createFile(fileName) {
+        createFile(fileName, isProgram = false) {
             if (!this.findFATEntry(fileName)) {
                 const freeFATAddress = this.findFreeFAT();
                 const freeDataAddress = this.findFreeData();
@@ -160,7 +160,9 @@ var TSOS;
                     sessionStorage.setItem(freeDataAddress, Data.join(""));
                     //...and update the display
                     _DiskDisplay.update();
-                    _StdOut.putText(`File ${fileName} created.`);
+                    if (!isProgram) {
+                        _StdOut.putText(`File ${fileName} created.`);
+                    }
                 }
                 else {
                     _Kernel.krnTrapError("NO DISK SPACE"); //TODO: disk space error handler
@@ -170,7 +172,7 @@ var TSOS;
                 _Kernel.krnTrapError("FILE EXISTS", [fileName]);
             }
         }
-        write(fileName, data) {
+        write(fileName, data, isProgram = false) {
             const fatEntry = this.findFATEntry(fileName);
             const FatEntryData = TSOS.Utils.splitEveryOther(sessionStorage.getItem(fatEntry)); //gets the data of FAT entry
             const t = FatEntryData[1];
@@ -178,7 +180,13 @@ var TSOS;
             const b = FatEntryData[3];
             let dataAddress = this.formatTSB(parseInt(t), parseInt(s), parseInt(b));
             let dataBlockArr = TSOS.Utils.splitEveryOther(sessionStorage.getItem(dataAddress));
-            let encodedData = TSOS.Utils.splitEveryOther(this.encodeData(data));
+            let encodedData;
+            if (isProgram) { //if it's a program there's no need to encode the data.
+                encodedData = TSOS.Utils.splitEveryOther(data);
+            }
+            else {
+                encodedData = TSOS.Utils.splitEveryOther(this.encodeData(data));
+            }
             console.log(encodedData.join(""));
             let i = 0;
             while (i < encodedData.length) {

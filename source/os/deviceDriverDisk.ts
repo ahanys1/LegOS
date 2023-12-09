@@ -139,7 +139,7 @@
             this.isFormated = true;
         }
 
-        public createFile(fileName: string){
+        public createFile(fileName: string, isProgram = false){
             if (!this.findFATEntry(fileName)){
                 const freeFATAddress: string = this.findFreeFAT();
                 const freeDataAddress: string = this.findFreeData();
@@ -172,7 +172,9 @@
                     sessionStorage.setItem(freeDataAddress, Data.join(""));
                     //...and update the display
                     _DiskDisplay.update();
-                    _StdOut.putText(`File ${fileName} created.`);
+                    if (!isProgram){
+                        _StdOut.putText(`File ${fileName} created.`);
+                    }
                 } else {
                     _Kernel.krnTrapError("NO DISK SPACE"); //TODO: disk space error handler
                 }
@@ -181,7 +183,7 @@
             }
         }
 
-        public write(fileName: string, data: string){
+        public write(fileName: string, data: string, isProgram: boolean = false){
             const fatEntry = this.findFATEntry(fileName);
             const FatEntryData = Utils.splitEveryOther(sessionStorage.getItem(fatEntry)); //gets the data of FAT entry
             const t = FatEntryData[1];
@@ -189,7 +191,13 @@
             const b = FatEntryData[3];
             let dataAddress = this.formatTSB(parseInt(t),parseInt(s),parseInt(b));
             let dataBlockArr = Utils.splitEveryOther(sessionStorage.getItem(dataAddress));
-            let encodedData = Utils.splitEveryOther(this.encodeData(data));
+            let encodedData;
+            if (isProgram){ //if it's a program there's no need to encode the data.
+                encodedData = Utils.splitEveryOther(data); 
+            } else {
+                encodedData = Utils.splitEveryOther(this.encodeData(data));
+            }
+            
             console.log(encodedData.join(""));
             let i = 0;
             while (i < encodedData.length){

@@ -23,6 +23,10 @@ var TSOS;
                 this.contextSwitching = false;
             }
         }
+        rollIn() {
+        }
+        rollOut() {
+        }
     }
     TSOS.Dispatcher = Dispatcher;
 })(TSOS || (TSOS = {}));

@@ -241,15 +241,17 @@ table{
   height: 400px;
   width: 800px;
   overflow: scroll;
-  font-family: monospace;
 }
 
 #PCBContainer{
   height: 200px;
-  width: 800px;
+  width: 803px;
   overflow: scroll;
 }
 
 #PCB{
   width: 785px;
+}
+table{
+  font-family: monospace;
 }

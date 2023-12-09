@@ -68,8 +68,15 @@ module TSOS {
                     index++;
                 });
                 return true;
-            } else {
-                return false;
+            } else { //this is were we will load the program into the disk instead.
+                if (_krnDiskDriver.isFormated){
+                    let pid = this.PIDs[_MMU.PIDs.length - 1];
+                    _krnDiskDriver.createFile(`program${pid}.stud`, true); //create a .stud file.
+                    let programString = programArray.join("");
+                    _krnDiskDriver.write(`program${pid}.stud`, programString, true);
+                    return false;
+                }
+                return null;
             }
             
         }

@@ -91,5 +91,6 @@ module TSOS {
             dispQ.innerHTML = "Quantum: " + this.quantum.toString();
         }
     }
+
     
 }

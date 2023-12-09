@@ -24,6 +24,14 @@ module TSOS {
                 this.contextSwitching = false;
             }
         }
+
+        public rollIn(){
+
+        }
+
+        public rollOut(){
+            
+        }
     }
 }
 
