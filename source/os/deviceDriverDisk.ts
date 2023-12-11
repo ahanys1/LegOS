@@ -64,6 +64,7 @@
                     for (let b = 0; b < this.blocks; b++){
                         const block = Utils.splitEveryOther(sessionStorage.getItem(this.formatTSB(t,s,b)));
                         if (block[0] === "00"){
+                            console.log(` taking block: ${this.formatTSB(t,s,b)}`);
                             return this.formatTSB(t,s,b);
                         }
                     }
@@ -91,7 +92,7 @@
             while (dataArr[i] !== "00"){ //00 terminates
                 decoded += String.fromCharCode(parseInt(dataArr[i],16));
                 i++;
-                if (i === 64){ // for whatever reason this only works for blocks of 2???? idk I'm gonn astart doing other stuff and come back to this
+                if (i === 64){ 
                     const nextBlock = this.formatTSB(parseInt(dataArr[1]), parseInt(dataArr[2]), parseInt(dataArr[3]));
                     dataArr = Utils.splitEveryOther(sessionStorage.getItem(nextBlock));
                     //console.log(`Switched to next block: ${nextBlock} with data: ${dataArr}`);
@@ -101,6 +102,35 @@
             }
             return decoded;
         }
+
+        public decodeProcess(data: string): string {
+            let i = 4; // 4th position is always beginning of data
+            let decoded = "";
+            let dataArr = Utils.splitEveryOther(data);
+            let fullCt = 0;
+            while (dataArr[1] !== "FF" ) { //make sure we're not at the MBR
+                decoded += dataArr[i];
+                i++;
+                fullCt++;
+                if (fullCt > 255){
+                    console.log("broke");
+                    break;
+                }
+                if (i === 64) {
+                    const nextBlock = this.formatTSB(
+                        parseInt(dataArr[1]),
+                        parseInt(dataArr[2]),
+                        parseInt(dataArr[3])
+                    );
+        
+                    dataArr = Utils.splitEveryOther(sessionStorage.getItem(nextBlock));
+                    i = 4;
+                }
+            }
+        
+            return decoded;
+        }
+        
 
         public findFATEntry(filename: string):string {
             for (let s = 0; s < this.sectors; s++){
@@ -193,16 +223,18 @@
             let dataBlockArr = Utils.splitEveryOther(sessionStorage.getItem(dataAddress));
             let encodedData;
             if (isProgram){ //if it's a program there's no need to encode the data.
-                encodedData = Utils.splitEveryOther(data); 
+                data = data.toUpperCase();
+                data = data.padEnd(512, '0');
+                encodedData = Utils.splitEveryOther(data);
             } else {
                 encodedData = Utils.splitEveryOther(this.encodeData(data));
             }
             
-            console.log(encodedData.join(""));
+            //console.log(encodedData.join(""));
             let i = 0;
             while (i < encodedData.length){
                 dataBlockArr[(i % 60) + 4] = encodedData[i];
-                console.log(`i: ${i} | Data: ${encodedData[i]} (Decoded: ${String.fromCharCode(parseInt(encodedData[i],16))}) Written to block: ${dataAddress} Loc: ${(i % 60) + 4} as ${dataBlockArr[(i%60) + 4]}`);
+                //console.log(`i: ${i} | Data: ${encodedData[i]} (Decoded: ${String.fromCharCode(parseInt(encodedData[i],16))}) Written to block: ${dataAddress} Loc: ${(i % 60) + 4} as ${dataBlockArr[(i%60) + 4]}`);
                 i++;
                 
                 if (i % 60 === 0 && i !== 0){ //if it's over the limit we need to go to a new block
@@ -223,6 +255,7 @@
                     }
                 }
             }
+            dataBlockArr[0] = "01";
             dataBlockArr[1] = "00";
             dataBlockArr[2] = "00";
             dataBlockArr[3] = "00";
@@ -238,7 +271,12 @@
             let rawDataArr = Utils.splitEveryOther(rawData);
             let nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
             let output: string = "";
-            output = this.decodeData(rawData);
+            if (fileName.includes(".stud")){
+                output = this.decodeProcess(rawData);
+            } else {
+                output = this.decodeData(rawData);
+            }
+            
             /*while (pointedLoc !== "0.0.0"){
                 let currentData = this.decodeData(rawData);
                 console.log(`data at ${pointedLoc}: ${currentData}`);
@@ -248,7 +286,7 @@
                 rawDataArr = Utils.splitEveryOther(rawData);
                 nextPoint = this.formatTSB(parseInt(rawDataArr[1]), parseInt(rawDataArr[2]), parseInt(rawDataArr[3]));
             }*/
-            console.log(`Output: ${output}`);
+            //console.log(`Output: ${output}`);
             return output;
         }
 

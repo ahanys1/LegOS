@@ -200,7 +200,7 @@ var TSOS;
                     break;
                 case 0xFF:
                     if (this.Xreg == 0x01) { //#$01 in X reg = print the integer stored in the Y register.
-                        console.log(this.tempA);
+                        //console.log(this.tempA);
                         _StdOut.putText(this.tempA.toString());
                     }
                     else if (this.Xreg == 0x02) { //#$02 in X reg = print the 00-terminated string stored at the address in the Y register.

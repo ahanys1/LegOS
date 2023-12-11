@@ -72,6 +72,7 @@ var TSOS;
                     let pid = this.PIDs[_MMU.PIDs.length - 1];
                     _krnDiskDriver.createFile(`program${pid}.stud`, true); //create a .stud file.
                     let programString = programArray.join("");
+                    programString = programString.padEnd(511, '0'); //should fore to allocate all blocks
                     _krnDiskDriver.write(`program${pid}.stud`, programString, true);
                     return false;
                 }

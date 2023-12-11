@@ -94,10 +94,42 @@ module TSOS {
                     _Memory.ram[i] = 0x00;
                 }
             } else if (segment == 2){
-                for (let i = 512; i <= 768; i++){
+                for (let i = 512; i < 768; i++){
                     _Memory.ram[i] = 0x00;
                 }
             }
+        }
+
+        public readWholeProgram(segment: number): string{
+            let intArray: number[] = [];
+            //fetch the code
+            if (segment === 0){
+                for (let i = 0; i <= 255; i++){
+                    intArray.push(_Memory.ram[i]);
+                }
+            } else if (segment === 1){
+                for (let i = 256; i <= 511; i++){
+                    intArray.push(_Memory.ram[i]);
+                }
+            } else if (segment === 2){
+                for (let i = 512; i < 768; i++){
+                    intArray.push(_Memory.ram[i]);
+                }
+            } else {
+                _Kernel.krnTrapError("READ WHOLE PROGRAM");
+                return null;
+            }
+            //convert the codes to strings
+            let strArray: string[] = [];
+            for (const code of intArray) {
+                let codeStr = code.toString(16);
+                if (codeStr.length === 1){
+                    codeStr = "0" + codeStr;
+                }
+                strArray.push(codeStr);
+            }
+
+            return strArray.join("");
         }
     }
     

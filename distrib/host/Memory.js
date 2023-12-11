@@ -14,7 +14,7 @@ var TSOS;
             this.reset();
         }
         initializeMemory() {
-            for (let i = 0x00; i <= this.size; i++) {
+            for (let i = 0x00; i < this.size; i++) {
                 this.ram.push(0x00);
             }
             //this.log("created - Addressable space : " + (this.size+1)); need to figure out logging
