@@ -58,6 +58,12 @@ var TSOS;
                     _Console.putText("------------------");
                     _Console.advanceLine();
                 }
+                // manage any artifacting in the disk from leftover processes
+                for (const pid of this.finishedPIDs) {
+                    if (_krnDiskDriver.findFATEntry(`program${pid}.stud`)) {
+                        _krnDiskDriver.delete(`program${pid}.stud`);
+                    }
+                }
                 _Console.putText("=C ");
                 this.finishedPIDs = [];
                 this.TurnaroundTime = 0;
