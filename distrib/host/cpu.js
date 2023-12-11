@@ -73,6 +73,7 @@ var TSOS;
             this.PC++;
             _CPUdisplay.updatePC();
             _PCB.updateRunning();
+            _PCB.updateAll();
             this.decode1();
         }
         decode1() {

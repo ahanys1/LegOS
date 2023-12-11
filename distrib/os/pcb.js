@@ -143,6 +143,27 @@ var TSOS;
             let row = this.PCBTable.rows[this.runningPID + 1];
             row.cells[12].innerHTML = this.processes[this.runningPID].Status;
         }
+        updateAll() {
+            // Iterate through each process in the dictionary
+            for (const pid in this.processes) {
+                const process = this.processes[pid];
+                const row = this.PCBTable.rows[parseInt(pid) + 1];
+                // Update each cell in the row
+                row.cells[0].textContent = process.PID.toString();
+                row.cells[1].textContent = process.Priority.toString();
+                row.cells[2].textContent = process.Location;
+                row.cells[3].textContent = process.Segment.toString();
+                row.cells[4].textContent = TSOS.Utils.hexLog(process.Base, true);
+                row.cells[5].textContent = TSOS.Utils.hexLog(process.Limit, true);
+                row.cells[6].textContent = process.PC.toString();
+                row.cells[7].textContent = TSOS.Utils.hexLog(process.Acc, false);
+                row.cells[8].textContent = TSOS.Utils.hexLog(process.IR, false);
+                row.cells[9].textContent = TSOS.Utils.hexLog(process.Xreg, false);
+                row.cells[10].textContent = TSOS.Utils.hexLog(process.Yreg, false);
+                row.cells[11].textContent = TSOS.Utils.hexLog(process.Zflag, false);
+                row.cells[12].textContent = process.Status;
+            }
+        }
     }
     TSOS.PCB = PCB;
 })(TSOS || (TSOS = {}));

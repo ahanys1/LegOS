@@ -239,13 +239,13 @@ table{
 
 #diskContainer{
   height: 400px;
-  width: 800px;
+  width: 815px;
   overflow: scroll;
 }
 
 #PCBContainer{
   height: 200px;
-  width: 803px;
+  width: 815px;
   overflow: scroll;
 }
 

@@ -489,6 +489,7 @@ module TSOS {
                     _PCB.addProgram(_MMU.PIDs[_MMU.PIDs.length -1], segment);
                 } else { //returns null if it's not formatted
                     _Kernel.krnTrapError("DISK NOT FORMAT");
+                    _MMU.PIDs.pop();
                 }
             }else{
                 _Kernel.krnTrapError("NOT LOADED", invalidChars);
@@ -652,6 +653,7 @@ module TSOS {
                         let data = args.join(" ");
                         data = data.slice(1,-1);//slice the quotes off
                         _krnDiskDriver.write(fileName, data);
+                        _StdOut.putText(`file ${fileName} written to.`)
                     } else {
                         _Kernel.krnTrapError("FILE NOT FOUND", args);
                     }

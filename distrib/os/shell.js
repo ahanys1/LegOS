@@ -387,6 +387,7 @@ var TSOS;
                 }
                 else { //returns null if it's not formatted
                     _Kernel.krnTrapError("DISK NOT FORMAT");
+                    _MMU.PIDs.pop();
                 }
             }
             else {
@@ -547,6 +548,7 @@ var TSOS;
                         let data = args.join(" ");
                         data = data.slice(1, -1); //slice the quotes off
                         _krnDiskDriver.write(fileName, data);
+                        _StdOut.putText(`file ${fileName} written to.`);
                     }
                     else {
                         _Kernel.krnTrapError("FILE NOT FOUND", args);
