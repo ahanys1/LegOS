@@ -629,8 +629,13 @@ module TSOS {
         }
 
         public shellFormat(args: string[]){
-            _krnDiskDriver.format();
-            _StdOut.putText("Disk successfully formatted.")
+            if (!_CPU.isExecuting || !_krnDiskDriver.isFormated){
+                _krnDiskDriver.format();
+                _StdOut.putText("Disk successfully formatted.");
+            } else if (_krnDiskDriver.isFormated){
+                _Kernel.krnTrapError("RUNTIME FORMAT");
+            }
+            
         }
 
         public shellCreate(args: string[]){
@@ -653,7 +658,7 @@ module TSOS {
                         let data = args.join(" ");
                         data = data.slice(1,-1);//slice the quotes off
                         _krnDiskDriver.write(fileName, data);
-                        _StdOut.putText(`file ${fileName} written to.`)
+                        _StdOut.putText(`file ${fileName} written.`)
                     } else {
                         _Kernel.krnTrapError("FILE NOT FOUND", args);
                     }
