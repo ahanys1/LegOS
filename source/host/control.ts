@@ -83,7 +83,8 @@ module TSOS {
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
-            btn.style.backgroundImage = 'url("/distrib/images/brick-yellow.png")';
+            //btn.style.backgroundImage = 'url("/distrib/images/brick-yellow.png")';
+            btn.style.backgroundColor = "#F3C305";
             btn.style.cursor = "not-allowed";
 
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
@@ -125,13 +126,19 @@ module TSOS {
             const stepButton: HTMLButtonElement = document.getElementById("btnStep") as HTMLButtonElement;
             _stepModeEnabled = !_stepModeEnabled;
             if(_stepModeEnabled){
-                btn.style.backgroundImage = 'url("/distrib/images/brick-green.png")';
-                stepButton.style.backgroundImage = 'url("/distrib/images/brick-green.png")';
+                //btn.style.backgroundImage = 'url("/distrib/images/brick-green.png")';
+                btn.style.backgroundColor = "#4B9F4A";
+                //stepButton.style.backgroundImage = 'url("/distrib/images/brick-green.png")';
+                stepButton.style.backgroundColor = "#4B9F4A";
+                stepButton.style.borderLeft = "4px solid black";
                 stepButton.disabled = false;
                 stepButton.style.cursor = "pointer"
             } else{
-                btn.style.backgroundImage = 'url("/distrib/images/brick-red.png")';
-                stepButton.style.backgroundImage = 'url("/distrib/images/brick-yellow.png")';
+                //btn.style.backgroundImage = 'url("/distrib/images/brick-red.png")';
+                btn.style.backgroundColor = "#CA1F08";
+                //stepButton.style.backgroundImage = 'url("/distrib/images/brick-yellow.png")';
+                stepButton.style.backgroundColor = "#F3C305";
+                stepButton.style.borderLeft = "0px";
                 stepButton.disabled = true;
                 stepButton.style.cursor = "not-allowed";
             }

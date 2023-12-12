@@ -50,50 +50,7 @@
 
 <div id="divMain" style="width:100%;">
 
-   <div id="divButtonBar" style="margin:4px;">
-      <input type="button"
-             id = "btnStartOS"
-             name="brnStartOS"
-             class="normal_button"
-             value="Start"
-             tabindex="0"
-             onclick="TSOS.Control.hostBtnStartOS_click(this);">
-
-      <input type="button"
-             id = "btnHaltOS"
-             name="brnHaltOS"
-             class="normal_button"
-             disabled="disabled"
-             value="Halt"
-             tabindex="1"
-             onclick="TSOS.Control.hostBtnHaltOS_click(this);">
-
-      <input type="button"
-             id = "btnReset"
-             name="brnReset"
-             class="normal_button"
-             disabled="disabled"
-             value="Reset"
-             tabindex="2"
-             onclick="TSOS.Control.hostBtnReset_click(this);">
-      
-       <input type="button"
-             id = "btnStepToggle"
-             name="brnStepToggle"
-             class="normal_button"
-             value="Toggle Step"
-             tabindex="3"
-             onclick="TSOS.Control.hostBtnToggleStep_click(this)">
-
-         <input type="button"
-             id = "btnStep"
-             name="brnStep"
-             disabled="disabled"
-             value=">"
-             tabindex="4"
-             onclick="TSOS.Control.hostBtnStep_click(this)">
-         
-   </div>
+   
 
    <div id="divItems" class="flex-container">
       <div id="left">
@@ -129,7 +86,52 @@
       </div>
 
       <div id="middle">
-         <div id="divConsole" style="margin:4px; width:800px; height:500px;">
+         <div id="divButtonBar">
+            <input type="button"
+                   id = "btnStartOS"
+                   name="brnStartOS"
+                   class="normal_button"
+                   value="Start"
+                   tabindex="0"
+                   onclick="TSOS.Control.hostBtnStartOS_click(this);">
+      
+            <input type="button"
+                   id = "btnHaltOS"
+                   name="brnHaltOS"
+                   class="normal_button"
+                   disabled="disabled"
+                   value="Halt"
+                   tabindex="1"
+                   onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+      
+            <input type="button"
+                   id = "btnReset"
+                   name="brnReset"
+                   class="normal_button"
+                   disabled="disabled"
+                   value="Reset"
+                   tabindex="2"
+                   onclick="TSOS.Control.hostBtnReset_click(this);">
+            <div id="stepButtons">
+               <input type="button"
+                      id = "btnStepToggle"
+                      name="brnStepToggle"
+                      class="normal_button"
+                      value="Toggle Step"
+                      tabindex="3"
+                      onclick="TSOS.Control.hostBtnToggleStep_click(this)">
+      
+               <input type="button"
+                      id = "btnStep"
+                      name="brnStep"
+                      disabled="disabled"
+                      value=">"
+                      tabindex="4"
+                      onclick="TSOS.Control.hostBtnStep_click(this)">
+            </div>   
+         </div>
+
+         <div id="divConsole" style="width:800px; height:500px;">
             <canvas id="display"
                width="800px"
                height="500px"
@@ -137,28 +139,30 @@
             </canvas>
          </div>
          <div id = "PCBContainer">
-            <table id = "PCB" border="4">
-               <thead>
-                  <tr>
-                     <th>PID</th>
-                     <th>Priority</th>
-                     <th>Location</th>
-                     <th>Segment</th>
-                     <th>Base</th>
-                     <th>Limit</th>
-                     <th>PC</th>
-                     <th>Acc</th>
-                     <th>IR</th>
-                     <th>Xreg</th>
-                     <th>Yreg</th>
-                     <th>Zflag</th>
-                     <th>Status</th>
-                  </tr>
-               </thead>
+            <div id="pcbTableContainer">
+               <table id = "PCB" border="4">
+                  <thead>
+                     <tr>
+                        <th>PID</th>
+                        <th>Priority</th>
+                        <th>Location</th>
+                        <th>Segment</th>
+                        <th>Base</th>
+                        <th>Limit</th>
+                        <th>PC</th>
+                        <th>Acc</th>
+                        <th>IR</th>
+                        <th>Xreg</th>
+                        <th>Yreg</th>
+                        <th>Zflag</th>
+                        <th>Status</th>
+                     </tr>
+                  </thead>
             
-               <tbody id = "pcbBody"></tbody> 
+                  <tbody id = "pcbBody"></tbody> 
             
-            </table>
+               </table>
+            </div>
          </div>
          <div id="diskContainer">
             <table id = "Disk" border="4">
@@ -167,7 +171,7 @@
                      <th>T.S.B</th>
                      <th>Occupied</th>
                      <tH>Next</tH>
-                     <th>Data</th>
+                     <th style="text-align: left;">Data</th>
                   </tr>
                </thead>
                <tbody id = "diskTableBody"></tbody>

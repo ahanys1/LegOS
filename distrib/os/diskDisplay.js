@@ -5,6 +5,7 @@ var TSOS;
         constructor(diskTableBody = document.getElementById("diskTableBody")) {
             this.diskTableBody = diskTableBody;
         }
+        // if I get the time, this update function is how I want to do all the update functions for the displays.
         update() {
             //first, clear the table
             this.diskTableBody.innerHTML = "";
@@ -32,9 +33,10 @@ var TSOS;
                 row.appendChild(occupiedCell);
                 row.appendChild(nextCell);
                 row.appendChild(dataCell);
-                if (parseInt(key[4]) % 2 == 0) { //every other row make grey
+                /*
+                if (parseInt(key[4]) % 2 == 0){ //every other row make grey
                     row.style.backgroundColor = "#dfdfdf";
-                }
+                }*/
                 //append row to table
                 this.diskTableBody.appendChild(row);
             }

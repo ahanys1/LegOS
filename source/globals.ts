@@ -11,8 +11,8 @@
 //
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
 //
-const APP_NAME: string    = "LegOS";   // 'cause Bob and I were at a loss for a better name.
-const APP_VERSION: string = "0.8.4";   // What did you expect?
+const APP_NAME: string    = "LegOS";   
+const APP_VERSION: string = "7.53.67";   // fun fact: this is the set number of the UCS venator set!
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
