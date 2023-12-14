@@ -7,14 +7,16 @@ var TSOS;
         TurnaroundTime;
         finishedPIDs;
         justTerminated;
+        scheduleAlgorithm;
         constructor(readyQueue = new TSOS.Queue, quantum = 6, // Set the default quantum
-        CQ = 1, TurnaroundTime = 0, finishedPIDs = [], justTerminated = false) {
+        CQ = 1, TurnaroundTime = 0, finishedPIDs = [], justTerminated = false, scheduleAlgorithm = "rr") {
             this.readyQueue = readyQueue;
             this.quantum = quantum;
             this.CQ = CQ;
             this.TurnaroundTime = TurnaroundTime;
             this.finishedPIDs = finishedPIDs;
             this.justTerminated = justTerminated;
+            this.scheduleAlgorithm = scheduleAlgorithm;
         }
         init() {
             this.readyQueue = new TSOS.Queue();
@@ -23,6 +25,7 @@ var TSOS;
             this.TurnaroundTime = 0;
             this.finishedPIDs = [];
             this.justTerminated = false;
+            this.scheduleAlgorithm = "rr";
         }
         schedule() {
             if (this.readyQueue.getSize() > 0) {
@@ -94,7 +97,12 @@ var TSOS;
         updateQuantum(q) {
             this.quantum = q;
             let dispQ = document.getElementById("Quantum");
-            dispQ.innerHTML = "Quantum: " + this.quantum.toString();
+            if (this.scheduleAlgorithm == "rr") {
+                dispQ.innerHTML = "Round Robin | Q: " + this.quantum.toString();
+            }
+            else {
+                dispQ.innerHTML = "First-come First-serve";
+            }
         }
     }
     TSOS.Scheduler = Scheduler;

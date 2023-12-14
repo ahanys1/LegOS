@@ -8,7 +8,8 @@ module TSOS {
             public CQ: number = 1,
             public TurnaroundTime: number = 0,
             public finishedPIDs: number[] = [],
-            public justTerminated: boolean = false
+            public justTerminated: boolean = false,
+            public scheduleAlgorithm: "rr" | "fcfs" | "priority" = "rr"
         ) {}
 
         public init(){
@@ -18,6 +19,7 @@ module TSOS {
             this.TurnaroundTime = 0;
             this.finishedPIDs = [];
             this.justTerminated = false;
+            this.scheduleAlgorithm = "rr";
         }
 
         public schedule(): void {
@@ -97,7 +99,12 @@ module TSOS {
         public updateQuantum(q: number){
             this.quantum = q;
             let dispQ = document.getElementById("Quantum");
-            dispQ.innerHTML = "Quantum: " + this.quantum.toString();
+            if (this.scheduleAlgorithm == "rr"){
+                dispQ.innerHTML = "Round Robin | Q: " + this.quantum.toString();
+            } else {
+                dispQ.innerHTML = "First-come First-serve";
+            }
+            
         }
     }
 

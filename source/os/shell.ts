@@ -167,7 +167,7 @@ module TSOS {
 
             sc = new ShellCommand(this.shellLS,
                 "ls",
-                '- list the current files on disk.');
+                '[-a] - list the current files on disk.');
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellCopy,
@@ -178,6 +178,16 @@ module TSOS {
             sc = new ShellCommand(this.shellRename,
                 "rename",
                 '<existingfileName> <newfileName> - rename the file.');
+            this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellGetSchedule,
+                "getschedule",
+                '- gets the current scheduling algorithm.');
+            this.commandList[this.commandList.length] = sc;
+
+            sc = new ShellCommand(this.shellSetSchedule,
+                "setschedule",
+                '<rr | fcfs> - sets the scheduling algorithm.');
             this.commandList[this.commandList.length] = sc;
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
@@ -410,13 +420,19 @@ module TSOS {
                         _StdOut.putText("'write <filename> <data> writes the quotes surrounded data to the file specified on the disk.");
                         break;
                     case "ls":
-                        _StdOut.putText("'ls' lists all files currently stored on disk.");
+                        _StdOut.putText("'ls [-a]' lists all files currently stored on disk. Adding -a shows hidden files and programs.");
                         break;
                     case "copy":
                         _StdOut.putText("'copy <existing file> <new file>' coppies the contents to a new file.");
                         break;
                     case "rename":
                         _StdOut.putText("'rename <existing file> <new file>' renames the file.");
+                        break;
+                    case "getschedule":
+                        _StdOut.putText("'getschedule' gets the current scheduling algorithm.");
+                        break;
+                    case "setschedule":
+                        _StdOut.putText("'setschedule <rr | fcfs>' sets the scheduling algorithm.");
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
@@ -736,6 +752,28 @@ module TSOS {
             } else {
                 _Kernel.krnTrapError("DISK NOT FORMAT");
             }
+        }
+
+        public shellGetSchedule(args: string[]){
+            if (_Scheduler.scheduleAlgorithm == "fcfs"){
+                _StdOut.putText("Current Schedule: First-come First-serve");
+            } else if (_Scheduler.scheduleAlgorithm == "rr"){
+                _StdOut.putText("Current Schedule: Round Robin");
+            } else {
+                _StdOut.putText("Current Schedule: Non-preemptive Priority");
+            }
+        }
+
+        public shellSetSchedule(args: string[]){
+            if (args[0] == "rr"){
+                _Scheduler.scheduleAlgorithm = "rr";
+                _Scheduler.updateQuantum(6);
+                _StdOut.putText("Schedule set: Round Robin");
+            } else if (args[0] == "fcfs"){
+                _Scheduler.scheduleAlgorithm = "fcfs";
+                _Scheduler.updateQuantum(Infinity); //set the quantum infinatly high for fcfs
+                _StdOut.putText("Schedule set: First-come First-serve");
+            } //add priority if there is time
         }
 
     }
