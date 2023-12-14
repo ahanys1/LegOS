@@ -697,7 +697,8 @@ module TSOS {
 
         public shellLS(args: string[]){
             if (_krnDiskDriver.isFormated){
-                let fileList = _krnDiskDriver.fetchFileList();
+                let isAll: boolean = args[0] === "-a"
+                let fileList = _krnDiskDriver.fetchFileList(isAll);
                 console.log(fileList);
                 for (let file of fileList){
                     _StdOut.putText(file + "    ");

@@ -312,7 +312,7 @@
             _DiskDisplay.update();
         }
 
-        public fetchFileList(): string[]{
+        public fetchFileList(isAll: boolean): string[]{
             let output: string[] = [];
             for (let s = 0; s < this.sectors; s++){
                 for (let b = 0; b < this.blocks; b++){
@@ -322,6 +322,12 @@
                         output.push(this.decodeData(FATDataArr.join("")));
                     }
                 }
+            }
+            if(!isAll){ //if -a is not specified, remove those files from the list
+                let filtered = output.filter(file => !file.startsWith("."));
+                output = filtered;
+                let filteredFromProgram = output.filter(file => !file.includes(".stud"));
+                output = filteredFromProgram;
             }
             console.log(output);
             return output;
